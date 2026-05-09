@@ -57,9 +57,8 @@
       .app-layout { display: flex; height: 100vh; position: relative; }
 
       .panel-container {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(25px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        background: #ffffff;
+        border: 1px solid #f0f0f0;
         box-shadow: 0 8px 32px rgba(0,0,0,0.03); z-index: 1000;
         overflow-y: auto;
         transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease, width 0.3s ease, height 0.3s ease, left 0.3s ease, top 0.3s ease, right 0.3s ease, bottom 0.3s ease;
@@ -82,10 +81,10 @@
 
       .collapsible-trigger {
         display: flex; align-items: center; justify-content: space-between;
-        padding: 0.85rem 0; border-bottom: 1px solid rgba(0,0,0,0.02);
-        cursor: pointer; font-size: 10px; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 0.12em; color: #737373;
-        transition: color 0.2s ease;
+        padding: 0.85rem 0; border-bottom: 1px solid #fafafa;
+        cursor: pointer; font-size: 10px; font-weight: 300;
+        text-transform: uppercase; letter-spacing: 0.15em; color: #a3a3a3;
+        transition: all 0.2s ease;
       }
       .collapsible-trigger:hover { color: #171717; }
       .collapsible-content { padding: 1rem 0; }
@@ -95,7 +94,7 @@
 
       .sticky-header { position: sticky; background: #fafafa; z-index: 100; }
       .sticky-header.col { top: 0; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
-      .sticky-header.row { left: 0; padding-right: 12px; border-right: 1px solid #f0f0f0; }
+      .sticky-header.row { left: 0; border-right: 1px solid #f0f0f0; background: #fafafa; }
       .sticky-header.corner { z-index: 110; top: 0; left: 0; }
 
       .tri-state-filter {
@@ -195,12 +194,21 @@
         return [...colors].sort((a, b) => {
           const hA = getHsl(a), hB = getHsl(b);
           if (sortBy === 'hue') {
+            if (hA.h !== hB.h) return order === 'asc' ? hA.h - hB.h : hB.h - hA.h;
+            return order === 'asc' ? hA.l - hB.l : hB.l - hA.l;
+          } else if (sortBy === 'lightness') {
+            if (hA.l !== hB.l) return order === 'asc' ? hA.l - hB.l : hB.l - hA.l;
+            return order === 'asc' ? hA.h - hB.h : hB.h - hA.h;
+          } else if (sortBy === 'hue-lum') {
             const hueGroupA = Math.floor(hA.h / 30), hueGroupB = Math.floor(hB.h / 30);
             if (hueGroupA !== hueGroupB) return order === 'asc' ? hueGroupA - hueGroupB : hueGroupB - hueGroupA;
             return order === 'asc' ? hA.l - hB.l : hB.l - hA.l;
-          } else {
-            return order === 'asc' ? hA.l - hB.l : hB.l - hA.l;
+          } else if (sortBy === 'lum-hue') {
+            const lumGroupA = Math.floor(hA.l / 10), lumGroupB = Math.floor(hB.l / 10);
+            if (lumGroupA !== lumGroupB) return order === 'asc' ? lumGroupA - lumGroupB : lumGroupB - lumGroupA;
+            return order === 'asc' ? hA.h - hB.h : hB.h - hA.h;
           }
+          return 0;
         });
       };
 
@@ -267,7 +275,7 @@
         const suffix = mode === 'apca' ? '' : ':1';
 
         return (
-          <div className="w-[200px] rounded-2xl overflow-hidden transition-all flex flex-col hover:shadow-2xl hover:scale-[1.02] hover:z-10 bg-white shadow-sm border border-neutral-100"
+          <div className="w-[200px] rounded-[2.5rem] overflow-hidden transition-all flex flex-col hover:shadow-2xl hover:scale-[1.02] hover:z-10 bg-white shadow-sm border border-neutral-100"
                style={{ fontFamily: font, border: showBorder ? `2px solid ${fg}` : '' }}>
 
             {/* Top part - Dynamic Background */}
@@ -341,8 +349,8 @@
 
         const [rowFilters, setRowFilters] = useState({});
         const [colFilters, setColFilters] = useState({});
-        const [rowSortBy, setRowSortBy] = useState('hue');
-        const [colSortBy, setColSortBy] = useState('hue');
+        const [rowSortBy, setRowSortBy] = useState('hue-lum');
+        const [colSortBy, setColSortBy] = useState('hue-lum');
         const [rowSortOrder, setRowSortOrder] = useState('asc');
         const [colSortOrder, setColSortOrder] = useState('asc');
 
@@ -363,7 +371,7 @@
           if (hB.l < minBgLum || hB.l > maxBgLum) return true;
           if (hF.l < minFgLum || hF.l > maxFgLum) return true;
 
-          const bgI = rawColors.indexOf(bg), fgI = rawColors.indexOf(fg);
+          const bgI = activeRows.indexOf(bg), fgI = activeCols.indexOf(fg);
           if (uniqueMode === "bg" && bgI > fgI) return true;
           if (uniqueMode === "fg" && bgI < fgI) return true;
           const lB = luminance(hexToRgb(bg)), lF = luminance(hexToRgb(fg));
@@ -577,26 +585,36 @@
 
                   <Collapsible title="Typography">
                     <div className="space-y-3">
-                      <div className="max-h-48 overflow-y-auto pr-2 space-y-1 custom-scrollbar">
+                      <div className="max-h-64 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
                         {[
-                          'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Playfair Display', 'JetBrains Mono',
-                          'Georgia', 'Merriweather', 'Oswald', 'Raleway', 'Ubuntu', 'PT Sans', 'Nunito', 'Poppins',
-                          'Roboto Condensed', 'Source Sans Pro', 'Noto Sans', 'Oswald', 'Arimo', 'Lora', 'Varela Round',
-                          'Titillium Web', 'PT Serif', 'Muli', 'Indie Flower', 'Dosis', 'Inconsolata', 'Fira Sans', 'Quicksand'
-                        ].map(f => (
-                          <button key={f}
-                            onClick={() => {
-                              setFont(f.includes("'") ? f : `'${f}', sans-serif`);
-                              const link = document.createElement('link');
-                              link.href = `https://fonts.googleapis.com/css2?family=${f.replace(/ /g, '+')}:wght@400;900&display=swap`;
-                              link.rel = 'stylesheet';
-                              document.head.appendChild(link);
-                            }}
-                            className={`w-full text-left px-3 py-2 rounded-lg text-[11px] font-medium border transition-all flex justify-between items-center ${font.includes(f) ? 'bg-neutral-900 text-white border-black' : 'bg-white text-neutral-500 border-neutral-50 hover:border-neutral-200 hover:bg-neutral-50'}`}
-                          >
-                            <span style={{ fontFamily: `'${f}', sans-serif` }}>{f}</span>
-                            {font.includes(f) && <span>✓</span>}
-                          </button>
+                          { category: 'Sans-Serif', icon: '▥', fonts: ['Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Raleway', 'Ubuntu', 'PT Sans', 'Nunito', 'Poppins', 'Roboto Condensed', 'Source Sans Pro', 'Noto Sans', 'Arimo', 'Muli', 'Fira Sans', 'Quicksand'] },
+                          { category: 'Serif', icon: '▦', fonts: ['Playfair Display', 'Georgia', 'Merriweather', 'PT Serif', 'Lora', 'Varela Round', 'Titillium Web'] },
+                          { category: 'Mono', icon: '⌨', fonts: ['JetBrains Mono', 'Inconsolata', 'Courier Prime'] },
+                          { category: 'Display', icon: '🎨', fonts: ['Oswald', 'Indie Flower', 'Dosis', 'Bebas Neue'] }
+                        ].map(group => (
+                          <div key={group.category} className="space-y-1.5">
+                            <div className="flex items-center gap-2 px-1 py-1 border-b border-neutral-50">
+                                <span className="text-[10px]">{group.icon}</span>
+                                <span className="text-[8px] font-black uppercase tracking-widest text-neutral-300">{group.category}</span>
+                            </div>
+                            <div className="space-y-1">
+                                {group.fonts.map(f => (
+                                <button key={f}
+                                    onClick={() => {
+                                    setFont(f.includes("'") ? f : `'${f}', sans-serif`);
+                                    const link = document.createElement('link');
+                                    link.href = `https://fonts.googleapis.com/css2?family=${f.replace(/ /g, '+')}:wght@400;900&display=swap`;
+                                    link.rel = 'stylesheet';
+                                    document.head.appendChild(link);
+                                    }}
+                                    className={`w-full text-left px-3 py-2 rounded-lg text-[11px] font-medium border transition-all flex justify-between items-center ${font.includes(f) ? 'bg-neutral-900 text-white border-black' : 'bg-white text-neutral-500 border-neutral-50 hover:border-neutral-200 hover:bg-neutral-50'}`}
+                                >
+                                    <span style={{ fontFamily: `'${f}', sans-serif` }}>{f}</span>
+                                    {font.includes(f) && <span>✓</span>}
+                                </button>
+                                ))}
+                            </div>
+                          </div>
                         ))}
                       </div>
 
@@ -635,8 +653,10 @@
                         <button onClick={copySVG} className="w-full py-3 bg-neutral-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all active:scale-95">{copyStatus}</button>
 
                         <div className="space-y-3 border-t border-neutral-50 pt-3">
-                        <div className="flex justify-between items-center"><label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Filters</label>
-                            <button onClick={resetAll} className="text-[8px] font-black text-red-400 uppercase hover:text-red-600 transition-colors">Reset All</button></div>
+                        <div className="flex justify-between items-center">
+                            <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Filters</label>
+                            <button onClick={resetAll} className="px-3 py-1 bg-red-50 text-red-500 text-[8px] font-black uppercase rounded-full hover:bg-red-500 hover:text-white transition-all border border-red-100">Reset All Filters</button>
+                        </div>
                         <input type="text" placeholder="Search colors..." className="w-full p-2.5 bg-neutral-50 border border-neutral-100 rounded-xl text-[10px] font-bold outline-none focus:ring-1 focus:ring-neutral-200" value={search} onChange={e => setSearch(e.target.value)} />
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5"><div className="flex justify-between items-center px-1"><span className="text-[8px] font-black text-neutral-300 uppercase">Rows</span><button onClick={()=>setRowFilters({})} className="text-[8px] font-black text-neutral-300 hover:text-black">Reset</button></div>
@@ -655,19 +675,19 @@
 
             <main className={`grid-area transition-all duration-300 ${!isCollapsed && panelPos === 'left' ? 'pl-[380px]' : !isCollapsed && panelPos === 'right' ? 'pr-[380px]' : !isCollapsed && panelPos === 'top' ? 'pt-[35vh]' : !isCollapsed && panelPos === 'bottom' ? 'pb-[35vh]' : ''}`}>
                 <div className="grid-wrapper">
-                    <div className="inline-grid gap-4" style={{ gridTemplateColumns: `120px repeat(${activeCols.length}, 200px)` }}>
+                    <div className="inline-grid" style={{ gridTemplateColumns: `120px repeat(${activeCols.length}, 216px)`, gap: '16px 16px' }}>
                         <div className="sticky-header corner flex flex-col items-end justify-end p-3 gap-3 border-b border-neutral-100">
                             <div className="flex flex-col gap-2 items-end">
                                 <div className="flex gap-2">
                                     <span className="text-[7px] font-black uppercase text-neutral-300">Sort Rows:</span>
-                                    <button onClick={() => setRowSortBy('hue')} className={`text-[8px] font-black uppercase ${rowSortBy === 'hue' ? 'text-black' : 'text-neutral-300'}`}>Hue</button>
-                                    <button onClick={() => setRowSortBy('lightness')} className={`text-[8px] font-black uppercase ${rowSortBy === 'lightness' ? 'text-black' : 'text-neutral-300'}`}>Lum</button>
+                                    <button onClick={() => setRowSortBy('hue-lum')} className={`text-[8px] font-black uppercase ${rowSortBy === 'hue-lum' ? 'text-black' : 'text-neutral-300'}`}>H&gt;L</button>
+                                    <button onClick={() => setRowSortBy('lum-hue')} className={`text-[8px] font-black uppercase ${rowSortBy === 'lum-hue' ? 'text-black' : 'text-neutral-300'}`}>L&gt;H</button>
                                     <button onClick={() => setRowSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="text-[8px] font-black uppercase text-blue-500">{rowSortOrder === 'asc' ? '↑' : '↓'}</button>
                                 </div>
                                 <div className="flex gap-2">
                                     <span className="text-[7px] font-black uppercase text-neutral-300">Sort Cols:</span>
-                                    <button onClick={() => setColSortBy('hue')} className={`text-[8px] font-black uppercase ${colSortBy === 'hue' ? 'text-black' : 'text-neutral-300'}`}>Hue</button>
-                                    <button onClick={() => setColSortBy('lightness')} className={`text-[8px] font-black uppercase ${colSortBy === 'lightness' ? 'text-black' : 'text-neutral-300'}`}>Lum</button>
+                                    <button onClick={() => setColSortBy('hue-lum')} className={`text-[8px] font-black uppercase ${colSortBy === 'hue-lum' ? 'text-black' : 'text-neutral-300'}`}>H&gt;L</button>
+                                    <button onClick={() => setColSortBy('lum-hue')} className={`text-[8px] font-black uppercase ${colSortBy === 'lum-hue' ? 'text-black' : 'text-neutral-300'}`}>L&gt;H</button>
                                     <button onClick={() => setColSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="text-[8px] font-black uppercase text-blue-500">{colSortOrder === 'asc' ? '↑' : '↓'}</button>
                                 </div>
                             </div>
@@ -683,7 +703,7 @@
 
                         {activeRows.map(bg => (
                             <React.Fragment key={bg}>
-                                <div className="sticky-header row flex items-center justify-end pr-5 gap-3 h-[240px] border-r border-neutral-100">
+                                <div className="sticky-header row flex items-center justify-end pr-5 gap-3 h-[256px] border-r border-neutral-100">
                                     <div className="font-mono text-[10px] text-neutral-500 font-black tracking-tighter">{bg}</div>
                                     <div className="w-1.5 h-10 rounded-full" style={{ backgroundColor: bg }}></div>
                                 </div>
