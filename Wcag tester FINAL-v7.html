@@ -13,22 +13,30 @@
           extend: {
             colors: {
               neutral: {
-                50: '#fafafa',
-                100: '#f5f5f5',
+                50: '#f9f9f9',
+                100: '#f0f0f0',
                 200: '#e5e5e5',
-                300: '#d4d4d4',
+                300: '#d1d1d1',
                 400: '#a3a3a3',
                 500: '#737373',
                 600: '#525252',
                 700: '#404040',
                 800: '#262626',
-                900: '#171717',
+                900: '#111111',
               },
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
             },
           },
         },
       }
     </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
 
     <!-- React -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -38,20 +46,23 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-      /* Custom scrollbar for better look */
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      /* Custom scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: #d4d4d4;
-        border-radius: 4px;
+        background: #e5e5e5;
+        border-radius: 10px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #a3a3a3;
+        background: #d1d1d1;
       }
 
       .grid-container {
@@ -59,7 +70,7 @@
         overflow-x: auto;
         overflow-y: hidden;
         max-width: 100%;
-        scrollbar-width: auto;
+        scrollbar-width: thin;
         -webkit-overflow-scrolling: touch;
       }
 
@@ -67,50 +78,88 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.375rem 0.75rem;
-        border-radius: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
         cursor: pointer;
         user-select: none;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid #e5e5e5;
+        transition: all 0.15s ease;
+        border: 1px solid transparent;
       }
 
-      .tri-state-filter.neutral {
-        background: #ffffff;
-        color: #525252;
-      }
-      .tri-state-filter.neutral:hover {
-        background: #f5f5f5;
-        border-color: #d4d4d4;
+      .tri-state-filter:hover {
+        background: #f0f0f0;
       }
 
       .tri-state-filter.included {
         background: #f0fdf4;
-        color: #166534;
-        border-color: #bbf7d0;
-      }
-      .tri-state-filter.included:hover {
-        background: #dcfce7;
+        border-color: #dcfce7;
       }
 
       .tri-state-filter.excluded {
         background: #fef2f2;
-        color: #991b1b;
-        border-color: #fecaca;
+        border-color: #fee2e2;
       }
-      .tri-state-filter.excluded:hover {
-        background: #fee2e2;
+
+      /* Range slider styling */
+      input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+      }
+      input[type=range]:focus {
+        outline: none;
+      }
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: #e5e5e5;
+        border-radius: 2px;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #111111;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -6px;
+        box-shadow: 0 0 0 4px white;
+        border: 1px solid #e5e5e5;
+      }
+
+      .segmented-control {
+        display: flex;
+        background: #f0f0f0;
+        padding: 2px;
+        border-radius: 0.5rem;
+      }
+      .segmented-item {
+        flex: 1;
+        text-align: center;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.7rem;
+        font-weight: 500;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: #737373;
+      }
+      .segmented-item.active {
+        background: white;
+        color: #111111;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
       }
     </style>
   </head>
 
-  <body class="bg-neutral-50 text-neutral-900 font-sans antialiased">
+  <body class="bg-white text-neutral-900 font-sans antialiased">
     <div id="root"></div>
 
     <script type="text/babel">
       const { useState, useMemo, useEffect } = React;
 
-      // -------- WCAG helpers --------
+      // -------- WCAG & Color helpers --------
       const hexToRgb = (hex) => {
         const clean = hex.replace("#", "");
         const bigint = parseInt(clean, 16);
@@ -129,6 +178,26 @@
         return 0.2126 * t(r) + 0.7152 * t(g) + 0.0722 * t(b);
       };
 
+      const getHsl = (hex) => {
+        let { r, g, b } = hexToRgb(hex);
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        if (max === min) {
+          h = s = 0;
+        } else {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+        }
+        return { h: h * 360, s: s * 100, l: l * 100 };
+      };
+
       const contrastRatio = (a, b) => {
         const L1 = luminance(hexToRgb(a));
         const L2 = luminance(hexToRgb(b));
@@ -138,6 +207,22 @@
       };
 
       const pass = (r, t) => r >= t;
+
+      const checkVisualTension = (c1, c2) => {
+        const hsl1 = getHsl(c1);
+        const hsl2 = getHsl(c2);
+
+        const lumDiff = Math.abs(hsl1.l - hsl2.l);
+        const hueDiff = Math.min(Math.abs(hsl1.h - hsl2.h), 360 - Math.abs(hsl1.h - hsl2.h));
+        const avgSat = (hsl1.s + hsl2.s) / 2;
+
+        // Vibration check: similar luminance, high saturation, different hue
+        if (lumDiff < 20 && avgSat > 50 && hueDiff > 45) return true;
+        // High saturation complementary clash
+        if (avgSat > 80 && hueDiff > 160) return true;
+
+        return false;
+      };
 
       function generateContrastGridSVG({
         gridBg,
@@ -150,26 +235,20 @@
         rowFilters,
         colFilters
       }) {
-        const cellWidth = 220;
-        const cellGap = 16;
+        const cellWidth = 200;
+        const cellGap = 12;
         const headerHeight = 60;
-        const rowLabelWidth = 120;
+        const rowLabelWidth = 100;
 
-        const p5 = 20;
-        const textBase = 16;
-        const textSm = 14;
-        const textXs = 12;
-        const spaceY1 = 4;
-        const gap2 = 8;
-
-        const cardRadius = 24;
-        const borderWidth = 2;
-        const inset = borderWidth;
+        const p = 16;
+        const textXs = 10;
+        const textSm = 12;
+        const textBase = 20;
 
         const isHidden = (bg, fg, bgIndex, fgIndex) => {
           const ratio = contrastRatio(bg, fg);
-          if (minContrast > 0 && ratio < minContrast) return true;
-          if (maxContrast !== Infinity && ratio >= maxContrast) return true;
+          if (ratio < minContrast) return true;
+          if (maxContrast !== Infinity && ratio > maxContrast) return true;
           if (uniqueMode === "bg" && bgIndex > fgIndex) return true;
           if (uniqueMode === "fg" && bgIndex < fgIndex) return true;
 
@@ -205,28 +284,21 @@
             });
         });
 
-        const width = rowLabelWidth + (svgGridFg.length > 0 ? svgGridFg.length * (cellWidth + cellGap) : cellWidth);
-        const height = headerHeight + (svgGridBg.length > 0 ? svgGridBg.length * (360 + cellGap) : 360);
+        const width = rowLabelWidth + (svgGridFg.length * (cellWidth + cellGap));
+        const height = headerHeight + (svgGridBg.length * (240 + cellGap));
 
-        let svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-<defs>
-  <filter id="top-shadow" x="-20%" y="-20%" width="140%" height="140%">
-    <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="rgba(0,0,0,0.25)"/>
-  </filter>
-</defs>
-`;
+        let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" font-family="sans-serif">`;
 
         /* HEADERS */
         svgGridFg.forEach((fg, colIndex) => {
           const x = rowLabelWidth + colIndex * (cellWidth + cellGap) + cellWidth / 2;
-          svg += `<text x="${x}" y="34" font-size="14" font-family="monospace" text-anchor="middle" fill="#737373">${fg}</text>`;
+          svg += `<text x="${x}" y="34" font-size="11" text-anchor="middle" fill="#a3a3a3" font-weight="300">${fg}</text>`;
         });
 
         /* ROWS */
         svgGridBg.forEach((bg, rowIndex) => {
-          const rowY = headerHeight + rowIndex * (360 + cellGap);
-          svg += `<text x="${rowLabelWidth - 8}" y="${rowY + 28}" font-size="14" font-family="monospace" text-anchor="end" fill="#737373">${bg}</text>`;
+          const rowY = headerHeight + rowIndex * (240 + cellGap);
+          svg += `<text x="${rowLabelWidth - 12}" y="${rowY + 24}" font-size="11" text-anchor="end" fill="#a3a3a3" font-weight="300">${bg}</text>`;
 
           svgGridFg.forEach((fg, colIndex) => {
             const bgIndex = colors.indexOf(bg);
@@ -235,77 +307,21 @@
 
             const x = rowLabelWidth + colIndex * (cellWidth + cellGap);
             const ratio = contrastRatio(bg, fg);
-
-            let y = inset;
-            let content = "";
-
-            /* TOP PANEL */
-            y += p5;
-            content += `<text x="${p5 + inset}" y="${y + textBase}" font-size="${textBase}" font-weight="600" font-family="sans-serif" fill="${fg}">${ratio}:1</text>`;
-            y += textBase + gap2;
-
-            [
-              `${pass(ratio, 3) ? "✅" : "❌"} 3:1 (Graphics)`,
-              `${pass(ratio, 4.5) ? "✅" : "❌"} 4.5:1 (AA)`,
-              `${pass(ratio, 7) ? "✅" : "❌"} 7:1 (AAA)`,
-            ].forEach((line) => {
-              content += `<text x="${p5 + inset}" y="${y + textSm}" font-size="${textSm}" font-family="sans-serif" fill="${fg}">${line}</text>`;
-              y += textSm + spaceY1;
-            });
-
-            y += p5;
-            content += `<text x="${p5 + inset}" y="${y + textSm}" font-size="${textSm}" font-family="sans-serif" fill="${fg}">${bg} - Background</text>`;
-            y += textSm + spaceY1;
-            content += `<text x="${p5 + inset}" y="${y + textSm}" font-size="${textSm}" font-family="sans-serif" fill="${fg}">${fg} - Text</text>`;
-            y += textSm + p5;
-
-            const topHeight = y;
-
-            /* BOTTOM PANEL */
-            y += p5;
-            content += `
-        <text x="${p5 + inset}" y="${y + textXs}" font-size="${textXs}" font-family="monospace" fill="#000">${bg} ⇆ ${fg}</text>
-        <text x="${cellWidth - p5 - inset}" y="${y + textXs}" font-size="${textXs}" font-weight="600" font-family="sans-serif" text-anchor="end" fill="#000">${ratio}:1</text>
-      `;
-            y += textXs + gap2;
-
-            content += `
-        <text x="${p5 + inset}" y="${y + textXs}" font-size="${textXs}" font-family="sans-serif" fill="#000">${pass(ratio, 3) ? "✅" : "❌"} Icons</text>
-        <text x="${cellWidth / 2}" y="${y + textXs}" font-size="${textXs}" font-family="sans-serif" text-anchor="middle" fill="#000">${pass(ratio, 4.5) ? "✅" : "❌"} AA</text>
-        <text x="${cellWidth - p5 - inset}" y="${y + textXs}" font-size="${textXs}" font-family="sans-serif" text-anchor="end" fill="#000">${pass(ratio, 7) ? "✅" : "❌"} AAA</text>
-      `;
-            y += textXs + p5;
-
-            const cardHeight = y + inset;
+            const hasTension = checkVisualTension(bg, fg);
 
             svg += `
 <g transform="translate(${x}, ${rowY})">
-  <rect
-    x="0"
-    y="0"
-    width="${cellWidth}"
-    height="${cardHeight}"
-    rx="${cardRadius}"
-    fill="#ffffff"
-    stroke="${fg}"
-    stroke-width="${borderWidth}"
-  />
+  <rect width="${cellWidth}" height="240" rx="12" fill="${bg}" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="${p}" y="${p + 24}" font-size="${textBase}" font-weight="200" fill="${fg}">${ratio}:1</text>
+  ${hasTension ? `<text x="${cellWidth - p}" y="${p + 24}" font-size="16" text-anchor="end">⚠️</text>` : ""}
 
-  <clipPath id="clip-${bgIndex}-${fgIndex}">
-    <rect x="${inset}" y="${inset}" width="${cellWidth - inset * 2}" height="${cardHeight - inset * 2}" rx="${cardRadius - inset}"/>
-  </clipPath>
+  <text x="${p}" y="${p + 50}" font-size="${textXs}" fill="${fg}" opacity="0.8" font-weight="300">${pass(ratio, 3) ? "✅" : "❌"} 3:1 Graphics</text>
+  <text x="${p}" y="${p + 66}" font-size="${textXs}" fill="${fg}" opacity="0.8" font-weight="300">${pass(ratio, 4.5) ? "✅" : "❌"} 4.5:1 AA</text>
+  <text x="${p}" y="${p + 82}" font-size="${textXs}" fill="${fg}" opacity="0.8" font-weight="300">${pass(ratio, 7) ? "✅" : "❌"} 7:1 AAA</text>
 
-  <g clip-path="url(#clip-${bgIndex}-${fgIndex})">
-    <rect
-      x="${inset}"
-      y="${inset}"
-      width="${cellWidth - inset * 2}"
-      height="${topHeight - inset}"
-      fill="${bg}"
-      filter="url(#top-shadow)"
-    />
-    ${content}
-  </g>
+  <rect y="210" width="${cellWidth}" height="30" fill="#ffffff" opacity="0.9"/>
+  <line x1="0" y1="210" x2="${cellWidth}" y2="210" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="${p}" y="228" font-size="9" fill="#a3a3a3" font-weight="300" letter-spacing="1">${fg} / ${bg}</text>
 </g>`;
           });
         });
@@ -323,16 +339,65 @@
           else onChange(0);
         };
 
-        let statusClass = "neutral";
-        let icon = <span className="text-neutral-300">⚪</span>;
-        if (state === 1) { statusClass = "included"; icon = <span className="text-green-600">✅</span>; }
-        if (state === -1) { statusClass = "excluded"; icon = <span className="text-red-600">❌</span>; }
+        let statusClass = "";
+        let dot = <div className="w-1.5 h-1.5 rounded-full bg-neutral-200"></div>;
+        if (state === 1) { statusClass = "included"; dot = <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>; }
+        if (state === -1) { statusClass = "excluded"; dot = <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>; }
 
         return (
-          <div className={`tri-state-filter ${statusClass} text-xs font-mono`} onClick={handleClick}>
-            <div className="w-4 h-4 rounded shadow-inner border border-black/5" style={{ backgroundColor: color }}></div>
-            <span className="font-medium">{color}</span>
-            <span className="ml-auto flex items-center">{icon}</span>
+          <div className={`tri-state-filter ${statusClass}`} onClick={handleClick}>
+            <div className="w-3.5 h-3.5 rounded-sm shadow-sm border border-black/5" style={{ backgroundColor: color }}></div>
+            <span className="text-[10px] font-light text-neutral-600 font-mono tracking-tighter">{color}</span>
+            <div className="ml-auto">{dot}</div>
+          </div>
+        );
+      };
+
+      const RangeSlider = ({ label, value, min, max, step, onChange, thresholds }) => {
+        return (
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider">{label}</label>
+              <span className="text-[11px] font-light font-mono bg-neutral-50 px-2 py-0.5 rounded border border-neutral-100">{value === Infinity ? '∞' : value}</span>
+            </div>
+            <input
+              type="range"
+              min={min}
+              max={max}
+              step={step}
+              value={value === Infinity ? max : value}
+              onChange={(e) => onChange(Number(e.target.value) === max ? (max === 21 ? Infinity : max) : Number(e.target.value))}
+            />
+            <div className="flex justify-between px-1">
+              {thresholds.map(t => (
+                <button
+                  key={t}
+                  onClick={() => onChange(t)}
+                  className={`text-[9px] font-light transition-colors ${value === t ? 'text-black font-semibold' : 'text-neutral-300 hover:text-neutral-500'}`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      };
+
+      const SegmentedControl = ({ options, value, onChange, label }) => {
+        return (
+          <div className="space-y-2">
+            <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider">{label}</label>
+            <div className="segmented-control">
+              {options.map(opt => (
+                <div
+                  key={opt.value}
+                  className={`segmented-item ${value === opt.value ? 'active' : ''}`}
+                  onClick={() => onChange(opt.value)}
+                >
+                  {opt.label}
+                </div>
+              ))}
+            </div>
           </div>
         );
       };
@@ -340,7 +405,7 @@
       // -------- App --------
 
       function App() {
-        const [input, setInput] = useState("#000000, #ffffff, #FF5733, #2563eb, #db2777");
+        const [input, setInput] = useState("#000000, #ffffff, #2563eb, #db2777, #f59e0b, #10b981");
         const [minContrast, setMinContrast] = useState(0);
         const [maxContrast, setMaxContrast] = useState(Infinity);
         const [uniqueMode, setUniqueMode] = useState("all");
@@ -374,8 +439,8 @@
         const isHidden = (bg, fg, bgIndex, fgIndex) => {
           const ratio = contrastRatio(bg, fg);
 
-          if (minContrast > 0 && ratio < minContrast) return true;
-          if (maxContrast !== Infinity && ratio >= maxContrast) return true;
+          if (ratio < minContrast) return true;
+          if (maxContrast !== Infinity && ratio > maxContrast) return true;
 
           if (uniqueMode === "bg" && bgIndex > fgIndex) return true;
           if (uniqueMode === "fg" && bgIndex < fgIndex) return true;
@@ -421,7 +486,8 @@
             setInput(prev => {
                 const trimmed = prev.trim();
                 if (!trimmed) return hex;
-                if (trimmed.endsWith(',')) return prev + " " + hex;
+                const lastChar = trimmed[trimmed.length - 1];
+                if (lastChar === ',' || lastChar === ' ') return prev + hex;
                 return prev + ", " + hex;
             });
           }
@@ -444,9 +510,9 @@
           const svg = exportSVG();
           try {
             await navigator.clipboard.writeText(svg);
-            alert("SVG skopiowane do schowka! Możesz je wkleić bezpośrednio do Figmy.");
+            alert("SVG skopiowane do schowka!");
           } catch (err) {
-            alert("Nie udało się skopiować SVG");
+            alert("Błąd kopiowania");
           }
         };
 
@@ -456,47 +522,41 @@
           const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = url;
-          link.download = "wcag-contrast-grid.svg";
-          document.body.appendChild(link);
+          link.download = "contrast-grid.svg";
           link.click();
-          document.body.removeChild(link);
           URL.revokeObjectURL(url);
         };
 
         return (
-          <div className="min-h-screen p-4 lg:p-12 flex flex-col items-center">
-            <header className="max-w-5xl w-full mb-12 text-center">
-              <h1 className="text-4xl font-light tracking-tight text-neutral-900 mb-3">
-                WCAG Contrast Matrix
+          <div className="min-h-screen p-6 lg:p-20 flex flex-col items-center">
+            <header className="max-w-4xl w-full mb-16 text-center">
+              <h1 className="text-5xl font-light tracking-tight text-neutral-900 mb-4">
+                WCAG Matrix
               </h1>
-              <p className="text-neutral-500 font-light text-lg">
-                Zaawansowane narzędzie dla projektantów do weryfikacji dostępności kolorystycznej.
+              <p className="text-neutral-400 font-light text-lg">
+                Minimalistyczne narzędzie do analizy kontrastu i napięcia wizualnego.
               </p>
             </header>
 
-            <main className="w-full max-w-[1600px] space-y-8">
+            <main className="w-full space-y-12">
               {/* INPUT SECTION */}
-              <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-neutral-200 mx-auto w-full max-w-5xl">
-                <div className="flex flex-col gap-5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-semibold text-neutral-700 tracking-wide uppercase">Lista kolorów</label>
-                    <div className="flex gap-3">
-                      {!colors.includes("#000000") && (
-                        <button onClick={() => addColor("#000000")} className="text-xs font-bold px-4 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-full transition-all active:scale-95">
-                          + PURE BLACK
-                        </button>
-                      )}
-                      {!colors.includes("#ffffff") && (
-                        <button onClick={() => addColor("#ffffff")} className="text-xs font-bold px-4 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-full transition-all active:scale-95">
-                          + PURE WHITE
-                        </button>
-                      )}
+              <section className="max-w-4xl mx-auto w-full">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between px-1">
+                    <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-[0.2em]">Kolory wejściowe</label>
+                    <div className="flex gap-2">
+                      <button onClick={() => addColor("#000000")} className="text-[9px] font-bold px-3 py-1 bg-neutral-50 hover:bg-neutral-100 text-neutral-500 rounded-full transition-all border border-neutral-100 uppercase tracking-wider">
+                        + Black
+                      </button>
+                      <button onClick={() => addColor("#ffffff")} className="text-[9px] font-bold px-3 py-1 bg-neutral-50 hover:bg-neutral-100 text-neutral-500 rounded-full transition-all border border-neutral-100 uppercase tracking-wider">
+                        + White
+                      </button>
                     </div>
                   </div>
                   <textarea
-                    rows="3"
-                    className="w-full p-5 bg-neutral-50 border border-neutral-200 rounded-2xl font-mono text-sm focus:ring-4 focus:ring-neutral-100 focus:border-neutral-300 focus:outline-none transition-all resize-none"
-                    placeholder="#000000, #ffffff, #FF5733..."
+                    rows="2"
+                    className="w-full p-6 bg-neutral-50 border border-neutral-100 rounded-2xl font-mono text-xs focus:ring-1 focus:ring-neutral-200 focus:outline-none transition-all resize-none leading-relaxed"
+                    placeholder="#000000, #ffffff..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                   />
@@ -504,126 +564,102 @@
               </section>
 
               {/* FILTERS SECTION */}
-              <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-neutral-200 w-full">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                  {/* Basic Filters */}
-                  <div className="space-y-6">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400 border-b pb-2">Konfiguracja widoku</h3>
-                    <div className="space-y-5">
-                      <div className="flex flex-col gap-2">
-                        <label className="text-xs font-bold text-neutral-500">Minimalny kontrast</label>
-                        <select className="bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-neutral-100 transition-all" value={minContrast} onChange={(e) => setMinContrast(Number(e.target.value))}>
-                          <option value={0}>Wszystkie powyżej</option>
-                          <option value={3}>3:1 (Minimum)</option>
-                          <option value={4.5}>4.5:1 (AA)</option>
-                          <option value={7}>7:1 (AAA)</option>
-                        </select>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <label className="text-xs font-bold text-neutral-500">Maksymalny kontrast</label>
-                        <select className="bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-neutral-100 transition-all" value={maxContrast === Infinity ? 21 : maxContrast} onChange={(e) => setMaxContrast(e.target.value == 21 ? Infinity : Number(e.target.value))}>
-                          <option value={21}>Brak limitu</option>
-                          <option value={3}>3:1</option>
-                          <option value={4.5}>4.5:1</option>
-                          <option value={7}>7:1</option>
-                        </select>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <label className="text-xs font-bold text-neutral-500">Tryb unikalności</label>
-                        <select className="bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-neutral-100 transition-all" value={uniqueMode} onChange={(e) => setUniqueMode(e.target.value)}>
-                          <option value="all">Wszystkie kombinacje</option>
-                          <option value="bg">Półmacierz (Tła)</option>
-                          <option value="fg">Półmacierz (Teksty)</option>
-                        </select>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                         <label className="text-xs font-bold text-neutral-500">Relacja tło/tekst</label>
-                         <select className="bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-neutral-100 transition-all" value={darknessFilter} onChange={(e) => setDarknessFilter(e.target.value)}>
-                            <option value="all">Wszystkie relacje</option>
-                            <option value="bg-darker">Tło ciemniejsze od tekstu</option>
-                            <option value="fg-darker">Tekst ciemniejszy od tła</option>
-                         </select>
-                      </div>
-                      <label className="flex items-center gap-3 text-sm text-neutral-700 cursor-pointer group">
-                        <input type="checkbox" className="w-4 h-4 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900 transition-all" checked={collapseEmpty} onChange={(e) => setCollapseEmpty(e.target.checked)} />
-                        <span className="font-medium group-hover:text-black">Ukryj puste komórki</span>
-                      </label>
-                    </div>
+              <section className="max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-12 pt-8 border-t border-neutral-100">
+                  {/* Range Sliders */}
+                  <div className="space-y-8">
+                    <RangeSlider
+                      label="Kontrast Minimalny"
+                      value={minContrast}
+                      min={0} max={21} step={0.1}
+                      onChange={setMinContrast}
+                      thresholds={[0, 3, 4.5, 7, 21]}
+                    />
+                    <RangeSlider
+                      label="Kontrast Maksymalny"
+                      value={maxContrast}
+                      min={0} max={21} step={0.1}
+                      onChange={setMaxContrast}
+                      thresholds={[0, 3, 4.5, 7, 21]}
+                    />
+                    <label className="flex items-center gap-3 text-[10px] font-medium text-neutral-400 uppercase tracking-wider cursor-pointer group">
+                        <input type="checkbox" className="w-3.5 h-3.5 rounded-sm border-neutral-200 text-neutral-900 focus:ring-0 transition-all" checked={collapseEmpty} onChange={(e) => setCollapseEmpty(e.target.checked)} />
+                        <span className="group-hover:text-black transition-colors">Ukryj puste</span>
+                    </label>
                   </div>
 
-                  {/* Row Filters */}
+                  {/* Toggles */}
                   <div className="space-y-6">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400 border-b pb-2">Filtruj Wiersze (Tło)</h3>
-                    <div className="max-h-60 overflow-y-auto space-y-2 pr-3 scrollbar-thin">
-                      {colors.map(c => (
-                        <TriStateFilter
-                          key={c}
-                          color={c}
-                          state={rowFilters[c] || 0}
-                          onChange={(val) => setRowFilters(prev => ({...prev, [c]: val}))}
-                        />
-                      ))}
-                    </div>
+                    <SegmentedControl
+                      label="Unikalność par"
+                      value={uniqueMode}
+                      onChange={setUniqueMode}
+                      options={[
+                        { label: 'Wszystkie', value: 'all' },
+                        { label: 'Pół (Tła)', value: 'bg' },
+                        { label: 'Pół (Teksty)', value: 'fg' }
+                      ]}
+                    />
+                    <SegmentedControl
+                      label="Relacja jasności"
+                      value={darknessFilter}
+                      onChange={setDarknessFilter}
+                      options={[
+                        { label: 'Wszystkie', value: 'all' },
+                        { label: 'Tło ciemniejsze', value: 'bg-darker' },
+                        { label: 'Tekst ciemniejszy', value: 'fg-darker' }
+                      ]}
+                    />
                   </div>
 
-                  {/* Col Filters */}
-                  <div className="space-y-6">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400 border-b pb-2">Filtruj Kolumny (Tekst)</h3>
-                    <div className="max-h-60 overflow-y-auto space-y-2 pr-3 scrollbar-thin">
-                      {colors.map(c => (
-                        <TriStateFilter
-                          key={c}
-                          color={c}
-                          state={colFilters[c] || 0}
-                          onChange={(val) => setColFilters(prev => ({...prev, [c]: val}))}
-                        />
-                      ))}
+                  {/* Row/Col Filters */}
+                  <div className="grid grid-cols-2 gap-8 col-span-1 lg:col-span-1">
+                    <div className="space-y-3">
+                      <h3 className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider">Tło (Wiersze)</h3>
+                      <div className="max-h-48 overflow-y-auto space-y-1 pr-2 scrollbar-thin">
+                        {colors.map(c => <TriStateFilter key={c} color={c} state={rowFilters[c] || 0} onChange={(val) => setRowFilters(prev => ({...prev, [c]: val}))} />)}
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <h3 className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider">Tekst (Kolumny)</h3>
+                      <div className="max-h-48 overflow-y-auto space-y-1 pr-2 scrollbar-thin">
+                        {colors.map(c => <TriStateFilter key={c} color={c} state={colFilters[c] || 0} onChange={(val) => setColFilters(prev => ({...prev, [c]: val}))} />)}
+                      </div>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="space-y-6 flex flex-col">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400 border-b pb-2">Eksport i Akcje</h3>
-                    <div className="flex flex-col gap-3">
-                      <button onClick={copySVGToClipboard} className="w-full py-3 px-6 bg-neutral-900 text-white rounded-2xl text-sm font-bold hover:bg-neutral-800 transition-all shadow-sm active:scale-[0.98]">
-                        KOPIUJ SVG DO FIGMY
+                  <div className="flex flex-col gap-3 justify-end">
+                      <button onClick={copySVGToClipboard} className="w-full py-2.5 px-4 bg-neutral-900 text-white rounded-xl text-[11px] font-medium hover:bg-neutral-800 transition-all active:scale-[0.98] uppercase tracking-widest">
+                        Copy SVG
                       </button>
-                      <button onClick={downloadSVG} className="w-full py-3 px-6 bg-white text-neutral-900 border border-neutral-200 rounded-2xl text-sm font-bold hover:bg-neutral-50 transition-all shadow-sm active:scale-[0.98]">
-                        POBIERZ PLIK .SVG
+                      <button onClick={downloadSVG} className="w-full py-2.5 px-4 bg-white text-neutral-900 border border-neutral-100 rounded-xl text-[11px] font-medium hover:bg-neutral-50 transition-all active:scale-[0.98] uppercase tracking-widest">
+                        Download SVG
                       </button>
-                    </div>
-                    <div className="mt-auto p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
-                      <p className="text-[11px] leading-relaxed text-neutral-500 italic">
-                        <strong className="text-neutral-700 not-italic block mb-1">Instrukcja filtrów:</strong>
-                        1 klik: Wybierz kolor (Pokaż tylko ten)<br/>
-                        2 klik: Wyklucz kolor (Ukryj go)<br/>
-                        3 klik: Resetuj do neutralnego
+                      <p className="text-[9px] text-neutral-300 italic leading-tight mt-2 px-1">
+                        ⚠️ Oznacza wysokie napięcie wizualne (vibration), które może męczyć wzrok mimo dobrego kontrastu.
                       </p>
-                    </div>
                   </div>
-                </div>
               </section>
 
               {/* GRID SECTION */}
-              <section className="w-full overflow-hidden">
-                <div className="bg-white rounded-[2rem] shadow-sm border border-neutral-200 overflow-hidden">
-                   <div className="grid-container p-8">
+              <section className="w-full flex justify-center pt-8">
+                   <div className="grid-container py-4">
                       <div
-                        className="inline-grid gap-6"
+                        className="inline-grid gap-4"
                         style={{
-                          gridTemplateColumns: `140px repeat(${gridFg.length}, 240px)`,
+                          gridTemplateColumns: `100px repeat(${gridFg.length}, 200px)`,
                         }}
                       >
                         {/* Header corner */}
-                        <div className="flex items-center justify-end pr-6 text-[10px] font-black text-neutral-300 uppercase tracking-[0.2em] leading-tight text-right">
-                          Tło<br/>&mdash;<br/>Tekst
+                        <div className="flex items-center justify-end pr-4 text-[9px] font-light text-neutral-300 uppercase tracking-[0.3em] leading-tight text-right">
+                          BG<br/>&bull;<br/>FG
                         </div>
 
                         {/* Column headers */}
                         {gridFg.map((c) => (
-                          <div key={c} className="flex flex-col items-center justify-center p-3 bg-neutral-50/50 rounded-2xl border border-neutral-100">
-                            <div className="w-full h-3 rounded-full mb-3 shadow-inner" style={{ backgroundColor: c }}></div>
-                            <div className="font-mono text-[11px] font-bold text-neutral-600">{c}</div>
+                          <div key={c} className="flex flex-col items-center justify-center p-2 rounded-xl bg-neutral-50/50 border border-neutral-100/50">
+                            <div className="w-6 h-1 rounded-full mb-2" style={{ backgroundColor: c }}></div>
+                            <div className="font-mono text-[9px] text-neutral-400 font-light tracking-tighter">{c}</div>
                           </div>
                         ))}
 
@@ -636,9 +672,9 @@
                           return (
                             <React.Fragment key={bg}>
                               {/* Row header */}
-                              <div className="flex items-center justify-end pr-6 gap-3">
-                                <div className="font-mono text-[11px] font-bold text-neutral-600">{bg}</div>
-                                <div className="w-3 h-10 rounded-full shadow-inner" style={{ backgroundColor: bg }}></div>
+                              <div className="flex items-center justify-end pr-4 gap-3">
+                                <div className="font-mono text-[9px] text-neutral-400 font-light tracking-tighter">{bg}</div>
+                                <div className="w-1 h-6 rounded-full" style={{ backgroundColor: bg }}></div>
                               </div>
 
                               {/* Cells */}
@@ -646,64 +682,48 @@
                                 const fgIndex = colors.indexOf(fg);
                                 const ratio = contrastRatio(bg, fg);
                                 const hidden = isHidden(bg, fg, bgIndex, fgIndex);
+                                const hasTension = checkVisualTension(bg, fg);
 
                                 if (collapseEmpty && hidden) {
-                                  return <div key={bg + fg} className="w-[240px]"></div>;
+                                  return <div key={bg + fg} className="w-[200px]"></div>;
                                 }
 
                                 return (
-                                  <div key={bg + fg} className="w-[240px]">
+                                  <div key={bg + fg} className="w-[200px] h-[240px]">
                                     <div
-                                      className={`rounded-[2rem] overflow-hidden border-2 transition-all duration-500 flex flex-col h-full
-                ${hidden ? "opacity-5 grayscale blur-[1px] pointer-events-none scale-95" : "shadow-md hover:shadow-2xl hover:-translate-y-2"}`}
-                                      style={{ borderColor: fg }}
+                                      className={`rounded-2xl overflow-hidden border border-neutral-100 transition-all duration-300 flex flex-col h-full
+                                      ${hidden ? "opacity-5 grayscale blur-[1px] pointer-events-none scale-95" : "hover:shadow-lg hover:border-neutral-200"}`}
                                     >
-                                      {/* Top part: The color combination */}
+                                      {/* Top part */}
                                       <div
-                                        className="relative p-6 space-y-6 flex-grow"
+                                        className="p-5 flex-grow flex flex-col justify-between"
                                         style={{ background: bg, color: fg }}
                                       >
                                         <div className="flex justify-between items-start">
-                                          <div className="text-3xl font-black tracking-tighter">{ratio}:1</div>
-                                          <div className="text-[10px] font-bold font-mono px-2 py-1 bg-black/10 rounded-lg">{bg}</div>
+                                          <div className="text-3xl font-extralight tracking-tighter">{ratio}:1</div>
+                                          {hasTension && !hidden && <span title="Wysokie napięcie wizualne (vibration)" className="text-lg">⚠️</span>}
                                         </div>
 
-                                        <div className="space-y-2">
-                                          <div className="flex items-center gap-3 text-xs font-bold">
-                                            <span className={`w-5 h-5 flex items-center justify-center rounded-full ${pass(ratio, 3) ? "bg-green-500 text-white" : "border-2 border-current opacity-30"}`}>
-                                              {pass(ratio, 3) ? "✓" : ""}
-                                            </span>
+                                        <div className="space-y-1.5 mb-2">
+                                          <div className="flex items-center gap-2 text-[10px] font-light opacity-80">
+                                            <span>{pass(ratio, 3) ? "✅" : "❌"}</span>
                                             <span>3:1 Graphics</span>
-                                            {pass(ratio, 3) && <span className="ml-auto text-[9px] bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded-full">PASS</span>}
                                           </div>
-                                          <div className="flex items-center gap-3 text-xs font-bold">
-                                            <span className={`w-5 h-5 flex items-center justify-center rounded-full ${pass(ratio, 4.5) ? "bg-green-500 text-white" : "border-2 border-current opacity-30"}`}>
-                                              {pass(ratio, 4.5) ? "✓" : ""}
-                                            </span>
-                                            <span>4.5:1 AA Large</span>
-                                            {pass(ratio, 4.5) && <span className="ml-auto text-[9px] bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded-full">PASS</span>}
+                                          <div className="flex items-center gap-2 text-[10px] font-light opacity-80">
+                                            <span>{pass(ratio, 4.5) ? "✅" : "❌"}</span>
+                                            <span>4.5:1 AA Text</span>
                                           </div>
-                                          <div className="flex items-center gap-3 text-xs font-bold">
-                                            <span className={`w-5 h-5 flex items-center justify-center rounded-full ${pass(ratio, 7) ? "bg-green-500 text-white" : "border-2 border-current opacity-30"}`}>
-                                              {pass(ratio, 7) ? "✓" : ""}
-                                            </span>
-                                            <span>7.0:1 AAA Text</span>
-                                            {pass(ratio, 7) && <span className="ml-auto text-[9px] bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded-full">PASS</span>}
+                                          <div className="flex items-center gap-2 text-[10px] font-light opacity-80">
+                                            <span>{pass(ratio, 7) ? "✅" : "❌"}</span>
+                                            <span>7:1 AAA Text</span>
                                           </div>
                                         </div>
                                       </div>
 
-                                      {/* Bottom part: Neutral labels */}
-                                      <div className="bg-white p-5 text-[10px] text-neutral-400 mt-auto border-t border-neutral-100 font-bold uppercase tracking-wider">
-                                        <div className="flex justify-between mb-2">
-                                           <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full" style={{backgroundColor: fg}}></div> {fg} TEXT</span>
-                                           <span className="text-neutral-900">{ratio}:1</span>
-                                        </div>
-                                        <div className="flex gap-4">
-                                          <span className={pass(ratio, 3) ? "text-green-600" : "opacity-30"}>ICONS</span>
-                                          <span className={pass(ratio, 4.5) ? "text-green-600" : "opacity-30"}>WCAG AA</span>
-                                          <span className={pass(ratio, 7) ? "text-green-600" : "opacity-30"}>WCAG AAA</span>
-                                        </div>
+                                      {/* Bottom part */}
+                                      <div className="bg-white px-5 py-2.5 flex justify-between items-center border-t border-neutral-50">
+                                        <span className="text-[9px] text-neutral-300 font-light tracking-widest uppercase">{fg}</span>
+                                        <span className="text-[9px] text-neutral-300 font-light tracking-widest uppercase">{bg}</span>
                                       </div>
                                     </div>
                                   </div>
@@ -714,15 +734,13 @@
                         })}
                       </div>
                    </div>
-                </div>
               </section>
             </main>
 
-            <footer className="mt-20 text-center text-neutral-400 text-xs pb-20 max-w-2xl">
-              <p className="font-bold uppercase tracking-[0.2em] mb-4">WCAG Contrast Matrix &bull; Pro Edition</p>
-              <p className="leading-relaxed opacity-60">
-                Narzędzie wykorzystuje algorytm jasności względnej zdefiniowany w wytycznych WCAG 2.1.
-                Skala szarości interfejsu została dobrana tak, aby minimalizować wpływ otoczenia na percepcję badanych kolorów.
+            <footer className="mt-32 text-center text-neutral-300 text-[10px] font-light tracking-widest uppercase pb-20 max-w-2xl leading-relaxed">
+              <p className="mb-4">&bull; WCAG Matrix Professional &bull;</p>
+              <p className="opacity-50">
+                Luminancja względna i kontrast zgodny z WCAG 2.1. Detekcja napięcia wizualnego oparta na różnicy barw i nasyceniu.
               </p>
             </footer>
           </div>

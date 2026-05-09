@@ -1,30 +1,30 @@
-# WCAG Color Contrast Matrix Professional
+# WCAG Matrix Professional
 
-Profesjonalne narzędzie do masowej weryfikacji kontrastu kolorów zgodnie z wytycznymi WCAG 2.1. Idealne dla projektantów systemów projektowych (Design Systems) oraz specjalistów od dostępności (Accessibility).
+Zaawansowane, minimalistyczne narzędzie do analizy kontrastu kolorystycznego oraz napięcia wizualnego (visual tension) w interfejsach użytkownika.
 
-## Funkcje
+## Główne Funkcje
 
-- **Macierz kontrastu**: Automatyczne generowanie zestawień "każdy z każdym" dla podanej listy kolorów.
-- **Weryfikacja WCAG**: Raportowanie zgodności z normami 3:1 (grafiki/duży tekst), 4.5:1 (AA) oraz 7:1 (AAA).
-- **Zaawansowane filtrowanie**:
-  - Filtrowanie według minimalnego poziomu kontrastu.
-  - **Filtry trójstanowe**: Możliwość wyboru (uwzględnienia) lub wykluczenia konkretnych kolorów osobno dla tła (wiersze) i tekstu (kolumny).
-  - **Relacja jasności**: Filtrowanie par na zasadzie "tło ciemniejsze od tekstu" lub odwrotnie.
-  - **Tryb unikalności**: Wyświetlanie pełnej macierzy lub tylko unikalnych par (półmacierz).
-- **Eksport do Figmy**: Kopiowanie wygenerowanej macierzy jako gotowy plik SVG do wklejenia bezpośrednio w narzędziach projektowych.
-- **Profesjonalny interfejs**: Neutralna skala szarości UI zapobiegająca przekłamaniom percepcji kolorów.
+- **Macierz Kontrastu:** Generuje pełne zestawienie par kolorów tło/tekst.
+- **Detekcja Napięcia Wizualnego (Vibration):** Oznacza pary kolorów (⚠️), które mimo zachowania norm WCAG, mogą "wibrować" lub męczyć wzrok (np. wysokie nasycenie przy zbliżonej jasności).
+- **Filtrowanie Dynamiczne:**
+  - Suwaki dla kontrastu minimalnego i maksymalnego.
+  - Trójstanowe filtry kolorów (Włącz/Wyklucz/Neutralny) dla wierszy i kolumn.
+  - Filtry relacji jasności (np. tylko tła ciemniejsze od tekstu).
+  - Tryby unikalności (półmacierze).
+- **Eksport do Figmy:** Możliwość skopiowania wygenerowanej macierzy jako SVG bezpośrednio do schowka.
+- **Interfejs "Elf Vibe":** Lekka, minimalistyczna stylistyka oparta na skali szarości, aby nie zakłócać percepcji badanych kolorów.
 
-## Instrukcja obsługi
+## Jak używać
 
-1. Wklej listę kolorów w formacie HEX (np. `#ffffff, #000000`) w polu tekstowym.
-2. Użyj przycisków "+ PURE BLACK" lub "+ PURE WHITE", aby szybko dodać podstawowe kolory, jeśli ich brakuje.
-3. Korzystaj z filtrów po prawej stronie, aby zawęzić wyniki.
-4. Klikaj na próbki kolorów w sekcjach filtrów:
-   - **Pierwsze kliknięcie (✅)**: Pokaż tylko ten kolor.
-   - **Drugie kliknięcie (❌)**: Wyklucz ten kolor z widoku.
-   - **Trzecie kliknięcie (⚪)**: Powrót do stanu neutralnego.
-5. Użyj "Kopiuj SVG do Figmy", aby przenieść wyniki do swojego projektu.
+1. Wprowadź listę kolorów w formacie HEX (oddzielone przecinkami lub spacjami).
+2. Użyj przycisków szybkich akcji (+ Black / + White), aby dodać bazowe kolory.
+3. Dostosuj progi kontrastu za pomocą suwaków lub klikając w konkretne wartości (3, 4.5, 7).
+4. Klikaj w próbki kolorów w sekcjach "Tło" i "Tekst", aby filtrować widok.
+5. Kliknij "Copy SVG", aby przenieść wyniki do narzędzia projektowego.
 
-## Wymagania
+## Technologia
 
-Narzędzie działa jako pojedynczy plik HTML. Wymaga połączenia z internetem do załadowania bibliotek Tailwind CSS i React (CDN).
+- React (v18)
+- Tailwind CSS
+- Algorytm Luminancji Względnej (WCAG 2.1)
+- Detekcja napięcia wizualnego oparta na analizie HSL (Hue, Saturation, Lightness).

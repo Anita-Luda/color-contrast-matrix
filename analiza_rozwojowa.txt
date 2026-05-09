@@ -1,25 +1,27 @@
-Analiza rozwojowa narzędzia WCAG Color Contrast Matrix
-======================================================
+Analiza Rozwojowa - WCAG Matrix
 
-1. Stan obecny (Gaps & Improvements)
------------------------------------
-Narzędzie zostało uprofesjonalnione pod kątem UI/UX i filtrowania, jednak istnieją obszary, które mogą stanowić "dziury" funkcjonalne:
+Obecny stan narzędzia:
+Narzędzie posiada zaawansowane filtrowanie, detekcję napięcia wizualnego oraz minimalistyczny, neutralny interfejs. System eksportu SVG pozwala na łatwe przenoszenie wyników do narzędzi projektowych.
 
-- Brak wsparcia dla APCA: Obecnie narzędzie bazuje wyłącznie na WCAG 2.1. Nadchodzące WCAG 3.0 wprowadza algorytm APCA (Advanced Perceptual Contrast Algorithm), który lepiej oddaje percepcję ludzką.
-- Brak edycji kolorów "w locie": Użytkownik musi zmieniać HEX w textarea. Brak suwaków (np. HSL) do drobnych korekt koloru bezpośrednio na karcie kontrastu, by "dobić" do pożądanego ratio.
-- Wydajność przy bardzo dużych listach: Renderowanie setek kart kolorów jako komponenty React może spowalniać przeglądarkę. Przy listach >30 kolorów warto rozważyć wirtualizację listy (windowing).
-- Brak sprawdzania nazw kolorów: Użytkownik widzi tylko HEX. Integracja z biblioteką nazywającą kolory (np. "Ocean Blue") ułatwiłaby komunikację w zespole.
+Dziury funkcjonalne i potencjał rozwoju:
 
-2. Sugerowane kierunki rozwoju (Roadmap)
----------------------------------------
-- Integracja z API Figmy: Stworzenie dedykowanego pluginu, który pobiera kolory bezpośrednio z lokalnych stylów (Variables/Styles).
-- Tryb symulacji ślepoty barw: Nakładka na grid symulująca protanopię, deuteranopię itp., aby sprawdzić, czy rozróżnialność kolorów (nie tylko kontrast) jest zachowana.
-- Generowanie palet schodkowych (Stepped Palettes): Funkcja automatycznego generowania odcieni (tints/shades) dla wybranego koloru, aby znaleźć idealny kontrast w obrębie jednej barwy.
-- Eksport do JSON/CSS: Możliwość pobrania konfiguracji kolorystycznej jako zmienne CSS lub plik JSON dla programistów.
-- Historia zmian: Lokalny zapis (localStorage) poprzednich sesji, aby nie tracić wpisanych kolorów po odświeżeniu strony.
-- Grupowanie kolorów: Możliwość definiowania grup (np. "Primary", "Secondary", "Neutral") i filtrowania całych grup naraz.
+1. Wsparcie dla APCA (Accessible Perceptual Contrast Algorithm):
+   - WCAG 3.0 wprowadza APCA, który lepiej oddaje ludzką percepcję niż obecny system 2.1. Warto dodać przełącznik trybu obliczeń.
 
-3. Potencjalne problemy UX do obserwacji
----------------------------------------
-- Przeładowanie informacyjne: Przy dużej liczbie filtrów i kart, użytkownik może czuć się przytłoczony. Rozważenie "trybu uproszczonego" (tylko Grid) vs "trybu eksperckiego" (z pełnym filtrowaniem).
-- Percepcja na różnych ekranach: Ponieważ to narzędzie webowe, jakość matrycy monitora użytkownika wpływa na to, co widzi. Dodanie krótkiej notatki o kalibracji monitora.
+2. Symulacja ślepoty barw (Color Blindness Simulation):
+   - Możliwość nałożenia filtrów (Protanopia, Deuteranopia, Tritanopia) na całą macierz.
+
+3. Import bezpośrednio z Figmy/Adobe XD:
+   - Integracja przez API lub wtyczkę, zamiast ręcznego wklejania HEXów.
+
+4. Sugestie korekty (Color Suggestion):
+   - Jeśli para kolorów jest blisko progu (np. 4.4:1), narzędzie mogłoby sugerować minimalną zmianę jasności jednego z kolorów, aby osiągnąć cel (4.5:1).
+
+5. Testowanie na różnych fontach:
+   - Możliwość zmiany fontu wewnątrz kart, aby zobaczyć jak kontrast wpływa na czytelność specyficznych krojów pisma (szeryfowe vs bezszeryfowe).
+
+6. Grupowanie kolorów:
+   - Możliwość definiowania grup (np. "Primary", "Status", "Gray Scale") i filtrowania macierzy według tych grup.
+
+7. Rozszerzona detekcja napięcia:
+   - Obecny algorytm bierze pod uwagę nasycenie i barwę. Można go rozbudować o dane dotyczące "Blue-Light" stress i specyficznych zestawień (np. czerwień na niebieskim).
