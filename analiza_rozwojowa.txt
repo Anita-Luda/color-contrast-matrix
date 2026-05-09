@@ -1,0 +1,27 @@
+Analiza Rozwojowa - WCAG Matrix
+
+Obecny stan narzędzia:
+Narzędzie posiada zaawansowane filtrowanie, detekcję napięcia wizualnego oraz minimalistyczny, neutralny interfejs. System eksportu SVG pozwala na łatwe przenoszenie wyników do narzędzi projektowych.
+
+Dziury funkcjonalne i potencjał rozwoju:
+
+1. Wsparcie dla APCA (Accessible Perceptual Contrast Algorithm):
+   - [ZREALIZOWANO] Dodano przełącznik trybu między WCAG 2.1 a APCA.
+
+2. Symulacja ślepoty barw (Color Blindness Simulation):
+   - Możliwość nałożenia filtrów (Protanopia, Deuteranopia, Tritanopia) na całą macierz.
+
+3. Import bezpośrednio z Figmy/Adobe XD:
+   - Integracja przez API lub wtyczkę, zamiast ręcznego wklejania HEXów.
+
+4. Sugestie korekty (Color Suggestion):
+   - Jeśli para kolorów jest blisko progu (np. 4.4:1), narzędzie mogłoby sugerować minimalną zmianę jasności jednego z kolorów, aby osiągnąć cel (4.5:1).
+
+5. Testowanie na różnych fontach:
+   - [ZREALIZOWANO] Dodano selektor rodziny fontów (Serif, Sans, Mono) do weryfikacji czytelności.
+
+6. Grupowanie kolorów:
+   - Możliwość definiowania grup (np. "Primary", "Status", "Gray Scale") i filtrowania macierzy według tych grup.
+
+7. Rozszerzona detekcja napięcia:
+   - Obecny algorytm bierze pod uwagę nasycenie i barwę. Można go rozbudować o dane dotyczące "Blue-Light" stress i specyficznych zestawień (np. czerwień na niebieskim).
