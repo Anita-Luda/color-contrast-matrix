@@ -6,7 +6,7 @@ Narzędzie posiada zaawansowane filtrowanie, detekcję napięcia wizualnego oraz
 Dziury funkcjonalne i potencjał rozwoju:
 
 1. Wsparcie dla APCA (Accessible Perceptual Contrast Algorithm):
-   - WCAG 3.0 wprowadza APCA, który lepiej oddaje ludzką percepcję niż obecny system 2.1. Warto dodać przełącznik trybu obliczeń.
+   - [ZREALIZOWANO] Dodano przełącznik trybu między WCAG 2.1 a APCA.
 
 2. Symulacja ślepoty barw (Color Blindness Simulation):
    - Możliwość nałożenia filtrów (Protanopia, Deuteranopia, Tritanopia) na całą macierz.
@@ -18,7 +18,7 @@ Dziury funkcjonalne i potencjał rozwoju:
    - Jeśli para kolorów jest blisko progu (np. 4.4:1), narzędzie mogłoby sugerować minimalną zmianę jasności jednego z kolorów, aby osiągnąć cel (4.5:1).
 
 5. Testowanie na różnych fontach:
-   - Możliwość zmiany fontu wewnątrz kart, aby zobaczyć jak kontrast wpływa na czytelność specyficznych krojów pisma (szeryfowe vs bezszeryfowe).
+   - [ZREALIZOWANO] Dodano selektor rodziny fontów (Serif, Sans, Mono) do weryfikacji czytelności.
 
 6. Grupowanie kolorów:
    - Możliwość definiowania grup (np. "Primary", "Status", "Gray Scale") i filtrowania macierzy według tych grup.
