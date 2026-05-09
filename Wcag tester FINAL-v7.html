@@ -13,16 +13,16 @@
           extend: {
             colors: {
               neutral: {
-                50: '#f9f9f9',
-                100: '#f0f0f0',
+                50: '#fafafa',
+                100: '#f5f5f5',
                 200: '#e5e5e5',
-                300: '#d1d1d1',
+                300: '#d4d4d4',
                 400: '#a3a3a3',
                 500: '#737373',
                 600: '#525252',
                 700: '#404040',
                 800: '#262626',
-                900: '#111111',
+                900: '#171717',
               },
             },
             fontFamily: {
@@ -36,7 +36,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- React -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -46,32 +46,52 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-      body {
+      body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
         font-family: 'Inter', sans-serif;
-      }
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #e5e5e5;
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #d1d1d1;
+        background: #fafafa;
       }
 
-      .grid-container {
-        display: block;
-        overflow-x: auto;
-        overflow-y: hidden;
-        max-width: 100%;
-        scrollbar-width: thin;
-        -webkit-overflow-scrolling: touch;
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f5f5f5;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d4d4d4;
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a3a3a3;
+      }
+
+      .app-layout {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      .top-section {
+        flex-shrink: 0;
+        border-bottom: 1px solid #e5e5e5;
+        background: white;
+        z-index: 100;
+        max-height: 45vh;
+        overflow-y: auto;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+      }
+
+      .grid-area {
+        flex: 1;
+        overflow: auto;
+        position: relative;
+        background: #fafafa;
       }
 
       .tri-state-filter {
@@ -82,22 +102,22 @@
         border-radius: 0.375rem;
         cursor: pointer;
         user-select: none;
-        transition: all 0.15s ease;
+        transition: all 0.1s ease;
         border: 1px solid transparent;
       }
 
       .tri-state-filter:hover {
-        background: #f0f0f0;
+        background: #f5f5f5;
       }
 
       .tri-state-filter.included {
         background: #f0fdf4;
-        border-color: #dcfce7;
+        border-color: #bbf7d0;
       }
 
       .tri-state-filter.excluded {
         background: #fef2f2;
-        border-color: #fee2e2;
+        border-color: #fecaca;
       }
 
       /* Range slider styling */
@@ -120,7 +140,7 @@
         height: 16px;
         width: 16px;
         border-radius: 50%;
-        background: #111111;
+        background: #171717;
         cursor: pointer;
         -webkit-appearance: none;
         margin-top: -6px;
@@ -130,25 +150,54 @@
 
       .segmented-control {
         display: flex;
-        background: #f0f0f0;
+        background: #f5f5f5;
         padding: 2px;
         border-radius: 0.5rem;
       }
       .segmented-item {
         flex: 1;
         text-align: center;
-        padding: 0.375rem 0.5rem;
-        font-size: 0.7rem;
-        font-weight: 500;
+        padding: 0.35rem 0.5rem;
+        font-size: 0.65rem;
+        font-weight: 800;
         border-radius: 0.375rem;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: all 0.1s;
         color: #737373;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
       }
       .segmented-item.active {
         background: white;
-        color: #111111;
+        color: #171717;
         box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+
+      .grid-wrapper {
+        display: inline-grid;
+        padding: 32px;
+        min-width: 100%;
+        justify-content: center;
+      }
+
+      .sticky-header-col {
+        position: sticky;
+        top: 0;
+        background: #fafafa;
+        z-index: 40;
+        padding-bottom: 16px;
+      }
+
+      .sticky-header-row {
+        position: sticky;
+        left: 0;
+        background: #fafafa;
+        z-index: 30;
+        padding-right: 16px;
+      }
+
+      .sticky-corner {
+        z-index: 50;
       }
     </style>
   </head>
@@ -159,7 +208,7 @@
     <script type="text/babel">
       const { useState, useMemo, useEffect } = React;
 
-      // -------- WCAG & Color helpers --------
+      // -------- Helpers --------
       const hexToRgb = (hex) => {
         const clean = hex.replace("#", "");
         const bigint = parseInt(clean, 16);
@@ -183,9 +232,8 @@
         r /= 255; g /= 255; b /= 255;
         const max = Math.max(r, g, b), min = Math.min(r, g, b);
         let h, s, l = (max + min) / 2;
-        if (max === min) {
-          h = s = 0;
-        } else {
+        if (max === min) { h = s = 0; }
+        else {
           const d = max - min;
           s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
           switch (max) {
@@ -201,127 +249,95 @@
       const contrastRatio = (a, b) => {
         const L1 = luminance(hexToRgb(a));
         const L2 = luminance(hexToRgb(b));
-        return +((Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05)).toFixed(
-          2,
-        );
+        return +((Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05)).toFixed(2);
       };
 
       const pass = (r, t) => r >= t;
 
-      const checkVisualTension = (c1, c2) => {
+      const getVisualTensionScore = (c1, c2) => {
         const hsl1 = getHsl(c1);
         const hsl2 = getHsl(c2);
-
         const lumDiff = Math.abs(hsl1.l - hsl2.l);
         const hueDiff = Math.min(Math.abs(hsl1.h - hsl2.h), 360 - Math.abs(hsl1.h - hsl2.h));
         const avgSat = (hsl1.s + hsl2.s) / 2;
 
-        // Vibration check: similar luminance, high saturation, different hue
-        if (lumDiff < 20 && avgSat > 50 && hueDiff > 45) return true;
-        // High saturation complementary clash
-        if (avgSat > 80 && hueDiff > 160) return true;
-
-        return false;
+        let score = 0;
+        if (avgSat > 20 && lumDiff < 50) {
+            score += (avgSat / 100) * (hueDiff / 180) * (1 - lumDiff/50) * 15;
+        }
+        if (avgSat > 40 && hueDiff > 100) {
+            score += (avgSat / 100) * (hueDiff / 180) * 5;
+        }
+        return Math.min(10, Math.round(score * 10) / 10);
       };
 
       function generateContrastGridSVG({
-        gridBg,
-        gridFg,
-        colors,
-        minContrast,
-        maxContrast,
-        uniqueMode,
-        darknessFilter,
-        rowFilters,
-        colFilters
+        gridBg, gridFg, colors, minContrast, maxContrast, uniqueMode, darknessFilter, rowFilters, colFilters, maxTension
       }) {
-        const cellWidth = 200;
+        const cellWidth = 160;
+        const cellHeight = 240;
         const cellGap = 12;
         const headerHeight = 60;
         const rowLabelWidth = 100;
 
-        const p = 16;
-        const textXs = 10;
-        const textSm = 12;
-        const textBase = 20;
-
         const isHidden = (bg, fg, bgIndex, fgIndex) => {
           const ratio = contrastRatio(bg, fg);
-          if (ratio < minContrast) return true;
-          if (maxContrast !== Infinity && ratio > maxContrast) return true;
+          const tension = getVisualTensionScore(bg, fg);
+          if (ratio < minContrast || (maxContrast !== Infinity && ratio > maxContrast) || tension > maxTension) return true;
           if (uniqueMode === "bg" && bgIndex > fgIndex) return true;
           if (uniqueMode === "fg" && bgIndex < fgIndex) return true;
-
-          const lumBg = luminance(hexToRgb(bg));
-          const lumFg = luminance(hexToRgb(fg));
+          const lumBg = luminance(hexToRgb(bg)), lumFg = luminance(hexToRgb(fg));
           if (darknessFilter === "bg-darker" && lumBg >= lumFg) return true;
           if (darknessFilter === "fg-darker" && lumFg >= lumBg) return true;
-
-          if (rowFilters[bg] === -1) return true;
-          if (colFilters[fg] === -1) return true;
-
-          const hasIncludedRows = Object.values(rowFilters).some(v => v === 1);
-          const hasIncludedCols = Object.values(colFilters).some(v => v === 1);
-
-          if (hasIncludedRows && rowFilters[bg] !== 1) return true;
-          if (hasIncludedCols && colFilters[fg] !== 1) return true;
-
+          if (rowFilters[bg] === -1 || colFilters[fg] === -1) return true;
+          const hIR = Object.values(rowFilters).some(v => v === 1), hIC = Object.values(colFilters).some(v => v === 1);
+          if (hIR && rowFilters[bg] !== 1) return true;
+          if (hIC && colFilters[fg] !== 1) return true;
           return false;
         };
 
-        const svgGridBg = gridBg.filter(bg => {
-            const bgIndex = colors.indexOf(bg);
-            return gridFg.some((fg) => {
-                const fgIndex = colors.indexOf(fg);
-                return !isHidden(bg, fg, bgIndex, fgIndex);
-            });
-        });
-        const svgGridFg = gridFg.filter(fg => {
-            const fgIndex = colors.indexOf(fg);
-            return gridBg.some((bg) => {
-                const bgIndex = colors.indexOf(bg);
-                return !isHidden(bg, fg, bgIndex, fgIndex);
-            });
-        });
+        const svgGridBg = gridBg.filter(bg => colors.some(fg => !isHidden(bg, fg, colors.indexOf(bg), colors.indexOf(fg))));
+        const svgGridFg = gridFg.filter(fg => colors.some(bg => !isHidden(bg, fg, colors.indexOf(bg), colors.indexOf(fg))));
 
         const width = rowLabelWidth + (svgGridFg.length * (cellWidth + cellGap));
-        const height = headerHeight + (svgGridBg.length * (240 + cellGap));
+        const height = headerHeight + (svgGridBg.length * (cellHeight + cellGap));
 
         let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" font-family="sans-serif">`;
 
-        /* HEADERS */
         svgGridFg.forEach((fg, colIndex) => {
           const x = rowLabelWidth + colIndex * (cellWidth + cellGap) + cellWidth / 2;
-          svg += `<text x="${x}" y="34" font-size="11" text-anchor="middle" fill="#a3a3a3" font-weight="300">${fg}</text>`;
+          svg += `<text x="${x}" y="34" font-size="11" text-anchor="middle" fill="#737373" font-weight="900">${fg}</text>`;
         });
 
-        /* ROWS */
         svgGridBg.forEach((bg, rowIndex) => {
-          const rowY = headerHeight + rowIndex * (240 + cellGap);
-          svg += `<text x="${rowLabelWidth - 12}" y="${rowY + 24}" font-size="11" text-anchor="end" fill="#a3a3a3" font-weight="300">${bg}</text>`;
+          const rowY = headerHeight + rowIndex * (cellHeight + cellGap);
+          svg += `<text x="${rowLabelWidth - 12}" y="${rowY + 24}" font-size="11" text-anchor="end" fill="#737373" font-weight="900">${bg}</text>`;
 
           svgGridFg.forEach((fg, colIndex) => {
-            const bgIndex = colors.indexOf(bg);
-            const fgIndex = colors.indexOf(fg);
-            if (isHidden(bg, fg, bgIndex, fgIndex)) return;
-
+            if (isHidden(bg, fg, colors.indexOf(bg), colors.indexOf(fg))) return;
             const x = rowLabelWidth + colIndex * (cellWidth + cellGap);
             const ratio = contrastRatio(bg, fg);
-            const hasTension = checkVisualTension(bg, fg);
+            const tension = getVisualTensionScore(bg, fg);
 
             svg += `
 <g transform="translate(${x}, ${rowY})">
-  <rect width="${cellWidth}" height="240" rx="12" fill="${bg}" stroke="#f0f0f0" stroke-width="1"/>
-  <text x="${p}" y="${p + 24}" font-size="${textBase}" font-weight="200" fill="${fg}">${ratio}:1</text>
-  ${hasTension ? `<text x="${cellWidth - p}" y="${p + 24}" font-size="16" text-anchor="end">⚠️</text>` : ""}
+  <rect width="${cellWidth}" height="${cellHeight}" rx="12" fill="${bg}" stroke="#e5e5e5" stroke-width="1"/>
+  <text x="14" y="38" font-size="28" font-weight="900" fill="${fg}">${ratio}:1</text>
+  ${tension >= 5 ? `<text x="${cellWidth - 14}" y="38" font-size="18" text-anchor="end">⚠️</text>` : ""}
 
-  <text x="${p}" y="${p + 50}" font-size="${textXs}" fill="${fg}" opacity="0.8" font-weight="300">${pass(ratio, 3) ? "✅" : "❌"} 3:1 Graphics</text>
-  <text x="${p}" y="${p + 66}" font-size="${textXs}" fill="${fg}" opacity="0.8" font-weight="300">${pass(ratio, 4.5) ? "✅" : "❌"} 4.5:1 AA</text>
-  <text x="${p}" y="${p + 82}" font-size="${textXs}" fill="${fg}" opacity="0.8" font-weight="300">${pass(ratio, 7) ? "✅" : "❌"} 7:1 AAA</text>
+  <text x="14" y="70" font-size="11" fill="${fg}" font-weight="900">${pass(ratio, 3) ? "✅" : "❌"} 3:1 GRAPHICS</text>
+  <text x="14" y="90" font-size="11" fill="${fg}" font-weight="900">${pass(ratio, 4.5) ? "✅" : "❌"} 4.5:1 AA TEXT</text>
+  <text x="14" y="110" font-size="11" fill="${fg}" font-weight="900">${pass(ratio, 7) ? "✅" : "❌"} 7:1 AAA TEXT</text>
 
-  <rect y="210" width="${cellWidth}" height="30" fill="#ffffff" opacity="0.9"/>
-  <line x1="0" y1="210" x2="${cellWidth}" y2="210" stroke="#f0f0f0" stroke-width="1"/>
-  <text x="${p}" y="228" font-size="9" fill="#a3a3a3" font-weight="300" letter-spacing="1">${fg} / ${bg}</text>
+  <rect y="${cellHeight - 50}" width="${cellWidth}" height="50" fill="#ffffff" rx="12" />
+  <rect y="${cellHeight - 50}" width="${cellWidth}" height="10" fill="#ffffff" />
+  <line x1="0" y1="${cellHeight - 50}" x2="${cellWidth}" y2="${cellHeight - 50}" stroke="#f0f0f0" stroke-width="1"/>
+
+  <text x="14" y="${cellHeight - 32}" font-size="9" fill="#171717" font-weight="900" text-transform="uppercase">TEXT ${fg}</text>
+  <text x="14" y="${cellHeight - 14}" font-size="9" fill="#737373" font-weight="900" text-transform="uppercase">BG ${bg}</text>
+
+  <text x="${cellWidth - 14}" y="${cellHeight - 32}" font-size="11" fill="#171717" font-weight="900" text-anchor="end">${ratio}:1</text>
+  <text x="${cellWidth - 14}" y="${cellHeight - 14}" font-size="9" fill="#737373" font-weight="900" text-anchor="end">${pass(ratio, 3) ? "OK" : "KO"} / ${pass(ratio, 4.5) ? "AA" : "KO"} / ${pass(ratio, 7) ? "AAA" : "KO"}</text>
 </g>`;
           });
         });
@@ -338,69 +354,44 @@
           else if (state === 1) onChange(-1);
           else onChange(0);
         };
-
-        let statusClass = "";
-        let dot = <div className="w-1.5 h-1.5 rounded-full bg-neutral-200"></div>;
-        if (state === 1) { statusClass = "included"; dot = <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>; }
-        if (state === -1) { statusClass = "excluded"; dot = <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>; }
-
         return (
-          <div className={`tri-state-filter ${statusClass}`} onClick={handleClick}>
+          <div className={`tri-state-filter ${state === 1 ? 'included' : state === -1 ? 'excluded' : ''}`} onClick={handleClick}>
             <div className="w-3.5 h-3.5 rounded-sm shadow-sm border border-black/5" style={{ backgroundColor: color }}></div>
-            <span className="text-[10px] font-light text-neutral-600 font-mono tracking-tighter">{color}</span>
-            <div className="ml-auto">{dot}</div>
+            <span className="text-[10px] font-extrabold text-neutral-600 font-mono tracking-tighter">{color}</span>
+            <div className="ml-auto flex gap-1">
+                {state === 1 && <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>}
+                {state === -1 && <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>}
+                {state === 0 && <div className="w-1.5 h-1.5 rounded-full bg-neutral-200"></div>}
+            </div>
           </div>
         );
       };
 
-      const RangeSlider = ({ label, value, min, max, step, onChange, thresholds }) => {
-        return (
-          <div className="space-y-2">
+      const RangeSlider = ({ label, value, min, max, step, onChange, thresholds, unit = "" }) => (
+          <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider">{label}</label>
-              <span className="text-[11px] font-light font-mono bg-neutral-50 px-2 py-0.5 rounded border border-neutral-100">{value === Infinity ? '∞' : value}</span>
+              <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">{label}</label>
+              <span className="text-[10px] font-black font-mono bg-neutral-50 px-1.5 py-0.5 rounded border border-neutral-100">{value === Infinity ? '∞' : value}{unit}</span>
             </div>
-            <input
-              type="range"
-              min={min}
-              max={max}
-              step={step}
-              value={value === Infinity ? max : value}
-              onChange={(e) => onChange(Number(e.target.value) === max ? (max === 21 ? Infinity : max) : Number(e.target.value))}
-            />
-            <div className="flex justify-between px-1">
+            <input type="range" min={min} max={max} step={step} value={value === Infinity ? max : value} onChange={(e) => onChange(Number(e.target.value) === max ? (max === 21 ? Infinity : max) : Number(e.target.value))} />
+            <div className="flex justify-between px-0.5">
               {thresholds.map(t => (
-                <button
-                  key={t}
-                  onClick={() => onChange(t)}
-                  className={`text-[9px] font-light transition-colors ${value === t ? 'text-black font-semibold' : 'text-neutral-300 hover:text-neutral-500'}`}
-                >
-                  {t}
-                </button>
+                <button key={t} onClick={() => onChange(t)} className={`text-[8px] transition-colors ${value === t ? 'text-black font-black' : 'text-neutral-300 font-black hover:text-neutral-500'}`}>{t}</button>
               ))}
             </div>
           </div>
-        );
-      };
+      );
 
-      const SegmentedControl = ({ options, value, onChange, label }) => {
-        return (
-          <div className="space-y-2">
-            <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider">{label}</label>
+      const SegmentedControl = ({ options, value, onChange, label }) => (
+          <div className="space-y-1">
+            <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">{label}</label>
             <div className="segmented-control">
               {options.map(opt => (
-                <div
-                  key={opt.value}
-                  className={`segmented-item ${value === opt.value ? 'active' : ''}`}
-                  onClick={() => onChange(opt.value)}
-                >
-                  {opt.label}
-                </div>
+                <div key={opt.value} className={`segmented-item ${value === opt.value ? 'active' : ''}`} onClick={() => onChange(opt.value)}>{opt.label}</div>
               ))}
             </div>
           </div>
-        );
-      };
+      );
 
       // -------- App --------
 
@@ -408,6 +399,7 @@
         const [input, setInput] = useState("#000000, #ffffff, #2563eb, #db2777, #f59e0b, #10b981");
         const [minContrast, setMinContrast] = useState(0);
         const [maxContrast, setMaxContrast] = useState(Infinity);
+        const [maxTension, setMaxTension] = useState(10);
         const [uniqueMode, setUniqueMode] = useState("all");
         const [collapseEmpty, setCollapseEmpty] = useState(false);
         const [darknessFilter, setDarknessFilter] = useState("all");
@@ -415,338 +407,143 @@
         const [rowFilters, setRowFilters] = useState({});
         const [colFilters, setColFilters] = useState({});
 
-        const colors = useMemo(() => {
-          return Array.from(new Set(input.match(/#[0-9A-Fa-f]{6}/g) || []));
-        }, [input]);
+        const colors = useMemo(() => Array.from(new Set(input.match(/#[0-9A-Fa-f]{6}/g) || [])), [input]);
 
         useEffect(() => {
-          setRowFilters(prev => {
-            const next = {};
-            colors.forEach(c => {
-              next[c] = prev[c] !== undefined ? prev[c] : 0;
-            });
-            return next;
-          });
-          setColFilters(prev => {
-            const next = {};
-            colors.forEach(c => {
-              next[c] = prev[c] !== undefined ? prev[c] : 0;
-            });
-            return next;
-          });
+          setRowFilters(p => { const n = {}; colors.forEach(c => n[c] = p[c] || 0); return n; });
+          setColFilters(p => { const n = {}; colors.forEach(c => n[c] = p[c] || 0); return n; });
         }, [colors]);
 
         const isHidden = (bg, fg, bgIndex, fgIndex) => {
           const ratio = contrastRatio(bg, fg);
-
-          if (ratio < minContrast) return true;
-          if (maxContrast !== Infinity && ratio > maxContrast) return true;
-
+          const tension = getVisualTensionScore(bg, fg);
+          if (ratio < minContrast || (maxContrast !== Infinity && ratio > maxContrast) || tension > maxTension) return true;
           if (uniqueMode === "bg" && bgIndex > fgIndex) return true;
           if (uniqueMode === "fg" && bgIndex < fgIndex) return true;
-
-          const lumBg = luminance(hexToRgb(bg));
-          const lumFg = luminance(hexToRgb(fg));
+          const lumBg = luminance(hexToRgb(bg)), lumFg = luminance(hexToRgb(fg));
           if (darknessFilter === "bg-darker" && lumBg >= lumFg) return true;
           if (darknessFilter === "fg-darker" && lumFg >= lumBg) return true;
-
-          if (rowFilters[bg] === -1) return true;
-          if (colFilters[fg] === -1) return true;
-
-          const hasIncludedRows = Object.values(rowFilters).some(v => v === 1);
-          const hasIncludedCols = Object.values(colFilters).some(v => v === 1);
-
-          if (hasIncludedRows && rowFilters[bg] !== 1) return true;
-          if (hasIncludedCols && colFilters[fg] !== 1) return true;
-
+          if (rowFilters[bg] === -1 || colFilters[fg] === -1) return true;
+          const hIR = Object.values(rowFilters).some(v => v === 1), hIC = Object.values(colFilters).some(v => v === 1);
+          if (hIR && rowFilters[bg] !== 1) return true;
+          if (hIC && colFilters[fg] !== 1) return true;
           return false;
         };
 
-        const visibleBg = useMemo(() => {
-          return colors.filter((bg, bgIndex) =>
-            colors.some((fg, fgIndex) => {
-              return !isHidden(bg, fg, bgIndex, fgIndex);
-            }),
-          );
-        }, [colors, minContrast, maxContrast, uniqueMode, darknessFilter, rowFilters, colFilters]);
-
-        const visibleFg = useMemo(() => {
-          return colors.filter((fg, fgIndex) =>
-            colors.some((bg, bgIndex) => {
-              return !isHidden(bg, fg, bgIndex, fgIndex);
-            }),
-          );
-        }, [colors, minContrast, maxContrast, uniqueMode, darknessFilter, rowFilters, colFilters]);
-
-        const gridBg = collapseEmpty ? visibleBg : colors;
-        const gridFg = collapseEmpty ? visibleFg : colors;
+        const gridBg = collapseEmpty ? colors.filter((bg, i) => colors.some((fg, j) => !isHidden(bg, fg, i, j))) : colors;
+        const gridFg = collapseEmpty ? colors.filter((fg, j) => colors.some((bg, i) => !isHidden(bg, fg, i, j))) : colors;
 
         const addColor = (hex) => {
           if (!colors.includes(hex)) {
-            setInput(prev => {
-                const trimmed = prev.trim();
-                if (!trimmed) return hex;
-                const lastChar = trimmed[trimmed.length - 1];
-                if (lastChar === ',' || lastChar === ' ') return prev + hex;
-                return prev + ", " + hex;
+            setInput(p => {
+              const t = p.trim();
+              if (!t) return hex;
+              const last = t[t.length - 1];
+              return (last === ',' || last === ' ') ? p + hex : p + ", " + hex;
             });
           }
         };
 
-        const exportSVG = () =>
-          generateContrastGridSVG({
-            gridBg,
-            gridFg,
-            colors,
-            minContrast,
-            maxContrast,
-            uniqueMode,
-            darknessFilter,
-            rowFilters,
-            colFilters
-          });
-
-        const copySVGToClipboard = async () => {
-          const svg = exportSVG();
+        const copySVG = async () => {
           try {
-            await navigator.clipboard.writeText(svg);
-            alert("SVG skopiowane do schowka!");
-          } catch (err) {
-            alert("Błąd kopiowania");
-          }
+            await navigator.clipboard.writeText(generateContrastGridSVG({ gridBg, gridFg, colors, minContrast, maxContrast, uniqueMode, darknessFilter, rowFilters, colFilters, maxTension }));
+            alert("SVG skopiowane!");
+          } catch (err) { alert("Błąd"); }
         };
 
         const downloadSVG = () => {
-          const svg = exportSVG();
-          const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8;" });
+          const blob = new Blob([generateContrastGridSVG({ gridBg, gridFg, colors, minContrast, maxContrast, uniqueMode, darknessFilter, rowFilters, colFilters, maxTension })], { type: "image/svg+xml;charset=utf-8;" });
           const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
-          link.href = url;
-          link.download = "contrast-grid.svg";
-          link.click();
+          link.href = url; link.download = "contrast-grid.svg"; link.click();
           URL.revokeObjectURL(url);
         };
 
         return (
-          <div className="min-h-screen p-6 lg:p-20 flex flex-col items-center">
-            <header className="max-w-4xl w-full mb-16 text-center">
-              <h1 className="text-5xl font-light tracking-tight text-neutral-900 mb-4">
-                WCAG Matrix
-              </h1>
-              <p className="text-neutral-400 font-light text-lg">
-                Minimalistyczne narzędzie do analizy kontrastu i napięcia wizualnego.
-              </p>
-            </header>
-
-            <main className="w-full space-y-12">
-              {/* INPUT SECTION */}
-              <section className="max-w-4xl mx-auto w-full">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between px-1">
-                    <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-[0.2em]">Kolory wejściowe</label>
+          <div className="app-layout">
+            <header className="top-section p-6 lg:p-10">
+              <div className="max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="lg:col-span-4 space-y-4">
+                  <div className="flex items-baseline gap-3">
+                    <h1 className="text-3xl font-black tracking-tighter text-neutral-900">WCAG Matrix</h1>
+                    <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Professional v2</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center"><label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Kolory wejściowe</label>
                     <div className="flex gap-2">
-                      <button onClick={() => addColor("#000000")} className="text-[9px] font-bold px-3 py-1 bg-neutral-50 hover:bg-neutral-100 text-neutral-500 rounded-full transition-all border border-neutral-100 uppercase tracking-wider">
-                        + Black
-                      </button>
-                      <button onClick={() => addColor("#ffffff")} className="text-[9px] font-bold px-3 py-1 bg-neutral-50 hover:bg-neutral-100 text-neutral-500 rounded-full transition-all border border-neutral-100 uppercase tracking-wider">
-                        + White
-                      </button>
-                    </div>
+                        <button onClick={() => addColor("#000000")} className="text-[9px] font-bold px-2 py-0.5 bg-neutral-100 rounded uppercase tracking-wider hover:bg-neutral-200">+ Black</button>
+                        <button onClick={() => addColor("#ffffff")} className="text-[9px] font-bold px-2 py-0.5 bg-neutral-100 rounded uppercase tracking-wider hover:bg-neutral-200">+ White</button>
+                    </div></div>
+                    <textarea rows="2" className="w-full p-4 bg-neutral-50 border border-neutral-100 rounded-xl font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-neutral-200 transition-all resize-none leading-relaxed" value={input} onChange={(e) => setInput(e.target.value)} />
                   </div>
-                  <textarea
-                    rows="2"
-                    className="w-full p-6 bg-neutral-50 border border-neutral-100 rounded-2xl font-mono text-xs focus:ring-1 focus:ring-neutral-200 focus:outline-none transition-all resize-none leading-relaxed"
-                    placeholder="#000000, #ffffff..."
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                  />
                 </div>
-              </section>
-
-              {/* FILTERS SECTION */}
-              <section className="max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-12 pt-8 border-t border-neutral-100">
-                  {/* Range Sliders */}
-                  <div className="space-y-8">
-                    <RangeSlider
-                      label="Kontrast Minimalny"
-                      value={minContrast}
-                      min={0} max={21} step={0.1}
-                      onChange={setMinContrast}
-                      thresholds={[0, 3, 4.5, 7, 21]}
-                    />
-                    <RangeSlider
-                      label="Kontrast Maksymalny"
-                      value={maxContrast}
-                      min={0} max={21} step={0.1}
-                      onChange={setMaxContrast}
-                      thresholds={[0, 3, 4.5, 7, 21]}
-                    />
-                    <label className="flex items-center gap-3 text-[10px] font-medium text-neutral-400 uppercase tracking-wider cursor-pointer group">
-                        <input type="checkbox" className="w-3.5 h-3.5 rounded-sm border-neutral-200 text-neutral-900 focus:ring-0 transition-all" checked={collapseEmpty} onChange={(e) => setCollapseEmpty(e.target.checked)} />
-                        <span className="group-hover:text-black transition-colors">Ukryj puste</span>
+                <div className="lg:col-span-3 space-y-5">
+                    <RangeSlider label="Kontrast Min" value={minContrast} min={0} max={21} step={0.1} onChange={setMinContrast} thresholds={[0, 3, 4.5, 7, 21]} />
+                    <RangeSlider label="Kontrast Max" value={maxContrast} min={0} max={21} step={0.1} onChange={setMaxContrast} thresholds={[0, 3, 4.5, 7, 21]} />
+                    <RangeSlider label="Gryzienie (Limit)" value={maxTension} min={0} max={10} step={0.5} onChange={setMaxTension} thresholds={[2, 5, 8, 10]} unit="/10" />
+                </div>
+                <div className="lg:col-span-3 space-y-4">
+                    <SegmentedControl label="Unikalność" value={uniqueMode} onChange={setUniqueMode} options={[{ label: 'Wszystkie', value: 'all' }, { label: 'Pół (Tła)', value: 'bg' }, { label: 'Pół (Teksty)', value: 'fg' }]} />
+                    <SegmentedControl label="Relacja Jasności" value={darknessFilter} onChange={setDarknessFilter} options={[{ label: 'Wszystkie', value: 'all' }, { label: 'Tło ciemne', value: 'bg-darker' }, { label: 'Tekst ciemny', value: 'fg-darker' }]} />
+                    <label className="flex items-center gap-2 text-[10px] font-black text-neutral-400 uppercase tracking-widest cursor-pointer group pt-1">
+                        <input type="checkbox" className="w-3.5 h-3.5 rounded-sm border-neutral-200 text-neutral-900 focus:ring-0" checked={collapseEmpty} onChange={(e) => setCollapseEmpty(e.target.checked)} />
+                        <span className="group-hover:text-black transition-colors">Ukryj puste komórki</span>
                     </label>
-                  </div>
-
-                  {/* Toggles */}
-                  <div className="space-y-6">
-                    <SegmentedControl
-                      label="Unikalność par"
-                      value={uniqueMode}
-                      onChange={setUniqueMode}
-                      options={[
-                        { label: 'Wszystkie', value: 'all' },
-                        { label: 'Pół (Tła)', value: 'bg' },
-                        { label: 'Pół (Teksty)', value: 'fg' }
-                      ]}
-                    />
-                    <SegmentedControl
-                      label="Relacja jasności"
-                      value={darknessFilter}
-                      onChange={setDarknessFilter}
-                      options={[
-                        { label: 'Wszystkie', value: 'all' },
-                        { label: 'Tło ciemniejsze', value: 'bg-darker' },
-                        { label: 'Tekst ciemniejszy', value: 'fg-darker' }
-                      ]}
-                    />
-                  </div>
-
-                  {/* Row/Col Filters */}
-                  <div className="grid grid-cols-2 gap-8 col-span-1 lg:col-span-1">
-                    <div className="space-y-3">
-                      <h3 className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider">Tło (Wiersze)</h3>
-                      <div className="max-h-48 overflow-y-auto space-y-1 pr-2 scrollbar-thin">
-                        {colors.map(c => <TriStateFilter key={c} color={c} state={rowFilters[c] || 0} onChange={(val) => setRowFilters(prev => ({...prev, [c]: val}))} />)}
+                </div>
+                <div className="lg:col-span-2 flex flex-col justify-end gap-2.5 pb-1">
+                    <button onClick={copySVG} className="w-full py-2.5 bg-neutral-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-neutral-800 transition-all active:scale-[0.98] shadow-sm">Copy SVG</button>
+                    <button onClick={downloadSVG} className="w-full py-2.5 bg-white text-neutral-900 border border-neutral-200 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-neutral-50 transition-all active:scale-[0.98]">Download SVG</button>
+                    <div className="text-[8px] text-neutral-400 font-bold uppercase tracking-widest leading-tight text-center">⚠️ Gryzienie {'>'} 5.0 (Vibration)</div>
+                </div>
+              </div>
+              <div className="max-w-[1920px] mx-auto mt-8 grid grid-cols-1 lg:grid-cols-2 gap-10 border-t border-neutral-50 pt-5">
+                <div className="space-y-2.5"><h3 className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Filtruj Wiersze (Tło)</h3>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1">{colors.map(c => <TriStateFilter key={c} color={c} state={rowFilters[c] || 0} onChange={(val) => setRowFilters(p => ({...p, [c]: val}))} />)}</div></div>
+                <div className="space-y-2.5"><h3 className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Filtruj Kolumny (Tekst)</h3>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1">{colors.map(c => <TriStateFilter key={c} color={c} state={colFilters[c] || 0} onChange={(val) => setColFilters(p => ({...p, [c]: val}))} />)}</div></div>
+              </div>
+            </header>
+            <main className="grid-area">
+              <div className="grid-wrapper">
+                <div className="inline-grid gap-3" style={{ gridTemplateColumns: `100px repeat(${gridFg.length}, 160px)` }}>
+                  <div className="sticky-header-col sticky-header-row sticky-corner flex items-end justify-end p-2 text-[9px] font-black text-neutral-300 uppercase tracking-widest border-b border-neutral-100">BG / FG</div>
+                  {gridFg.map(c => (<div key={c} className="sticky-header-col flex flex-col items-center justify-center p-2 border-b border-neutral-100">
+                      <div className="w-6 h-1 rounded-full mb-1" style={{ backgroundColor: c }}></div>
+                      <div className="font-mono text-[9px] text-neutral-500 font-black tracking-tighter">{c}</div>
+                    </div>))}
+                  {gridBg.map((bg, i) => (
+                    <React.Fragment key={bg}>
+                      <div className="sticky-header-row flex items-center justify-end pr-5 gap-3 h-[240px]">
+                        <div className="font-mono text-[9px] text-neutral-500 font-black tracking-tighter">{bg}</div>
+                        <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: bg }}></div>
                       </div>
-                    </div>
-                    <div className="space-y-3">
-                      <h3 className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider">Tekst (Kolumny)</h3>
-                      <div className="max-h-48 overflow-y-auto space-y-1 pr-2 scrollbar-thin">
-                        {colors.map(c => <TriStateFilter key={c} color={c} state={colFilters[c] || 0} onChange={(val) => setColFilters(prev => ({...prev, [c]: val}))} />)}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex flex-col gap-3 justify-end">
-                      <button onClick={copySVGToClipboard} className="w-full py-2.5 px-4 bg-neutral-900 text-white rounded-xl text-[11px] font-medium hover:bg-neutral-800 transition-all active:scale-[0.98] uppercase tracking-widest">
-                        Copy SVG
-                      </button>
-                      <button onClick={downloadSVG} className="w-full py-2.5 px-4 bg-white text-neutral-900 border border-neutral-100 rounded-xl text-[11px] font-medium hover:bg-neutral-50 transition-all active:scale-[0.98] uppercase tracking-widest">
-                        Download SVG
-                      </button>
-                      <p className="text-[9px] text-neutral-300 italic leading-tight mt-2 px-1">
-                        ⚠️ Oznacza wysokie napięcie wizualne (vibration), które może męczyć wzrok mimo dobrego kontrastu.
-                      </p>
-                  </div>
-              </section>
-
-              {/* GRID SECTION */}
-              <section className="w-full flex justify-center pt-8">
-                   <div className="grid-container py-4">
-                      <div
-                        className="inline-grid gap-4"
-                        style={{
-                          gridTemplateColumns: `100px repeat(${gridFg.length}, 200px)`,
-                        }}
-                      >
-                        {/* Header corner */}
-                        <div className="flex items-center justify-end pr-4 text-[9px] font-light text-neutral-300 uppercase tracking-[0.3em] leading-tight text-right">
-                          BG<br/>&bull;<br/>FG
-                        </div>
-
-                        {/* Column headers */}
-                        {gridFg.map((c) => (
-                          <div key={c} className="flex flex-col items-center justify-center p-2 rounded-xl bg-neutral-50/50 border border-neutral-100/50">
-                            <div className="w-6 h-1 rounded-full mb-2" style={{ backgroundColor: c }}></div>
-                            <div className="font-mono text-[9px] text-neutral-400 font-light tracking-tighter">{c}</div>
+                      {gridFg.map((fg, j) => {
+                        const r = contrastRatio(bg, fg), t = getVisualTensionScore(bg, fg), h = isHidden(bg, fg, colors.indexOf(bg), colors.indexOf(fg));
+                        if (collapseEmpty && h) return <div key={bg+fg}></div>;
+                        return (
+                          <div key={bg+fg} className={`w-[160px] h-[240px] rounded-xl overflow-hidden border border-neutral-100 transition-all flex flex-col ${h ? "opacity-5 grayscale blur-[1px]" : "hover:shadow-2xl hover:border-neutral-400 hover:z-10 bg-white"}`}>
+                            <div className="flex-grow p-5 flex flex-col justify-between" style={{ background: bg, color: fg }}>
+                              <div className="flex justify-between items-start"><div className="text-3xl font-black tracking-tighter leading-none">{r}:1</div>{t >= 5 && <span className="text-base" title={`Napięcie: ${t}`}>⚠️</span>}</div>
+                              <div className="space-y-2.5">{[{l:'3:1 Graphics',v:3},{l:'4.5:1 AA Text',v:4.5},{l:'7:1 AAA Text',v:7}].map(ln => (
+                                <div key={ln.l} className={`flex items-center gap-2 text-[10px] font-black ${pass(r,ln.v)?'opacity-100':'opacity-30'}`}>
+                                  <span>{pass(r,ln.v)?"✅":"❌"}</span><span className="uppercase tracking-tight leading-none">{ln.l}</span>
+                                </div>))}</div>
+                            </div>
+                            <div className="bg-white p-4 flex flex-col gap-1 border-t border-neutral-100">
+                              <div className="flex justify-between items-center"><span className="text-[10px] text-neutral-900 font-black uppercase tracking-tight">TEXT {fg}</span><span className="text-[10px] text-neutral-900 font-black">{r}:1</span></div>
+                              <div className="flex justify-between items-center"><span className="text-[10px] text-neutral-400 font-extrabold uppercase tracking-tight">BG {bg}</span><span className="text-[10px] text-neutral-400 font-extrabold">{pass(r, 3) ? "OK" : "KO"} / {pass(r, 4.5) ? "AA" : "KO"} / {pass(r, 7) ? "AAA" : "KO"}</span></div>
+                            </div>
                           </div>
-                        ))}
-
-                        {/* Rows */}
-                        {gridBg.map((bg) => {
-                          const bgIndex = colors.indexOf(bg);
-                          const isRowHidden = gridFg.every(fg => isHidden(bg, fg, bgIndex, colors.indexOf(fg)));
-                          if (collapseEmpty && isRowHidden) return null;
-
-                          return (
-                            <React.Fragment key={bg}>
-                              {/* Row header */}
-                              <div className="flex items-center justify-end pr-4 gap-3">
-                                <div className="font-mono text-[9px] text-neutral-400 font-light tracking-tighter">{bg}</div>
-                                <div className="w-1 h-6 rounded-full" style={{ backgroundColor: bg }}></div>
-                              </div>
-
-                              {/* Cells */}
-                              {gridFg.map((fg) => {
-                                const fgIndex = colors.indexOf(fg);
-                                const ratio = contrastRatio(bg, fg);
-                                const hidden = isHidden(bg, fg, bgIndex, fgIndex);
-                                const hasTension = checkVisualTension(bg, fg);
-
-                                if (collapseEmpty && hidden) {
-                                  return <div key={bg + fg} className="w-[200px]"></div>;
-                                }
-
-                                return (
-                                  <div key={bg + fg} className="w-[200px] h-[240px]">
-                                    <div
-                                      className={`rounded-2xl overflow-hidden border border-neutral-100 transition-all duration-300 flex flex-col h-full
-                                      ${hidden ? "opacity-5 grayscale blur-[1px] pointer-events-none scale-95" : "hover:shadow-lg hover:border-neutral-200"}`}
-                                    >
-                                      {/* Top part */}
-                                      <div
-                                        className="p-5 flex-grow flex flex-col justify-between"
-                                        style={{ background: bg, color: fg }}
-                                      >
-                                        <div className="flex justify-between items-start">
-                                          <div className="text-3xl font-extralight tracking-tighter">{ratio}:1</div>
-                                          {hasTension && !hidden && <span title="Wysokie napięcie wizualne (vibration)" className="text-lg">⚠️</span>}
-                                        </div>
-
-                                        <div className="space-y-1.5 mb-2">
-                                          <div className="flex items-center gap-2 text-[10px] font-light opacity-80">
-                                            <span>{pass(ratio, 3) ? "✅" : "❌"}</span>
-                                            <span>3:1 Graphics</span>
-                                          </div>
-                                          <div className="flex items-center gap-2 text-[10px] font-light opacity-80">
-                                            <span>{pass(ratio, 4.5) ? "✅" : "❌"}</span>
-                                            <span>4.5:1 AA Text</span>
-                                          </div>
-                                          <div className="flex items-center gap-2 text-[10px] font-light opacity-80">
-                                            <span>{pass(ratio, 7) ? "✅" : "❌"}</span>
-                                            <span>7:1 AAA Text</span>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      {/* Bottom part */}
-                                      <div className="bg-white px-5 py-2.5 flex justify-between items-center border-t border-neutral-50">
-                                        <span className="text-[9px] text-neutral-300 font-light tracking-widest uppercase">{fg}</span>
-                                        <span className="text-[9px] text-neutral-300 font-light tracking-widest uppercase">{bg}</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </React.Fragment>
-                          );
-                        })}
-                      </div>
-                   </div>
-              </section>
+                        );
+                      })}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
             </main>
-
-            <footer className="mt-32 text-center text-neutral-300 text-[10px] font-light tracking-widest uppercase pb-20 max-w-2xl leading-relaxed">
-              <p className="mb-4">&bull; WCAG Matrix Professional &bull;</p>
-              <p className="opacity-50">
-                Luminancja względna i kontrast zgodny z WCAG 2.1. Detekcja napięcia wizualnego oparta na różnicy barw i nasyceniu.
-              </p>
-            </footer>
           </div>
         );
       }
-
       ReactDOM.createRoot(document.getElementById("root")).render(<App />);
     </script>
   </body>
