@@ -83,7 +83,7 @@
         display: flex; align-items: center; justify-content: space-between;
         padding: 0.85rem 0; border-bottom: 1px solid #fafafa;
         cursor: pointer; font-size: 10px; font-weight: 300;
-        text-transform: uppercase; letter-spacing: 0.15em; color: #a3a3a3;
+        text-transform: uppercase; letter-spacing: 0.15em; color: #737373;
         transition: all 0.2s ease;
       }
       .collapsible-trigger:hover { color: #171717; }
@@ -216,8 +216,8 @@
       const RangeSlider = ({ label, value, min, max, step, onChange, thresholds, unit = "" }) => (
         <div className="space-y-1">
           <div className="flex justify-between items-center">
-            <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">{label}</label>
-            <span className="text-[10px] font-black font-mono bg-neutral-50 px-1.5 py-0.5 rounded border border-neutral-100">{value === Infinity ? '∞' : value}{unit}</span>
+            <label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">{label}</label>
+            <span className="text-[10px] font-medium font-mono bg-neutral-50 px-1.5 py-0.5 rounded border border-neutral-100">{value === Infinity ? '∞' : value}{unit}</span>
           </div>
           <input type="range" min={min} max={max} step={step} value={value === Infinity ? max : value} onChange={(e) => onChange(Number(e.target.value) === max ? (max === 21 ? Infinity : max) : Number(e.target.value))} />
           <div className="flex justify-between px-0.5">
@@ -230,7 +230,7 @@
 
       const SegmentedControl = ({ options, value, onChange, label }) => (
         <div className="space-y-1">
-          <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">{label}</label>
+          <label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">{label}</label>
           <div className="segmented-control">
             {options.map(opt => (
               <div key={opt.value} className={`segmented-item ${value === opt.value ? 'active' : ''}`} onClick={() => onChange(opt.value)}>{opt.label}</div>
@@ -363,7 +363,7 @@
         const sortedRowColors = useMemo(() => sortColors(rawColors, rowSortBy, rowSortOrder), [rawColors, rowSortBy, rowSortOrder]);
         const sortedColColors = useMemo(() => sortColors(rawColors, colSortBy, colSortOrder), [rawColors, colSortBy, colSortOrder]);
 
-        const isHidden = (bg, fg) => {
+        const isHidden = (bg, fg, rowsList = sortedRowColors, colsList = sortedColColors) => {
           const r = contrastRatio(bg, fg), t = getVisualTensionScore(bg, fg);
           const hB = getHsl(bg), hF = getHsl(fg);
 
@@ -371,7 +371,7 @@
           if (hB.l < minBgLum || hB.l > maxBgLum) return true;
           if (hF.l < minFgLum || hF.l > maxFgLum) return true;
 
-          const bgI = activeRows.indexOf(bg), fgI = activeCols.indexOf(fg);
+          const bgI = rowsList.indexOf(bg), fgI = colsList.indexOf(fg);
           if (uniqueMode === "bg" && bgI > fgI) return true;
           if (uniqueMode === "fg" && bgI < fgI) return true;
           const lB = luminance(hexToRgb(bg)), lF = luminance(hexToRgb(fg));
@@ -436,7 +436,7 @@
           rows.forEach((bg, rowI) => {
             cols.forEach((fg, colI) => {
               const x = HEADER_W + colI * (CARD_W + GAP), y = HEADER_H + rowI * (CARD_H + GAP);
-              const hidden = isHidden(bg, fg);
+                const hidden = isHidden(bg, fg, rows, cols);
               const ratio = contrastRatio(bg, fg);
               const tension = getVisualTensionScore(bg, fg);
               const pass3 = ratio >= 3, pass45 = ratio >= 4.5, pass7 = ratio >= 7;
@@ -534,10 +534,10 @@
                   </div>
                 </header>
 
-                <div className="space-y-4">
+                <div className={`space-y-4 ${(panelPos === 'top' || panelPos === 'bottom') ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-0 items-start space-y-0' : ''}`}>
                   <Collapsible title="Colors Input">
                     <div className="space-y-1.5">
-                      <div className="flex justify-between items-center"><label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">HEX List</label>
+                      <div className="flex justify-between items-center"><label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">HEX List</label>
                         <div className="flex gap-2"><button onClick={() => addColor("#000000")} className="text-[8px] font-bold px-2 py-0.5 bg-neutral-100 rounded uppercase hover:bg-neutral-200">+ Black</button>
                           <button onClick={() => addColor("#ffffff")} className="text-[8px] font-bold px-2 py-0.5 bg-neutral-100 rounded uppercase hover:bg-neutral-200">+ White</button></div></div>
                       <textarea rows="5" className="w-full p-4 bg-neutral-50 border border-neutral-100 rounded-xl font-mono text-[10px] focus:ring-1 focus:ring-neutral-200 transition-all resize-none leading-relaxed" value={input} onChange={(e) => setInput(e.target.value)} />
@@ -568,13 +568,13 @@
                       <SegmentedControl label="Contrast Rel" value={darknessFilter} onChange={setDarknessFilter} options={[{ label: 'All', value: 'all' }, { label: 'Dark BG', value: 'bg-darker' }, { label: 'Dark FG', value: 'fg-darker' }]} />
                       <div className="grid grid-cols-2 gap-2">
                           <div className="flex items-center justify-between p-2 bg-neutral-50 rounded-xl border border-neutral-100">
-                          <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Hide Empty</label>
+                          <label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">Hide Empty</label>
                           <button onClick={() => setHideEmpty(!hideEmpty)} className={`w-8 h-4 rounded-full transition-all relative ${hideEmpty ? 'bg-neutral-900' : 'bg-neutral-200'}`}>
                               <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${hideEmpty ? 'left-4.5' : 'left-0.5'}`} style={{ left: hideEmpty ? '18px' : '2px' }}></div>
                           </button>
                           </div>
                           <div className="flex items-center justify-between p-2 bg-neutral-50 rounded-xl border border-neutral-100">
-                          <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Borders</label>
+                          <label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">Borders</label>
                           <button onClick={() => setShowBorder(!showBorder)} className={`w-8 h-4 rounded-full transition-all relative ${showBorder ? 'bg-neutral-900' : 'bg-neutral-200'}`}>
                               <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${showBorder ? 'left-4.5' : 'left-0.5'}`} style={{ left: showBorder ? '18px' : '2px' }}></div>
                           </button>
@@ -654,15 +654,25 @@
 
                         <div className="space-y-3 border-t border-neutral-50 pt-3">
                         <div className="flex justify-between items-center">
-                            <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Filters</label>
+                            <label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">Filters</label>
                             <button onClick={resetAll} className="px-3 py-1 bg-red-50 text-red-500 text-[8px] font-black uppercase rounded-full hover:bg-red-500 hover:text-white transition-all border border-red-100">Reset All Filters</button>
                         </div>
                         <input type="text" placeholder="Search colors..." className="w-full p-2.5 bg-neutral-50 border border-neutral-100 rounded-xl text-[10px] font-bold outline-none focus:ring-1 focus:ring-neutral-200" value={search} onChange={e => setSearch(e.target.value)} />
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-1.5"><div className="flex justify-between items-center px-1"><span className="text-[8px] font-black text-neutral-300 uppercase">Rows</span><button onClick={()=>setRowFilters({})} className="text-[8px] font-black text-neutral-300 hover:text-black">Reset</button></div>
-                            <div className="max-h-[800px] overflow-y-auto space-y-1 border border-neutral-50 rounded-xl p-1.5">{filteredColors.map(c => <TriStateFilter key={c} color={c} state={rowFilters[c] || 0} onChange={v => setRowFilters({...rowFilters, [c]: v})} />)}</div></div>
-                            <div className="space-y-1.5"><div className="flex justify-between items-center px-1"><span className="text-[8px] font-black text-neutral-300 uppercase">Cols</span><button onClick={()=>setColFilters({})} className="text-[8px] font-black text-neutral-300 hover:text-black">Reset</button></div>
-                            <div className="max-h-[800px] overflow-y-auto space-y-1 border border-neutral-50 rounded-xl p-1.5">{filteredColors.map(c => <TriStateFilter key={c} color={c} state={colFilters[c] || 0} onChange={v => setColFilters({...colFilters, [c]: v})} />)}</div></div>
+                            <div className="space-y-1.5">
+                                <div className="flex justify-between items-center px-1">
+                                    <span className="text-[8px] font-medium text-neutral-600 uppercase">Rows</span>
+                                    <button onClick={()=>setRowFilters({})} className="px-2 py-0.5 bg-neutral-50 text-neutral-400 text-[7px] font-black uppercase rounded hover:bg-neutral-100 transition-all border border-neutral-100">Reset</button>
+                                </div>
+                                <div className="max-h-[800px] overflow-y-auto space-y-1 border border-neutral-50 rounded-xl p-1.5">{filteredColors.map(c => <TriStateFilter key={c} color={c} state={rowFilters[c] || 0} onChange={v => setRowFilters({...rowFilters, [c]: v})} />)}</div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <div className="flex justify-between items-center px-1">
+                                    <span className="text-[8px] font-medium text-neutral-600 uppercase">Cols</span>
+                                    <button onClick={()=>setColFilters({})} className="px-2 py-0.5 bg-neutral-50 text-neutral-400 text-[7px] font-black uppercase rounded hover:bg-neutral-100 transition-all border border-neutral-100">Reset</button>
+                                </div>
+                                <div className="max-h-[800px] overflow-y-auto space-y-1 border border-neutral-50 rounded-xl p-1.5">{filteredColors.map(c => <TriStateFilter key={c} color={c} state={colFilters[c] || 0} onChange={v => setColFilters({...colFilters, [c]: v})} />)}</div>
+                            </div>
                         </div>
                         </div>
                     </div>
@@ -708,7 +718,7 @@
                                     <div className="w-1.5 h-10 rounded-full" style={{ backgroundColor: bg }}></div>
                                 </div>
                                 {activeCols.map(fg => {
-                                    const hidden = isHidden(bg, fg);
+                                    const hidden = isHidden(bg, fg, activeRows, activeCols);
                                     return (
                                         <div key={bg+fg} className={`transition-all duration-300 ${hidden ? "opacity-5 grayscale blur-[1px] pointer-events-none scale-95" : ""}`}>
                                             <Card bg={bg} fg={fg} mode={calcMode} font={font} tensionLimit={maxTension} showBorder={showBorder} />
