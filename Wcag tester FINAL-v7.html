@@ -168,12 +168,16 @@
         return Math.min(10, Math.round(score * 10) / 10);
       };
 
-      const sortColors = (colors, order = 'asc') => {
+      const sortColors = (colors, sortBy = 'hue', order = 'asc') => {
         return [...colors].sort((a, b) => {
           const hA = getHsl(a), hB = getHsl(b);
-          const hueGroupA = Math.floor(hA.h / 30), hueGroupB = Math.floor(hB.h / 30);
-          if (hueGroupA !== hueGroupB) return hueGroupA - hueGroupB;
-          return order === 'asc' ? hA.l - hB.l : hB.l - hA.l;
+          if (sortBy === 'hue') {
+            const hueGroupA = Math.floor(hA.h / 30), hueGroupB = Math.floor(hB.h / 30);
+            if (hueGroupA !== hueGroupB) return order === 'asc' ? hueGroupA - hueGroupB : hueGroupB - hueGroupA;
+            return order === 'asc' ? hA.l - hB.l : hB.l - hA.l;
+          } else {
+            return order === 'asc' ? hA.l - hB.l : hB.l - hA.l;
+          }
         });
       };
 
@@ -214,7 +218,7 @@
         </div>
       );
 
-      const Card = ({ bg, fg, mode, font, tensionLimit }) => {
+      const Card = ({ bg, fg, mode, font, tensionLimit, showBorder }) => {
         const ratio = useMemo(() => contrastRatio(bg, fg), [bg, fg]);
         const apca = useMemo(() => apcaContrast(fg, bg), [bg, fg]);
         const tension = useMemo(() => getVisualTensionScore(bg, fg), [bg, fg]);
@@ -224,23 +228,34 @@
         const isPass7 = mode === 'apca' ? Math.abs(apca) >= 75 : ratio >= 7;
 
         return (
-          <div className="w-[160px] h-[240px] rounded-2xl overflow-hidden border border-neutral-100 transition-all flex flex-col hover:shadow-2xl hover:border-neutral-400 hover:z-10 bg-white" style={{ fontFamily: font }}>
-            <div className="flex-grow p-5 flex flex-col justify-between" style={{ background: bg, color: fg }}>
-              <div className="flex justify-between items-start">
-                <div className="text-3xl font-light tracking-tighter leading-none">{mode === 'apca' ? apca : `${ratio}:1`}</div>
-                {tension >= 5 && <span className="text-base" title={`Napięcie: ${tension}`}>⚠️</span>}
-              </div>
-              <div className="space-y-2">
-                {[{l: mode === 'apca' ? 'Lc 30 (LG)' : '3:1 GRAPHICS', p: isPass3}, {l: mode === 'apca' ? 'Lc 45 (BD)' : '4.5:1 AA TEXT', p: isPass45}, {l: mode === 'apca' ? 'Lc 75 (HI)' : '7:1 AAA TEXT', p: isPass7}].map(line => (
-                  <div key={line.l} className={`flex items-center gap-2 text-[10px] font-medium ${line.p ? 'opacity-100' : 'opacity-30'}`}>
-                    <span>{line.p ? "✅" : "❌"}</span><span className="uppercase tracking-widest">{line.l}</span>
-                  </div>
-                ))}
-              </div>
+          <div className="w-[180px] h-[280px] rounded-[2.5rem] overflow-hidden transition-all flex flex-col hover:shadow-2xl hover:scale-[1.02] hover:z-10 bg-white relative group"
+               style={{ fontFamily: font, border: showBorder ? `2px solid ${fg}` : '1px solid #f0f0f0' }}>
+            <div className="flex-grow flex flex-col justify-center items-center gap-1 relative" style={{ background: bg, color: fg }}>
+              <div className="text-4xl font-black tracking-tighter leading-none">{mode === 'apca' ? apca : `${ratio}:1`}</div>
+              <div className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60">Contrast</div>
+              {tension >= 5 && <div className="absolute top-6 right-6 text-base" title={`Vibration: ${tension}`}>⚠️</div>}
             </div>
-            <div className="bg-white p-4 border-t border-neutral-50 flex flex-col gap-1">
-              <div className="flex justify-between items-center"><span className="text-[10px] text-neutral-900 font-bold uppercase tracking-tight">TEXT {fg}</span><span className="text-[10px] text-neutral-400 font-medium">{ratio}:1</span></div>
-              <div className="flex justify-between items-center"><span className="text-[10px] text-neutral-400 font-medium uppercase tracking-tight">BG {bg}</span><span className="text-[10px] text-neutral-300 font-medium">{tension}v</span></div>
+
+            <div className="p-6 flex flex-col gap-5 bg-white text-black">
+                <div className="space-y-1">
+                    <div className="text-[10px] font-black text-neutral-300 flex justify-between items-center"><span className="font-mono">{bg}</span> <span className="uppercase tracking-widest text-[8px]">Background</span></div>
+                    <div className="text-[10px] font-black text-neutral-900 flex justify-between items-center"><span className="font-mono">{fg}</span> <span className="uppercase tracking-widest text-[8px]">Text</span></div>
+                </div>
+
+                <div className="flex justify-between items-center pt-4 border-t border-neutral-100">
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs">{isPass3 ? "✅" : "❌"}</span>
+                        <span className="text-[8px] font-black uppercase text-neutral-400 tracking-tighter">Icons</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs">{isPass45 ? "✅" : "❌"}</span>
+                        <span className="text-[8px] font-black uppercase text-neutral-400 tracking-tighter">AA Text</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs">{isPass7 ? "✅" : "❌"}</span>
+                        <span className="text-[8px] font-black uppercase text-neutral-400 tracking-tighter">AAA Text</span>
+                    </div>
+                </div>
             </div>
           </div>
         );
@@ -259,23 +274,40 @@
         const [panelPos, setPanelPos] = useState('right');
         const [isCollapsed, setIsCollapsed] = useState(false);
         const [search, setSearch] = useState('');
+        const [fontSearch, setFontSearch] = useState('');
         const [hideEmpty, setHideEmpty] = useState(false);
+        const [showBorder, setShowBorder] = useState(false);
         const [copyStatus, setCopyStatus] = useState('Copy SVG');
+
+        const [minBgLum, setMinBgLum] = useState(0);
+        const [maxBgLum, setMaxBgLum] = useState(100);
+        const [minFgLum, setMinFgLum] = useState(0);
+        const [maxFgLum, setMaxFgLum] = useState(100);
 
         const [rowFilters, setRowFilters] = useState({});
         const [colFilters, setColFilters] = useState({});
+        const [rowSortBy, setRowSortBy] = useState('hue');
+        const [colSortBy, setColSortBy] = useState('hue');
         const [rowSortOrder, setRowSortOrder] = useState('asc');
         const [colSortOrder, setColSortOrder] = useState('asc');
+
+        const [floatPos, setFloatPos] = useState({ x: 100, y: 100 });
+        const [floatSize, setFloatSize] = useState({ w: 450, h: 600 });
 
         const rawColors = useMemo(() => Array.from(new Set(input.match(/#[0-9A-Fa-f]{6}/g) || [])), [input]);
         const filteredColors = rawColors.filter(c => c.toLowerCase().includes(search.toLowerCase()));
 
-        const sortedRowColors = useMemo(() => sortColors(rawColors, rowSortOrder), [rawColors, rowSortOrder]);
-        const sortedColColors = useMemo(() => sortColors(rawColors, colSortOrder), [rawColors, colSortOrder]);
+        const sortedRowColors = useMemo(() => sortColors(rawColors, rowSortBy, rowSortOrder), [rawColors, rowSortBy, rowSortOrder]);
+        const sortedColColors = useMemo(() => sortColors(rawColors, colSortBy, colSortOrder), [rawColors, colSortBy, colSortOrder]);
 
         const isHidden = (bg, fg) => {
           const r = contrastRatio(bg, fg), t = getVisualTensionScore(bg, fg);
+          const hB = getHsl(bg), hF = getHsl(fg);
+
           if (r < minContrast || (maxContrast !== Infinity && r > maxContrast) || t > maxTension) return true;
+          if (hB.l < minBgLum || hB.l > maxBgLum) return true;
+          if (hF.l < minFgLum || hF.l > maxFgLum) return true;
+
           const bgI = rawColors.indexOf(bg), fgI = rawColors.indexOf(fg);
           if (uniqueMode === "bg" && bgI > fgI) return true;
           if (uniqueMode === "fg" && bgI < fgI) return true;
@@ -319,43 +351,74 @@
         };
 
         const copySVG = () => {
-          const CELL_W = 160, CELL_H = 100, HEADER_W = 100, HEADER_H = 60;
+          const CARD_W = 180, CARD_H = 280, GAP = 16, HEADER_W = 120, HEADER_H = 80;
           const cols = activeCols, rows = activeRows;
-          const width = HEADER_W + cols.length * CELL_W;
-          const height = HEADER_H + rows.length * CELL_H;
+          const width = HEADER_W + cols.length * (CARD_W + GAP);
+          const height = HEADER_H + rows.length * (CARD_H + GAP);
 
           let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
-          svg += `<rect width="100%" height="100%" fill="#ffffff" />`;
+          svg += `<rect width="100%" height="100%" fill="#fafafa" />`;
 
           // Headers
           cols.forEach((c, i) => {
-            const x = HEADER_W + i * CELL_W;
-            svg += `<rect x="${x}" y="0" width="${CELL_W}" height="${HEADER_H}" fill="#f5f5f5" />`;
-            svg += `<text x="${x + CELL_W/2}" y="${HEADER_H/2 + 5}" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle" fill="#737373">${c}</text>`;
+            const x = HEADER_W + i * (CARD_W + GAP);
+            svg += `<text x="${x + CARD_W/2}" y="${HEADER_H/2 + 5}" font-family="monospace" font-size="14" font-weight="900" text-anchor="middle" fill="#d4d4d4">${c}</text>`;
           });
           rows.forEach((r, i) => {
-            const y = HEADER_H + i * CELL_H;
-            svg += `<rect x="0" y="${y}" width="${HEADER_W}" height="${CELL_H}" fill="#f5f5f5" />`;
-            svg += `<text x="${HEADER_W - 10}" y="${y + CELL_H/2 + 5}" font-family="monospace" font-size="12" font-weight="bold" text-anchor="end" fill="#737373">${r}</text>`;
+            const y = HEADER_H + i * (CARD_H + GAP);
+            svg += `<text x="${HEADER_W - 20}" y="${y + CARD_H/2 + 5}" font-family="monospace" font-size="14" font-weight="900" text-anchor="end" fill="#d4d4d4">${r}</text>`;
           });
 
           // Matrix
           rows.forEach((bg, rowI) => {
             cols.forEach((fg, colI) => {
-              const x = HEADER_W + colI * CELL_W, y = HEADER_H + rowI * CELL_H;
+              const x = HEADER_W + colI * (CARD_W + GAP), y = HEADER_H + rowI * (CARD_H + GAP);
               const hidden = isHidden(bg, fg);
               const ratio = contrastRatio(bg, fg);
               const tension = getVisualTensionScore(bg, fg);
+              const pass3 = ratio >= 3, pass45 = ratio >= 4.5, pass7 = ratio >= 7;
 
-              svg += `<rect x="${x}" y="${y}" width="${CELL_W}" height="${CELL_H}" fill="${bg}" />`;
-              if (!hidden) {
-                svg += `<text x="${x + 10}" y="${y + 30}" font-family="sans-serif" font-size="20" font-weight="bold" fill="${fg}">${ratio}:1</text>`;
-                svg += `<text x="${x + 10}" y="${y + 55}" font-family="sans-serif" font-size="10" fill="${fg}">Text: ${fg}</text>`;
-                svg += `<text x="${x + 10}" y="${y + 70}" font-family="sans-serif" font-size="10" fill="${fg}">BG: ${bg}</text>`;
-                if (tension >= 5) svg += `<text x="${x + CELL_W - 25}" y="${y + 30}" font-size="16">⚠️</text>`;
-              } else {
-                 svg += `<rect x="${x}" y="${y}" width="${CELL_W}" height="${CELL_H}" fill="white" fill-opacity="0.8" />`;
+              if (hidden) {
+                  svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" rx="40" fill="#ffffff" stroke="#f0f0f0" stroke-width="1" />`;
+                  svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H * 0.5}" rx="40" fill="${bg}" opacity="0.1" />`;
+                  return;
               }
+
+              // Card Body
+              svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" rx="40" fill="#ffffff" stroke="${showBorder ? fg : '#f0f0f0'}" stroke-width="${showBorder ? 2 : 1}" />`;
+
+              // Color Section
+              // Complex path for rounded top + straight bottom
+              const r = 40;
+              const h = CARD_H * 0.5;
+              svg += `<path d="M${x+r} ${y} H${x+CARD_W-r} A${r} ${r} 0 0 1 ${x+CARD_W} ${y+r} V${y+h} H${x} V${y+r} A${r} ${r} 0 0 1 ${x+r} ${y}" fill="${bg}" />`;
+
+              // Big Ratio
+              svg += `<text x="${x + CARD_W/2}" y="${y + h*0.6}" font-family="sans-serif" font-size="36" font-weight="900" text-anchor="middle" fill="${fg}">${ratio}:1</text>`;
+              svg += `<text x="${x + CARD_W/2}" y="${y + h*0.6 + 20}" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="${fg}" opacity="0.6" style="text-transform:uppercase; letter-spacing:2px">Contrast</text>`;
+
+              if (tension >= 5) svg += `<text x="${x + CARD_W - 35}" y="${y + 40}" font-size="16">⚠️</text>`;
+
+              // Metadata Section
+              const metaY = y + h + 30;
+              svg += `<text x="${x + 25}" y="${metaY}" font-family="monospace" font-size="10" font-weight="900" fill="#d4d4d4">${bg}</text>`;
+              svg += `<text x="${x + CARD_W - 25}" y="${metaY}" font-family="sans-serif" font-size="8" font-weight="900" text-anchor="end" fill="#d4d4d4" style="text-transform:uppercase">Background</text>`;
+
+              svg += `<text x="${x + 25}" y="${metaY + 18}" font-family="monospace" font-size="10" font-weight="900" fill="#171717">${fg}</text>`;
+              svg += `<text x="${x + CARD_W - 25}" y="${metaY + 18}" font-family="sans-serif" font-size="8" font-weight="900" text-anchor="end" fill="#171717" style="text-transform:uppercase">Text</text>`;
+
+              // Dividers & Passes
+              svg += `<line x1="${x+25}" y1="${metaY+35}" x2="${x+CARD_W-25}" y2="${metaY+35}" stroke="#f5f5f5" />`;
+
+              const passY = metaY + 60;
+              const drawPass = (label, isPass, px) => {
+                  svg += `<text x="${px}" y="${passY}" font-family="sans-serif" font-size="14" text-anchor="middle">${isPass ? '✅' : '❌'}</text>`;
+                  svg += `<text x="${px}" y="${passY + 15}" font-family="sans-serif" font-size="7" font-weight="900" text-anchor="middle" fill="#a3a3a3" style="text-transform:uppercase">${label}</text>`;
+              };
+
+              drawPass('Icons', pass3, x + 45);
+              drawPass('AA Text', pass45, x + CARD_W/2);
+              drawPass('AAA Text', pass7, x + CARD_W - 45);
             });
           });
 
@@ -369,8 +432,30 @@
         return (
           <div className="app-layout">
             {!isCollapsed ? (
-              <aside className={`panel-container ${panelPos} p-6 gap-6`}>
-                <header className="flex justify-between items-center mb-2">
+              <aside
+                className={`panel-container ${panelPos} p-6 gap-6`}
+                style={panelPos === 'floating' ? {
+                  left: floatPos.x, top: floatPos.y,
+                  width: floatSize.w, height: floatSize.h,
+                  resize: 'both', overflow: 'auto'
+                } : {}}
+              >
+                <header className="flex justify-between items-center mb-2 panel-header"
+                  onMouseDown={(e) => {
+                    if (panelPos !== 'floating') return;
+                    const startX = e.clientX - floatPos.x;
+                    const startY = e.clientY - floatPos.y;
+                    const onMouseMove = (moveEvent) => {
+                      setFloatPos({ x: moveEvent.clientX - startX, y: moveEvent.clientY - startY });
+                    };
+                    const onMouseUp = () => {
+                      document.removeEventListener('mousemove', onMouseMove);
+                      document.removeEventListener('mouseup', onMouseUp);
+                    };
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                  }}
+                >
                   <div className="flex items-baseline gap-2">
                     <h2 className="text-xl font-black tracking-tighter uppercase">Settings</h2>
                     <span className="text-[10px] font-bold text-neutral-300 tracking-widest">PRO V3</span>
@@ -397,20 +482,51 @@
                     <RangeSlider label="Vibration Limit" value={maxTension} min={0} max={10} step={0.5} onChange={setMaxTension} thresholds={[2, 5, 8, 10]} unit="/10" />
                   </div>
 
+                  <div className="grid grid-cols-2 gap-4 border-t border-neutral-50 pt-5">
+                    <RangeSlider label="BG Lum Min" value={minBgLum} min={0} max={100} step={1} onChange={setMinBgLum} thresholds={[0, 20, 50, 80, 100]} unit="%" />
+                    <RangeSlider label="BG Lum Max" value={maxBgLum} min={0} max={100} step={1} onChange={setMaxBgLum} thresholds={[0, 20, 50, 80, 100]} unit="%" />
+                    <RangeSlider label="FG Lum Min" value={minFgLum} min={0} max={100} step={1} onChange={setMinFgLum} thresholds={[0, 20, 50, 80, 100]} unit="%" />
+                    <RangeSlider label="FG Lum Max" value={maxFgLum} min={0} max={100} step={1} onChange={setMaxFgLum} thresholds={[0, 20, 50, 80, 100]} unit="%" />
+                  </div>
+
                   <div className="space-y-4">
                     <SegmentedControl label="Mode" value={calcMode} onChange={setCalcMode} options={[{ label: 'WCAG 2.1', value: 'wcag' }, { label: 'APCA', value: 'apca' }]} />
                     <SegmentedControl label="Uniqueness" value={uniqueMode} onChange={setUniqueMode} options={[{ label: 'All', value: 'all' }, { label: 'Half (BG)', value: 'bg' }, { label: 'Half (FG)', value: 'fg' }]} />
                     <SegmentedControl label="Brightness" value={darknessFilter} onChange={setDarknessFilter} options={[{ label: 'All', value: 'all' }, { label: 'Dark BG', value: 'bg-darker' }, { label: 'Dark FG', value: 'fg-darker' }]} />
-                    <div className="flex items-center justify-between p-2 bg-neutral-50 rounded-xl border border-neutral-100">
-                      <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Hide Empty</label>
-                      <button onClick={() => setHideEmpty(!hideEmpty)} className={`w-8 h-4 rounded-full transition-all relative ${hideEmpty ? 'bg-neutral-900' : 'bg-neutral-200'}`}>
-                        <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${hideEmpty ? 'left-4.5' : 'left-0.5'}`} style={{ left: hideEmpty ? '18px' : '2px' }}></div>
-                      </button>
+                    <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center justify-between p-2 bg-neutral-50 rounded-xl border border-neutral-100">
+                        <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Hide Empty</label>
+                        <button onClick={() => setHideEmpty(!hideEmpty)} className={`w-8 h-4 rounded-full transition-all relative ${hideEmpty ? 'bg-neutral-900' : 'bg-neutral-200'}`}>
+                            <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${hideEmpty ? 'left-4.5' : 'left-0.5'}`} style={{ left: hideEmpty ? '18px' : '2px' }}></div>
+                        </button>
+                        </div>
+                        <div className="flex items-center justify-between p-2 bg-neutral-50 rounded-xl border border-neutral-100">
+                        <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Borders</label>
+                        <button onClick={() => setShowBorder(!showBorder)} className={`w-8 h-4 rounded-full transition-all relative ${showBorder ? 'bg-neutral-900' : 'bg-neutral-200'}`}>
+                            <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${showBorder ? 'left-4.5' : 'left-0.5'}`} style={{ left: showBorder ? '18px' : '2px' }}></div>
+                        </button>
+                        </div>
                     </div>
-                    <div className="space-y-1.5"><label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Font Family</label>
-                      <select value={font} onChange={(e) => setFont(e.target.value)} className="w-full text-[11px] font-bold border border-neutral-100 rounded-xl p-2.5 bg-neutral-50 outline-none">
-                        <option value="Inter">Inter (Sans)</option><option value="'Playfair Display', serif">Playfair (Serif)</option><option value="'JetBrains Mono', monospace">JetBrains (Mono)</option><option value="Georgia">Georgia (Serif)</option>
-                      </select></div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Font Family</label>
+                      <input type="text" placeholder="Search Google Fonts..." className="w-full p-2.5 bg-neutral-50 border border-neutral-100 rounded-xl text-[10px] font-bold outline-none" value={fontSearch} onChange={e => setFontSearch(e.target.value)} />
+                      <select value={font} onChange={(e) => {
+                        const f = e.target.value;
+                        setFont(f);
+                        if (!['Inter', "'Playfair Display', serif", "'JetBrains Mono', monospace", 'Georgia'].includes(f)) {
+                           const link = document.createElement('link');
+                           link.href = `https://fonts.googleapis.com/css2?family=${f.replace(/ /g, '+')}:wght@400;900&display=swap`;
+                           link.rel = 'stylesheet';
+                           document.head.appendChild(link);
+                        }
+                      }} className="w-full text-[11px] font-bold border border-neutral-100 rounded-xl p-2.5 bg-neutral-50 outline-none max-h-32">
+                        <option value="Inter">Inter (Sans)</option>
+                        <option value="'Playfair Display', serif">Playfair (Serif)</option>
+                        <option value="'JetBrains Mono', monospace">JetBrains (Mono)</option>
+                        <option value="Georgia">Georgia (Serif)</option>
+                        {fontSearch && <option value={fontSearch}>{fontSearch} (Load from Google)</option>}
+                      </select>
+                    </div>
                     <button onClick={copySVG} className="w-full py-3 bg-neutral-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all active:scale-95">{copyStatus}</button>
                   </div>
 
@@ -420,9 +536,9 @@
                     <input type="text" placeholder="Search colors..." className="w-full p-2.5 bg-neutral-50 border border-neutral-100 rounded-xl text-[10px] font-bold outline-none focus:ring-1 focus:ring-neutral-200" value={search} onChange={e => setSearch(e.target.value)} />
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5"><div className="flex justify-between items-center px-1"><span className="text-[8px] font-black text-neutral-300 uppercase">Rows</span><button onClick={()=>setRowFilters({})} className="text-[8px] font-black text-neutral-300 hover:text-black">Reset</button></div>
-                        <div className="max-h-36 overflow-y-auto space-y-1 border border-neutral-50 rounded-xl p-1.5">{filteredColors.map(c => <TriStateFilter key={c} color={c} state={rowFilters[c] || 0} onChange={v => setRowFilters({...rowFilters, [c]: v})} />)}</div></div>
+                        <div className="max-h-[500px] overflow-y-auto space-y-1 border border-neutral-50 rounded-xl p-1.5">{filteredColors.map(c => <TriStateFilter key={c} color={c} state={rowFilters[c] || 0} onChange={v => setRowFilters({...rowFilters, [c]: v})} />)}</div></div>
                       <div className="space-y-1.5"><div className="flex justify-between items-center px-1"><span className="text-[8px] font-black text-neutral-300 uppercase">Cols</span><button onClick={()=>setColFilters({})} className="text-[8px] font-black text-neutral-300 hover:text-black">Reset</button></div>
-                        <div className="max-h-36 overflow-y-auto space-y-1 border border-neutral-50 rounded-xl p-1.5">{filteredColors.map(c => <TriStateFilter key={c} color={c} state={colFilters[c] || 0} onChange={v => setColFilters({...colFilters, [c]: v})} />)}</div></div>
+                        <div className="max-h-[500px] overflow-y-auto space-y-1 border border-neutral-50 rounded-xl p-1.5">{filteredColors.map(c => <TriStateFilter key={c} color={c} state={colFilters[c] || 0} onChange={v => setColFilters({...colFilters, [c]: v})} />)}</div></div>
                     </div>
                   </div>
                 </div>
@@ -433,11 +549,21 @@
 
             <main className={`grid-area transition-all duration-300 ${!isCollapsed && panelPos === 'left' ? 'pl-[380px]' : !isCollapsed && panelPos === 'right' ? 'pr-[380px]' : !isCollapsed && panelPos === 'top' ? 'pt-[35vh]' : ''}`}>
                 <div className="grid-wrapper">
-                    <div className="inline-grid gap-4" style={{ gridTemplateColumns: `100px repeat(${activeCols.length}, 160px)` }}>
-                        <div className="sticky-header corner flex flex-col items-end justify-end p-3 gap-2 border-b border-neutral-100">
-                            <div className="flex gap-3">
-                                <button onClick={() => setRowSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="text-[9px] font-black uppercase text-neutral-400 hover:text-black">Row {rowSortOrder === 'asc' ? '↑' : '↓'}</button>
-                                <button onClick={() => setColSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="text-[9px] font-black uppercase text-neutral-400 hover:text-black">Col {colSortOrder === 'asc' ? '↑' : '↓'}</button>
+                    <div className="inline-grid gap-4" style={{ gridTemplateColumns: `120px repeat(${activeCols.length}, 180px)` }}>
+                        <div className="sticky-header corner flex flex-col items-end justify-end p-3 gap-3 border-b border-neutral-100">
+                            <div className="flex flex-col gap-2 items-end">
+                                <div className="flex gap-2">
+                                    <span className="text-[7px] font-black uppercase text-neutral-300">Sort Rows:</span>
+                                    <button onClick={() => setRowSortBy('hue')} className={`text-[8px] font-black uppercase ${rowSortBy === 'hue' ? 'text-black' : 'text-neutral-300'}`}>Hue</button>
+                                    <button onClick={() => setRowSortBy('lightness')} className={`text-[8px] font-black uppercase ${rowSortBy === 'lightness' ? 'text-black' : 'text-neutral-300'}`}>Lum</button>
+                                    <button onClick={() => setRowSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="text-[8px] font-black uppercase text-blue-500">{rowSortOrder === 'asc' ? '↑' : '↓'}</button>
+                                </div>
+                                <div className="flex gap-2">
+                                    <span className="text-[7px] font-black uppercase text-neutral-300">Sort Cols:</span>
+                                    <button onClick={() => setColSortBy('hue')} className={`text-[8px] font-black uppercase ${colSortBy === 'hue' ? 'text-black' : 'text-neutral-300'}`}>Hue</button>
+                                    <button onClick={() => setColSortBy('lightness')} className={`text-[8px] font-black uppercase ${colSortBy === 'lightness' ? 'text-black' : 'text-neutral-300'}`}>Lum</button>
+                                    <button onClick={() => setColSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="text-[8px] font-black uppercase text-blue-500">{colSortOrder === 'asc' ? '↑' : '↓'}</button>
+                                </div>
                             </div>
                             <div className="text-[10px] font-black text-neutral-200 uppercase tracking-[0.2em]">BG / FG</div>
                         </div>
@@ -459,7 +585,7 @@
                                     const hidden = isHidden(bg, fg);
                                     return (
                                         <div key={bg+fg} className={`transition-all duration-300 ${hidden ? "opacity-5 grayscale blur-[1px] pointer-events-none scale-95" : ""}`}>
-                                            <Card bg={bg} fg={fg} mode={calcMode} font={font} tensionLimit={maxTension} />
+                                            <Card bg={bg} fg={fg} mode={calcMode} font={font} tensionLimit={maxTension} showBorder={showBorder} />
                                         </div>
                                     );
                                 })}
