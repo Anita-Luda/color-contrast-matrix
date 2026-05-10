@@ -1,27 +1,40 @@
-Analiza Rozwojowa - WCAG Matrix
+# Analiza Rozwojowa - WCAG Matrix Tool
 
-Obecny stan narzędzia:
-Narzędzie posiada zaawansowane filtrowanie, detekcję napięcia wizualnego oraz minimalistyczny, neutralny interfejs. System eksportu SVG pozwala na łatwe przenoszenie wyników do narzędzi projektowych.
+## Stan obecny
+Narzędzie zostało sprofesjonalizowane pod kątem UI/UX, wydajności oraz funkcjonalności audytorskich. Kluczowe usprawnienia obejmują:
+- Zaawansowany system skalowania (Grid Scale + Card Width) przy zachowaniu czytelności nagłówków.
+- Tryb testowania fontów z podziałem na Nagłówek (H1) i Paragraf (P).
+- Pełną kontrolę nad typografią (wielkość, grubość, rodzaje fontów).
+- Trójstanowe filtry kolorów (Włącz/Wyłącz/Neutralny) z próbkami kolorystycznymi.
+- Dynamiczne sortowanie i filtrowanie oparte na relacjach jasności (Luminance).
+- Eksport do formatu SVG zoptymalizowany pod Figmę.
 
-Dziury funkcjonalne i potencjał rozwoju:
+## Potencjalne "dziury" funkcjonalne (Dalszy Rozwój)
 
-1. Wsparcie dla APCA (Accessible Perceptual Contrast Algorithm):
-   - [ZREALIZOWANO] Dodano przełącznik trybu między WCAG 2.1 a APCA.
+1.  **Dostępność samego narzędzia:**
+    - Mimo że narzędzie służy do sprawdzania WCAG, samo w sobie wymaga audytu pod kątem obsługi czytnikami ekranu (aria-labels, role).
+    - Brak pełnej obsługi klawiaturą w sekcji filtrów trójstanowych.
 
-2. Symulacja ślepoty barw (Color Blindness Simulation):
-   - Możliwość nałożenia filtrów (Protanopia, Deuteranopia, Tritanopia) na całą macierz.
+2.  **Zaawansowane modele kolorów:**
+    - Obecnie wspierany jest WCAG 2.1 oraz eksperymentalny APCA. Warto dodać wsparcie dla WCAG 3 (jeśli specyfikacja się ustabilizuje) oraz inne przestrzenie barwne (np. OKLCH dla lepszej percepcji jasności).
 
-3. Import bezpośrednio z Figmy/Adobe XD:
-   - Integracja przez API lub wtyczkę, zamiast ręcznego wklejania HEXów.
+3.  **Zarządzanie paletami:**
+    - Brak możliwości zapisywania zestawów kolorów w `localStorage` lub eksportu/importu plików JSON z konfiguracją.
+    - Brak integracji z zewnętrznymi API (np. Adobe Color, Coolors).
 
-4. Sugestie korekty (Color Suggestion):
-   - Jeśli para kolorów jest blisko progu (np. 4.4:1), narzędzie mogłoby sugerować minimalną zmianę jasności jednego z kolorów, aby osiągnąć cel (4.5:1).
+4.  **Raportowanie:**
+    - Brak generatora raportów PDF/HTML podsumowującego wszystkie błędy w tabeli dla klienta końcowego.
 
-5. Testowanie na różnych fontach:
-   - [ZREALIZOWANO] Dodano selektor rodziny fontów (Serif, Sans, Mono) do weryfikacji czytelności.
+5.  **Symulacje wad wzroku:**
+    - Warto dodać filtry nakładane na całą macierz symulujące protanopię, deuteranopię itp., aby audytor widział, jak kolory zlewają się dla różnych użytkowników.
 
-6. Grupowanie kolorów:
-   - Możliwość definiowania grup (np. "Primary", "Status", "Gray Scale") i filtrowania macierzy według tych grup.
+6.  **Wydajność przy ekstremalnych listach:**
+    - Przy listach >50 kolorów (macierz 2500 kart) React może zacząć gubić klatki. Rozwiązaniem byłoby wprowadzenie wirtualizacji wierszy i kolumn (windowing).
 
-7. Rozszerzona detekcja napięcia:
-   - Obecny algorytm bierze pod uwagę nasycenie i barwę. Można go rozbudować o dane dotyczące "Blue-Light" stress i specyficznych zestawień (np. czerwień na niebieskim).
+## Co warto dodać w przyszłości?
+
+- **Smart Suggestions:** Automatyczna propozycja zmiany koloru (np. o 2-3 stopnie jasności), aby spełnić wymogi WCAG przy minimalnej zmianie wizualnej.
+- **Dark Mode Preview:** Szybki przełącznik odwracający całą paletę, aby sprawdzić jak kolory zachowają się w trybie ciemnym.
+- **Copy to Clipboard:** Możliwość szybkiego skopiowania konkretnej pary kolorów jako CSS/SCSS/Tailwind.
+- **Batch Actions:** Masowe wykluczanie kolorów o niskim nasyceniu.
+- **Interactive Tooltips:** Po najechaniu na kartę, szczegółowe wyjaśnienie dlaczego dany test (np. Icons) przeszedł lub nie.

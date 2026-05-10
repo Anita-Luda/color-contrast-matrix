@@ -41,6 +41,11 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
+      :root {
+        --scale: 1;
+        --card-base-w: 200px;
+        --card-gap: 16px;
+      }
       body, html {
         margin: 0; padding: 0; height: 100%; overflow: hidden;
         font-family: 'Inter', sans-serif; background: #fafafa;
@@ -54,27 +59,29 @@
       .custom-scrollbar::-webkit-scrollbar-thumb { background: #f0f0f0; }
       .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #e5e5e5; }
 
-      .app-layout { display: flex; height: 100vh; position: relative; }
+      .app-layout { display: flex; height: 100vh; width: 100vw; overflow: hidden; position: relative; }
+      .app-layout.top { flex-direction: column; }
+      .app-layout.bottom { flex-direction: column-reverse; }
+      .app-layout.left { flex-direction: row; }
+      .app-layout.right { flex-direction: row-reverse; }
 
       .panel-container {
         background: #ffffff;
-        border: 1px solid #f0f0f0;
+        border: 0 solid #f0f0f0;
         box-shadow: 0 8px 32px rgba(0,0,0,0.03); z-index: 1000;
-        overflow-y: auto;
-        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease, width 0.3s ease, height 0.3s ease, left 0.3s ease, top 0.3s ease, right 0.3s ease, bottom 0.3s ease;
+        overflow: hidden;
         display: flex; flex-direction: column;
+        flex-shrink: 0;
       }
-      .panel-container.top { width: 100%; height: auto; max-height: 80vh; position: absolute; top: 0; border-bottom: 1px solid #f0f0f0; resize: vertical; }
-      .panel-container.bottom { width: 100%; height: auto; max-height: 80vh; position: absolute; bottom: 0; border-top: 1px solid #f0f0f0; resize: vertical; }
-      .panel-container.left { width: 380px; height: 100%; position: absolute; left: 0; border-right: 1px solid #f0f0f0; resize: horizontal; }
-      .panel-container.right { width: 380px; height: 100%; position: absolute; right: 0; border-left: 1px solid #f0f0f0; resize: horizontal; }
+      .panel-container.top { width: 100%; height: 180px; min-height: 100px; border-bottom-width: 1px; resize: vertical; }
+      .panel-container.bottom { width: 100%; height: 180px; min-height: 100px; border-top-width: 1px; resize: vertical; }
+      .panel-container.left { width: 380px; min-width: 250px; height: 100%; border-right-width: 1px; resize: horizontal; }
+      .panel-container.right { width: 380px; min-width: 250px; height: 100%; border-left-width: 1px; resize: horizontal; }
       .panel-container.floating {
         width: 450px; height: 70vh; position: absolute;
-        z-index: 2000;
-        border-radius: 2rem;
-        cursor: default;
+        z-index: 2000; border-radius: 2rem; border-width: 1px;
         box-shadow: 0 20px 50px rgba(0,0,0,0.06);
-        border: 1px solid rgba(255, 255, 255, 0.4);
+        resize: both;
       }
       .panel-header { cursor: grab; border-bottom: 1px solid rgba(0,0,0,0.02); padding-bottom: 1rem; }
       .panel-header:active { cursor: grabbing; }
@@ -89,10 +96,14 @@
       .collapsible-trigger:hover { color: #171717; }
       .collapsible-content { padding: 1rem 0; }
 
-      .grid-area { flex: 1; overflow: auto; position: relative; display: flex; justify-content: center; }
+      .grid-area {
+        flex: 1; overflow: auto; position: relative; display: block;
+        --card-w: calc(var(--card-base-w) * var(--scale));
+        --card-h-top: calc(140px * var(--scale));
+      }
       .grid-wrapper { padding: 40px; display: inline-grid; }
 
-      .sticky-header { position: sticky; background: #fafafa; z-index: 100; }
+      .sticky-header { position: sticky; background: #fafafa; z-index: 100; transform: scale(1) !important; }
       .sticky-header.col { top: 0; padding-bottom: 16px; border-bottom: 1px solid #f0f0f0; }
       .sticky-header.row { left: 0; border-right: 1px solid #f0f0f0; background: #fafafa; }
       .sticky-header.corner { z-index: 110; top: 0; left: 0; background: #fafafa; }
@@ -262,7 +273,7 @@
         );
       };
 
-      const Card = ({ bg, fg, mode, font, tensionLimit, showBorder, fontTestMode, testText, testFontSize, testFontWeight }) => {
+      const Card = ({ bg, fg, mode, font, tensionLimit, showBorder, fontTestMode, testText, testFontSize, testFontWeight, headingEnabled, headingText, headingSize, headingWeight, cardScale }) => {
         const ratio = useMemo(() => contrastRatio(bg, fg), [bg, fg]);
         const apca = useMemo(() => apcaContrast(fg, bg), [bg, fg]);
         const tension = useMemo(() => getVisualTensionScore(bg, fg), [bg, fg]);
@@ -274,27 +285,51 @@
         const val = mode === 'apca' ? apca : ratio;
         const suffix = mode === 'apca' ? '' : ':1';
 
+        const scale = cardScale / 100;
+        const borderRadius = 2.5 * scale;
+        const topHeight = 140 * scale;
+
         return (
-          <div className="w-[200px] rounded-[2.5rem] overflow-hidden transition-all flex flex-col hover:shadow-2xl hover:scale-[1.02] hover:z-10 bg-white shadow-sm border border-neutral-100"
-               style={{ border: showBorder ? `2px solid ${fg}` : '' }}>
+          <div className="overflow-hidden transition-all flex flex-col hover:shadow-2xl hover:scale-[1.02] hover:z-10 bg-white shadow-sm border border-neutral-100"
+               style={{
+                 width: 'var(--card-w)',
+                 borderRadius: `${borderRadius}rem`,
+                 border: showBorder ? `2px solid ${fg}` : ''
+               }}>
 
             {/* Top part - Dynamic Background */}
-            <div className="h-[140px] shadow-sm z-10 relative overflow-hidden flex flex-col justify-center px-5" style={{ background: bg, color: fg }}>
+            <div className="shadow-sm z-10 relative overflow-hidden flex flex-col justify-center"
+                 style={{
+                   background: bg, color: fg,
+                   height: 'var(--card-h-top)',
+                   padding: `${1.25 * scale}rem`
+                 }}>
+
               {tension >= tensionLimit && (
-                <div className="absolute top-4 right-4 text-base" title={`Vibration Score: ${tension}`}>⚠️</div>
+                <div className="absolute top-2 right-2" style={{ fontSize: `${1 * scale}rem` }} title={`Vibration Score: ${tension}`}>⚠️</div>
               )}
 
               {fontTestMode ? (
-                  <div style={{ fontFamily: font, fontSize: `${testFontSize}px`, fontWeight: testFontWeight, lineHeight: 1.2 }}>
-                      {testText || "Sample Text"}
+                  <div className="space-y-2" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                      {headingEnabled && (
+                        <div style={{ fontFamily: font, fontSize: `${headingSize}px`, fontWeight: headingWeight, lineHeight: 1.1 }}>
+                          {headingText || "Heading"}
+                        </div>
+                      )}
+                      <div style={{ fontFamily: font, fontSize: `${testFontSize}px`, fontWeight: testFontWeight, lineHeight: 1.2 }}>
+                          {testText || "Sample Text"}
+                      </div>
                   </div>
               ) : (
                   <>
-                      <div className="font-normal text-4xl mb-2" style={{ fontFamily: 'Inter' }}>
+                      <div className="font-mono opacity-50 mb-1" style={{ fontSize: `${9 * scale}px`, letterSpacing: '0.05em' }}>
+                        {bg} / {fg}
+                      </div>
+                      <div className="font-normal mb-1" style={{ fontFamily: 'Inter', fontSize: `${36 * scale}px` }}>
                         {val}{suffix}
                       </div>
 
-                      <div className="space-y-0.5 text-[10px] uppercase font-medium tracking-wider opacity-80" style={{ fontFamily: 'Inter' }}>
+                      <div className="space-y-0.5 uppercase font-medium tracking-wider opacity-80" style={{ fontFamily: 'Inter', fontSize: `${10 * scale}px` }}>
                         <div>
                           {isPass3 ? "✅" : "❌"} {mode === 'apca' ? 'Lc 30' : '3:1'}
                         </div>
@@ -310,13 +345,18 @@
             </div>
 
             {/* Bottom part - White Background */}
-            <div className="p-5 text-xs flex flex-col gap-2" style={{ background: "#ffffff", color: "#000000" }}>
+            <div className="flex flex-col gap-1" style={{
+                 background: "#ffffff", color: "#000000",
+                 padding: `${1.25 * scale}rem`,
+                 fontSize: `${12 * scale}px`,
+                 height: `calc(80px * var(--scale))`
+            }}>
               <div className="flex justify-between">
                 <div className="font-mono">{bg} ⇆ {fg}</div>
                 <div className="font-medium">{val}{suffix}</div>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex justify-between opacity-60">
                 <div className="flex items-center gap-1">{isPass3 ? "✅" : "❌"} Icons</div>
                 <div className="flex items-center gap-1">{isPass45 ? "✅" : "❌"} AA</div>
                 <div className="flex items-center gap-1">{isPass7 ? "✅" : "❌"} AAA</div>
@@ -349,6 +389,11 @@
         const [testText, setTestText] = useState('Przykładowy Tekst');
         const [testFontSize, setTestFontSize] = useState(16);
         const [testFontWeight, setTestFontWeight] = useState(400);
+        const [headingEnabled, setHeadingEnabled] = useState(false);
+        const [headingText, setHeadingText] = useState('Nagłówek');
+        const [headingSize, setHeadingSize] = useState(32);
+        const [headingWeight, setHeadingWeight] = useState(700);
+        const [cardBaseWidth, setCardBaseWidth] = useState(200);
 
         const [minBgLum, setMinBgLum] = useState(0);
         const [maxBgLum, setMaxBgLum] = useState(100);
@@ -422,14 +467,17 @@
         };
 
         const copySVG = () => {
-          const CARD_W = 200, CARD_H = 256, GAP = 16, HEADER_W = 120, HEADER_H = 80;
+          const scale = gridScale / 100;
+          const CARD_W = cardBaseWidth * scale;
+          const CARD_H_TOP = 140 * scale;
+          const CARD_H_BOT = 80 * scale;
+          const GAP = 16 * scale;
+          const HEADER_W = 120;
+          const HEADER_H = 80;
           const cols = activeCols, rows = activeRows;
 
-          // Pre-calculate which cards are NOT hidden to determine if we can skip columns/rows
-          // (Though here we use activeCols/activeRows which are already filtered)
-
           const width = HEADER_W + cols.length * (CARD_W + GAP);
-          const height = HEADER_H + rows.length * (CARD_H + GAP);
+          const height = HEADER_H + rows.length * (CARD_H_TOP + CARD_H_BOT + GAP + 32 * scale);
 
           let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
           svg += `<rect width="100%" height="100%" fill="#fafafa" />`;
@@ -440,16 +488,18 @@
             svg += `<text x="${x + CARD_W/2}" y="${HEADER_H/2 + 5}" font-family="monospace" font-size="14" font-weight="500" text-anchor="middle" fill="#737373">${c}</text>`;
           });
           rows.forEach((r, i) => {
-            const y = HEADER_H + i * (CARD_H + GAP);
-            svg += `<text x="${HEADER_W - 20}" y="${y + CARD_H/2 + 5}" font-family="monospace" font-size="14" font-weight="500" text-anchor="end" fill="#737373">${r}</text>`;
+            const rowTotalH = (CARD_H_TOP + CARD_H_BOT + GAP + 32 * scale);
+            const y = HEADER_H + i * rowTotalH;
+            svg += `<text x="${HEADER_W - 20}" y="${y + rowTotalH/2}" font-family="monospace" font-size="14" font-weight="500" text-anchor="end" fill="#737373">${r}</text>`;
           });
 
           // Matrix
           rows.forEach((bg, rowI) => {
             cols.forEach((fg, colI) => {
-              const x = HEADER_W + colI * (CARD_W + GAP), y = HEADER_H + rowI * (CARD_H + GAP);
+              const rowTotalH = (CARD_H_TOP + CARD_H_BOT + GAP + 32 * scale);
+              const x = HEADER_W + colI * (CARD_W + GAP), y = HEADER_H + rowI * rowTotalH + 16 * scale;
               const hidden = isHidden(bg, fg, rows, cols);
-              if (hidden) return; // Completely skip hidden cards for Figma cleanliness
+              if (hidden) return;
 
               const ratio = contrastRatio(bg, fg);
               const apca = apcaContrast(fg, bg);
@@ -462,44 +512,51 @@
               const pass45 = calcMode === 'apca' ? Math.abs(apca) >= 45 : ratio >= 4.5;
               const pass7 = calcMode === 'apca' ? Math.abs(apca) >= 75 : ratio >= 7;
 
+              const r = 40 * scale;
+              const h = CARD_H_TOP;
+              const totalCardH = CARD_H_TOP + CARD_H_BOT;
+
               // Card Body
-              svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" rx="40" fill="#ffffff" stroke="${showBorder ? fg : '#f0f0f0'}" stroke-width="${showBorder ? 2 : 1}" />`;
+              svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${totalCardH}" rx="${r}" fill="#ffffff" stroke="${showBorder ? fg : '#f0f0f0'}" stroke-width="${showBorder ? 2 : 1}" />`;
 
               // Color Section (Top)
-              const r = 40;
-              const h = 140; // Matching the 140px height in CSS
               svg += `<path d="M${x+r} ${y} H${x+CARD_W-r} A${r} ${r} 0 0 1 ${x+CARD_W} ${y+r} V${y+h} H${x} V${y+r} A${r} ${r} 0 0 1 ${x+r} ${y}" fill="${bg}" />`;
 
               if (fontTestMode) {
-                  // Font Test Mode in SVG
-                  svg += `<text x="${x + 20}" y="${y + h/2 + 5}" font-family="${font.replace(/'/g, "")}" font-size="${testFontSize}" font-weight="${testFontWeight}" fill="${fg}">${testText || "Sample"}</text>`;
+                  const padding = 20 * scale;
+                  let currentY = y + padding + 15 * scale;
+                  if (headingEnabled) {
+                      svg += `<text x="${x + padding}" y="${currentY}" font-family="${font.replace(/'/g, "")}" font-size="${headingSize * scale}" font-weight="${headingWeight}" fill="${fg}">${headingText || "Heading"}</text>`;
+                      currentY += headingSize * scale * 1.2;
+                  }
+                  svg += `<text x="${x + padding}" y="${currentY}" font-family="${font.replace(/'/g, "")}" font-size="${testFontSize * scale}" font-weight="${testFontWeight}" fill="${fg}">${testText || "Sample"}</text>`;
               } else {
-                  // Standard Info View
-                  svg += `<text x="${x + 20}" y="${y + 60}" font-family="Inter, sans-serif" font-size="36" font-weight="400" fill="${fg}">${val}${suffix}</text>`;
+                  svg += `<text x="${x + 20 * scale}" y="${y + 30 * scale}" font-family="monospace" font-size="${9 * scale}" fill="${fg}" opacity="0.5">${bg} / ${fg}</text>`;
+                  svg += `<text x="${x + 20 * scale}" y="${y + 75 * scale}" font-family="Inter, sans-serif" font-size="${36 * scale}" font-weight="400" fill="${fg}">${val}${suffix}</text>`;
 
-                  const passLabelsY = y + 90;
+                  const passLabelsY = y + 105 * scale;
                   const drawPassSmall = (label, isPass, px) => {
-                      svg += `<text x="${px}" y="${passLabelsY}" font-family="Inter, sans-serif" font-size="10" font-weight="500" fill="${fg}" opacity="0.8">${isPass ? '✅' : '❌'} ${label}</text>`;
+                      svg += `<text x="${px}" y="${passLabelsY}" font-family="Inter, sans-serif" font-size="${10 * scale}" font-weight="500" fill="${fg}" opacity="0.8">${isPass ? '✅' : '❌'} ${label}</text>`;
                   };
-                  drawPassSmall(calcMode === 'apca' ? 'Lc 30' : '3:1', pass3, x + 20);
-                  drawPassSmall(calcMode === 'apca' ? 'Lc 45' : '4.5:1', pass45, x + 75);
-                  drawPassSmall(calcMode === 'apca' ? 'Lc 75' : '7:1', pass7, x + 130);
+                  drawPassSmall(calcMode === 'apca' ? 'Lc 30' : '3:1', pass3, x + 20 * scale);
+                  drawPassSmall(calcMode === 'apca' ? 'Lc 45' : '4.5:1', pass45, x + 75 * scale);
+                  drawPassSmall(calcMode === 'apca' ? 'Lc 75' : '7:1', pass7, x + 130 * scale);
               }
 
-              if (tension >= maxTension) svg += `<text x="${x + CARD_W - 35}" y="${y + 35}" font-size="16">⚠️</text>`;
+              if (tension >= maxTension) svg += `<text x="${x + CARD_W - 35 * scale}" y="${y + 35 * scale}" font-size="${16 * scale}">⚠️</text>`;
 
               // Bottom Section (Meta)
-              const metaY = y + h + 30;
-              svg += `<text x="${x + 20}" y="${metaY}" font-family="monospace" font-size="12" font-weight="500" fill="#000000">${bg} ⇆ ${fg}</text>`;
-              svg += `<text x="${x + CARD_W - 20}" y="${metaY}" font-family="Inter, sans-serif" font-size="12" font-weight="500" text-anchor="end" fill="#000000">${val}${suffix}</text>`;
+              const metaY = y + h + 30 * scale;
+              svg += `<text x="${x + 20 * scale}" y="${metaY}" font-family="monospace" font-size="${12 * scale}" font-weight="500" fill="#000000">${bg} ⇆ ${fg}</text>`;
+              svg += `<text x="${x + CARD_W - 20 * scale}" y="${metaY}" font-family="Inter, sans-serif" font-size="${12 * scale}" font-weight="500" text-anchor="end" fill="#000000">${val}${suffix}</text>`;
 
-              const passY = metaY + 35;
+              const passY = metaY + 30 * scale;
               const drawStatus = (label, isPass, px) => {
-                  svg += `<text x="${px}" y="${passY}" font-family="Inter, sans-serif" font-size="10" font-weight="500" fill="#737373">${isPass ? '✅' : '❌'} ${label}</text>`;
+                  svg += `<text x="${px}" y="${passY}" font-family="Inter, sans-serif" font-size="${10 * scale}" font-weight="500" fill="#737373">${isPass ? '✅' : '❌'} ${label}</text>`;
               };
-              drawStatus('Icons', pass3, x + 20);
-              drawStatus('AA', pass45, x + 85);
-              drawStatus('AAA', pass7, x + 145);
+              drawStatus('Icons', pass3, x + 20 * scale);
+              drawStatus('AA', pass45, x + 85 * scale);
+              drawStatus('AAA', pass7, x + 145 * scale);
             });
           });
 
@@ -511,14 +568,13 @@
         };
 
         return (
-          <div className="app-layout">
+          <div className={`app-layout ${panelPos}`}>
             {!isCollapsed ? (
               <aside
-                className={`panel-container ${panelPos} p-6 gap-6`}
+                className={`panel-container ${panelPos} p-6 pb-2`}
                 style={panelPos === 'floating' ? {
                   left: floatPos.x, top: floatPos.y,
-                  width: floatSize.w, height: floatSize.h,
-                  resize: 'both', overflow: 'auto'
+                  width: floatSize.w, height: floatSize.h
                 } : {}}
               >
                 <header className="flex justify-between items-center mb-2 panel-header"
@@ -552,9 +608,9 @@
                   </div>
                 </header>
 
-                <div className={`space-y-4 ${(panelPos === 'top' || panelPos === 'bottom') ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-0 items-start space-y-0' : ''}`}>
+                <div className={`flex-1 overflow-y-auto pr-2 pb-6 space-y-4 custom-scrollbar ${(panelPos === 'top' || panelPos === 'bottom') ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-8 gap-y-0 items-start space-y-0' : ''}`}>
                   <Collapsible title="Colors Input">
-                    <div className="space-y-1.5">
+                    <div className="space-y-3">
                       <div className="flex justify-between items-center"><label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">HEX List</label>
                         <div className="flex gap-2"><button onClick={() => addColor("#000000")} className="text-[8px] font-medium px-2 py-0.5 bg-neutral-100 rounded uppercase hover:bg-neutral-200">+ Black</button>
                           <button onClick={() => addColor("#ffffff")} className="text-[8px] font-medium px-2 py-0.5 bg-neutral-100 rounded uppercase hover:bg-neutral-200">+ White</button></div></div>
@@ -611,13 +667,33 @@
                       </div>
 
                       {fontTestMode && (
-                        <div className="space-y-4 p-3 bg-neutral-50 rounded-xl border border-neutral-100">
-                            <div className="space-y-1">
-                                <label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">Custom Text</label>
-                                <input type="text" className="w-full p-2 bg-white border border-neutral-100 rounded-lg text-[11px] outline-none" value={testText} onChange={e => setTestText(e.target.value)} />
+                        <div className="space-y-5 p-3 bg-neutral-50 rounded-xl border border-neutral-100">
+                            <div className="flex items-center justify-between border-b border-neutral-100 pb-2 mb-2">
+                                <label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">Heading 1</label>
+                                <button onClick={() => setHeadingEnabled(!headingEnabled)} className={`w-8 h-4 rounded-full transition-all relative ${headingEnabled ? 'bg-neutral-900' : 'bg-neutral-200'}`}>
+                                    <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${headingEnabled ? 'left-4.5' : 'left-0.5'}`} style={{ left: headingEnabled ? '18px' : '2px' }}></div>
+                                </button>
                             </div>
-                            <RangeSlider label="Font Size" value={testFontSize} min={8} max={72} step={1} onChange={setTestFontSize} thresholds={[12, 16, 24, 32, 48]} unit="px" />
-                            <RangeSlider label="Weight" value={testFontWeight} min={100} max={900} step={100} onChange={setTestFontWeight} thresholds={[100, 400, 700, 900]} />
+
+                            {headingEnabled && (
+                              <div className="space-y-4 animate-in fade-in duration-300">
+                                  <div className="space-y-1">
+                                      <label className="text-[9px] font-medium text-neutral-400 uppercase tracking-widest">Heading Text</label>
+                                      <input type="text" className="w-full p-2 bg-white border border-neutral-100 rounded-lg text-[11px] outline-none" value={headingText} onChange={e => setHeadingText(e.target.value)} />
+                                  </div>
+                                  <RangeSlider label="H1 Size" value={headingSize} min={8} max={120} step={1} onChange={setHeadingSize} thresholds={[24, 32, 48, 64]} unit="px" />
+                                  <RangeSlider label="H1 Weight" value={headingWeight} min={100} max={900} step={100} onChange={setHeadingWeight} thresholds={[100, 400, 700, 900]} />
+                              </div>
+                            )}
+
+                            <div className="space-y-4 pt-2 border-t border-neutral-100">
+                                <div className="space-y-1">
+                                    <label className="text-[9px] font-medium text-neutral-400 uppercase tracking-widest">Paragraph Text</label>
+                                    <textarea rows="2" className="w-full p-2 bg-white border border-neutral-100 rounded-lg text-[11px] outline-none resize-none" value={testText} onChange={e => setTestText(e.target.value)} />
+                                </div>
+                                <RangeSlider label="P Size" value={testFontSize} min={8} max={72} step={1} onChange={setTestFontSize} thresholds={[12, 16, 24, 32, 48]} unit="px" />
+                                <RangeSlider label="P Weight" value={testFontWeight} min={100} max={900} step={100} onChange={setTestFontWeight} thresholds={[100, 400, 700, 900]} />
+                            </div>
                         </div>
                       )}
 
@@ -685,8 +761,32 @@
                   </Collapsible>
 
                   <Collapsible title="Visual Matrix">
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                         <RangeSlider label="Grid Scale" value={gridScale} min={20} max={200} step={1} onChange={setGridScale} thresholds={[20, 50, 100, 150, 200]} unit="%" />
+                        <RangeSlider label="Card Width" value={cardBaseWidth} min={100} max={600} step={10} onChange={setCardBaseWidth} thresholds={[200, 300, 400, 600]} unit="px" />
+
+                        <div className="space-y-3 p-3 bg-neutral-50 rounded-xl border border-neutral-100">
+                            <label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">Matrix Sorting</label>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <span className="text-[8px] font-medium text-neutral-400 uppercase tracking-wider">Rows</span>
+                                    <div className="flex gap-1.5">
+                                        <button onClick={() => setRowSortBy('hue-lum')} className={`flex-1 py-1 text-[8px] border rounded transition-all ${rowSortBy === 'hue-lum' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200'}`}>H&gt;L</button>
+                                        <button onClick={() => setRowSortBy('lum-hue')} className={`flex-1 py-1 text-[8px] border rounded transition-all ${rowSortBy === 'lum-hue' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200'}`}>L&gt;H</button>
+                                        <button onClick={() => setRowSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="px-2 py-1 text-[8px] border rounded bg-white text-blue-500 border-neutral-200">{rowSortOrder === 'asc' ? '↑' : '↓'}</button>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <span className="text-[8px] font-medium text-neutral-400 uppercase tracking-wider">Cols</span>
+                                    <div className="flex gap-1.5">
+                                        <button onClick={() => setColSortBy('hue-lum')} className={`flex-1 py-1 text-[8px] border rounded transition-all ${colSortBy === 'hue-lum' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200'}`}>H&gt;L</button>
+                                        <button onClick={() => setColSortBy('lum-hue')} className={`flex-1 py-1 text-[8px] border rounded transition-all ${colSortBy === 'lum-hue' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200'}`}>L&gt;H</button>
+                                        <button onClick={() => setColSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="px-2 py-1 text-[8px] border rounded bg-white text-blue-500 border-neutral-200">{colSortOrder === 'asc' ? '↑' : '↓'}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <button onClick={copySVG} className="w-full py-3 bg-neutral-900 text-white rounded-xl text-[10px] font-medium uppercase tracking-widest hover:bg-black transition-all active:scale-95">{copyStatus}</button>
 
                         <div className="space-y-3 border-t border-neutral-50 pt-3">
@@ -720,38 +820,30 @@
               <button onClick={() => setIsCollapsed(false)} className="fixed bottom-8 right-8 w-14 h-14 bg-neutral-900 text-white rounded-full shadow-2xl flex items-center justify-center z-[2000] hover:scale-110 transition-all active:scale-95 text-xl">⚙️</button>
             )}
 
-            <main className={`grid-area transition-all duration-300 ${!isCollapsed && panelPos === 'left' ? 'ml-[380px]' : !isCollapsed && panelPos === 'right' ? 'mr-[380px]' : !isCollapsed && panelPos === 'top' ? 'mt-[200px]' : !isCollapsed && panelPos === 'bottom' ? 'mb-[200px]' : ''}`}>
-                <div className="grid-wrapper" style={{ transform: `scale(${gridScale / 100})`, transformOrigin: 'top center' }}>
-                    <div className="inline-grid" style={{ gridTemplateColumns: `120px repeat(${activeCols.length}, 216px)`, gap: '0px 16px' }}>
-                        <div className="sticky-header corner flex flex-col items-end justify-end p-3 gap-3 border-b border-neutral-100 mb-4">
-                            <div className="flex flex-col gap-2 items-end">
-                                <div className="flex gap-2">
-                                    <span className="text-[7px] font-medium uppercase text-neutral-300">Sort Rows:</span>
-                                    <button onClick={() => setRowSortBy('hue-lum')} className={`text-[8px] font-medium uppercase ${rowSortBy === 'hue-lum' ? 'text-black' : 'text-neutral-300'}`}>H&gt;L</button>
-                                    <button onClick={() => setRowSortBy('lum-hue')} className={`text-[8px] font-medium uppercase ${rowSortBy === 'lum-hue' ? 'text-black' : 'text-neutral-300'}`}>L&gt;H</button>
-                                    <button onClick={() => setRowSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="text-[8px] font-medium uppercase text-blue-500">{rowSortOrder === 'asc' ? '↑' : '↓'}</button>
-                                </div>
-                                <div className="flex gap-2">
-                                    <span className="text-[7px] font-medium uppercase text-neutral-300">Sort Cols:</span>
-                                    <button onClick={() => setColSortBy('hue-lum')} className={`text-[8px] font-medium uppercase ${colSortBy === 'hue-lum' ? 'text-black' : 'text-neutral-300'}`}>H&gt;L</button>
-                                    <button onClick={() => setColSortBy('lum-hue')} className={`text-[8px] font-medium uppercase ${colSortBy === 'lum-hue' ? 'text-black' : 'text-neutral-300'}`}>L&gt;H</button>
-                                    <button onClick={() => setColSortOrder(o => o === 'asc' ? 'desc' : 'asc')} className="text-[8px] font-medium uppercase text-blue-500">{colSortOrder === 'asc' ? '↑' : '↓'}</button>
-                                </div>
-                            </div>
+            <main
+                className={`grid-area`}
+                style={{
+                    '--scale': gridScale / 100,
+                    '--card-base-w': `${cardBaseWidth}px`
+                }}
+            >
+                <div className="grid-wrapper">
+                    <div className="inline-grid" style={{ gridTemplateColumns: `120px repeat(${activeCols.length}, var(--card-w))`, gap: '0px var(--card-gap)' }}>
+                        <div className="sticky-header corner flex flex-col items-end justify-end p-3 border-b border-neutral-100 mb-4">
                             <div className="text-[10px] font-medium text-neutral-200 uppercase tracking-[0.2em]">BG / FG</div>
                         </div>
 
                         {activeCols.map(c => (
-                            <div key={c} className="sticky-header col flex flex-col items-center justify-center p-3 border-b border-neutral-100 mb-4">
-                                <div className="w-10 h-1.5 rounded-full mb-2" style={{ backgroundColor: c }}></div>
-                                <div className="font-mono text-[10px] text-neutral-500 font-medium tracking-tighter">{c}</div>
+                            <div key={c} className="sticky-header col flex flex-col items-center justify-center p-3 border-b border-neutral-100 mb-4 overflow-hidden">
+                                <div className="w-10 h-1.5 rounded-full mb-2 shrink-0" style={{ backgroundColor: c }}></div>
+                                <div className="font-mono text-[10px] text-neutral-500 font-medium tracking-tighter truncate w-full text-center">{c}</div>
                             </div>
                         ))}
 
                         {activeRows.map(bg => (
                             <React.Fragment key={bg}>
-                                <div className="sticky-header row flex items-center justify-end pr-5 gap-3 h-[256px] border-r border-neutral-100 py-4">
-                                    <div className="font-mono text-[10px] text-neutral-500 font-medium tracking-tighter">{bg}</div>
+                                <div className="sticky-header row flex items-center justify-end pr-5 gap-3 border-r border-neutral-100 py-4" style={{ height: 'calc(var(--card-h-top) + 80px * var(--scale) + 32px)' }}>
+                                    <div className="font-mono text-[11px] text-neutral-900 font-bold tracking-tight">{bg}</div>
                                     <div className="w-1.5 h-10 rounded-full" style={{ backgroundColor: bg }}></div>
                                 </div>
                                 {activeCols.map(fg => {
@@ -759,7 +851,9 @@
                                     return (
                                         <div key={bg+fg} className={`transition-all duration-300 py-4 ${hidden ? "opacity-5 grayscale blur-[1px] pointer-events-none scale-95" : ""}`}>
                                             <Card bg={bg} fg={fg} mode={calcMode} font={font} tensionLimit={maxTension} showBorder={showBorder}
-                                                  fontTestMode={fontTestMode} testText={testText} testFontSize={testFontSize} testFontWeight={testFontWeight} />
+                                                  fontTestMode={fontTestMode} testText={testText} testFontSize={testFontSize} testFontWeight={testFontWeight}
+                                                  headingEnabled={headingEnabled} headingText={headingText} headingSize={headingSize} headingWeight={headingWeight}
+                                                  cardScale={gridScale} />
                                         </div>
                                     );
                                 })}
