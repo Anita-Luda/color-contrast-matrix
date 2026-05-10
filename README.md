@@ -1,40 +1,33 @@
-# WCAG Matrix Tool - Professional Pro V3
+# WCAG Color Contrast Matrix Professional v3
 
-Zaawansowane narzędzie do audytu kontrastu i czytelności kolorów zgodne ze standardami WCAG 2.1 oraz APCA. Zaprojektowane z myślą o profesjonalnych designerach i audytorach dostępności.
+Profesjonalne narzędzie do analizy kontrastu kolorów w standardach WCAG 2.1 oraz APCA. Umożliwia masowe sprawdzanie dostępności całych palet kolorystycznych w czytelnej formie macierzy.
 
-## Kluczowe Funkcje
+## Główne Funkcje
 
-### 1. Interaktywna Macierz Kontrastu
-- **Dynamiczne Skalowanie:** Suwak "Grid Scale" pozwala na płynne powiększanie i pomniejszanie całej macierzy.
-- **Szerokość Kart:** Niezależna regulacja szerokości kart (`Card Width`) umożliwia testowanie długich fraz i całych akapitów.
-- **Inteligentne Nagłówki:** Nagłówki wierszy i kolumn pozostają "przyklejone" (sticky) i zachowują ostrość (skala 1:1) niezależnie od powiększenia kart.
+- **Macierz Kontrastu**: Generuje zestawienie wszystkich kombinacji kolorów z listy wejściowej.
+- **Tryby Obliczeń**: Wspiera standardowy WCAG 2.1 (ratio) oraz nowoczesny algorytm APCA (Lc).
+- **Zaawansowane Filtrowanie**:
+  - Filtrowanie trójstanowe dla wierszy i kolumn (Włącz / Wyklucz / Neutralny).
+  - Filtry jasności (Luminance) osobno dla tła i tekstu.
+  - Szybkie przełączniki: "Tło ciemniejsze od tekstu" i odwrotnie.
+  - Ukrywanie pustych wierszy/kolumn.
+- **Tryb Testu Typografii**: Podgląd tekstów (nagłówki H1, paragrafy) bezpośrednio na kartach kolorów z możliwością zmiany fontów, rozmiarów i wag.
+- **Eksport do SVG**: Generowanie wysokiej jakości grafiki wektorowej z zachowaniem wszystkich ustawień podglądu.
+- **Analiza Napięcia Wizualnego (Vibration)**: Ostrzeżenia przed kombinacjami kolorów, które mogą powodować męczliwość wzroku.
 
-### 2. Zaawansowane Filtrowanie i Sortowanie
-- **Trójstanowe Filtry Kolorów:**
-  - Jeden klik: **Uwzględnij** (pokaż tylko ten kolor).
-  - Drugi klik: **Wyklucz** (ukryj ten kolor).
-  - Trzeci klik: **Neutralny** (powrót).
-  - Każdy filtr posiada próbkę koloru dla łatwej identyfikacji.
-- **Relacje Jasności:** Szybkie filtrowanie par, gdzie tło jest ciemniejsze od tekstu lub odwrotnie.
-- **Progi Kontrastu:** Płynna regulacja minimalnego i maksymalnego kontrastu oraz limitu drgania barw (Vibration Limit).
+## Jak używać
 
-### 3. Tryb Testowania Fontów (Typography)
-- **Dual View:** Możliwość jednoczesnego testowania Nagłówka (H1) i Paragrafu (P) w każdej karcie.
-- **Pełna Kontrola:** Niezależne suwaki dla rozmiaru (`px`) i grubości (`weight`) fontu.
-- **Zawijanie Tekstu:** Tekst automatycznie zawija się wewnątrz kart, co pozwala na realistyczny podgląd składu.
+1. Wprowadź listę kodów HEX w polu "Colors Input". Możesz szybko dodać czysty czarny (#000000) i biały (#ffffff) przyciskami pomocniczymi.
+2. Dostosuj progi kontrastu w sekcji "Thresholds", aby odfiltrować kombinacje niespełniające Twoich wymagań.
+3. Skorzystaj z filtrów trójstanowych przy próbkach kolorów, aby skupić się na konkretnych barwach.
+4. Włącz "Font Test Mode", aby sprawdzić jak kolory zachowują się przy różnych wielkościach pisma.
+5. Użyj przycisku "Copy SVG", aby skopiować gotową grafikę do schowka (idealne do Figmy lub Adobe XD).
 
-### 4. Profesjonalny Interfejs
-- **Neutralna Estetyka:** UI oparte na idealnych szarościach, co minimalizuje zjawisko symultanicznego kontrastu i nie zakłóca percepcji badanych barw.
-- **Elastyczny Układ:** Panel ustawień można przypiąć do dowolnej krawędzi ekranu (Top, Bottom, Left, Right) lub używać jako pływającego okna.
-- **Eksport SVG:** Funkcja "Copy SVG" generuje kod gotowy do wklejenia bezpośrednio do Figmy lub Adobe XD, zachowując wszystkie parametry wizualne.
+## Architektura
 
-## Instrukcja Szybkiego Startu
+Narzędzie jest zbudowane jako jednostronicowa aplikacja (SPA) oparta na:
+- React (UI logic)
+- Tailwind CSS (stylizacja)
+- Babel (kompilacja in-browser)
 
-1. Wklej listę kolorów HEX w polu **Colors Input**.
-2. Użyj przycisków **+ BLACK** / **+ WHITE**, aby szybko dodać podstawowe barwy.
-3. Przejdź do sekcji **Typography**, aby włączyć tryb testowania fontów.
-4. Skorzystaj z sekcji **Filters**, aby wyizolować konkretne kolory do głębszej analizy.
-5. Skopiuj wynik jako SVG, aby udokumentować audyt w narzędziu projektowym.
-
----
-*Narzędzie stworzone dla maksymalnej precyzji audytorskiej.*
+Całość zawarta jest w jednym pliku HTML, co ułatwia przenoszenie i korzystanie offline.
