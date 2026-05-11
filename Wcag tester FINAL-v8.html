@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WCAG Matrix Professional v8</title>
+    <title>WCAG Matrix Professional v8.1</title>
 
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -111,9 +111,6 @@
         z-index: 110; top: 0; left: 0; background: #fafafa;
         box-shadow: 4px 4px 12px -4px rgba(0,0,0,0.05);
       }
-      /* Screen-sticky row labels override */
-      .screen-sticky-row { position: fixed; left: 40px; z-index: 150; border-right: none; background: transparent; box-shadow: none; pointer-events: none; }
-      .screen-sticky-row > * { pointer-events: auto; background: #fafafa; border-right: 1px solid #f0f0f0; }
 
       .tri-state-filter {
         display: flex; align-items: center; gap: 0.6rem; padding: 0.35rem 0.6rem;
@@ -333,7 +330,7 @@
         const scale = cardScale / 100;
         const borderRadius = 2.5 * scale;
         const cardW = baseW * scale;
-        const cardH = fontTestMode ? cardW : (baseW * 1.3 * scale); // 1:1 for font test, else fixed ratio
+        const cardH = fontTestMode ? cardW : (baseW * 1.6 * scale);
 
         return (
           <div className={`overflow-hidden transition-all flex flex-col hover:shadow-2xl hover:scale-[1.02] hover:z-10 bg-white shadow-lg ${showBorder ? 'border-2' : 'border-0'}`}
@@ -518,7 +515,7 @@
           const scale = gridScale / 100;
           const CARD_W = cardBaseWidth * scale;
           const CARD_H_BOT = 100 * scale;
-          const CARD_H_TOP = fontTestMode ? CARD_W : (cardBaseWidth * 1.3 * scale - CARD_H_BOT);
+          const CARD_H_TOP = fontTestMode ? CARD_W : (cardBaseWidth * 1.6 * scale - CARD_H_BOT);
           const totalCardH = CARD_H_TOP + CARD_H_BOT;
 
           const GAP = 16 * scale;
@@ -647,7 +644,7 @@
                 >
                   <div className="flex items-baseline gap-2">
                     <h2 className="text-xl font-medium tracking-tighter uppercase">Settings</h2>
-                    <span className="text-[10px] font-medium text-neutral-300 tracking-widest">PRO V8</span>
+                    <span className="text-[10px] font-medium text-neutral-300 tracking-widest">PRO V8.1</span>
                   </div>
                   <div className="flex gap-2">
                     <select value={panelPos} onChange={(e) => setPanelPos(e.target.value)} className="text-[9px] font-medium border rounded px-1.5 uppercase">
@@ -802,7 +799,7 @@
                             <label className="text-[9px] font-medium text-neutral-600 uppercase tracking-widest">Matrix Sorting</label>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <span className="text-[8px] font-medium text-neutral-400 uppercase tracking-wider">Rows</span>
+                                    <span className="text-[8px] font-medium text-neutral-600 uppercase tracking-wider">Rows</span>
                                     <div className="flex gap-1.5">
                                         <button onClick={() => setRowSortBy('hue-lum')} className={`flex-1 py-1 text-[8px] border rounded transition-all ${rowSortBy === 'hue-lum' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200'}`}>H&gt;L</button>
                                         <button onClick={() => setRowSortBy('lum-hue')} className={`flex-1 py-1 text-[8px] border rounded transition-all ${rowSortBy === 'lum-hue' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200'}`}>L&gt;H</button>
@@ -857,16 +854,16 @@
             >
                 <div className="grid-wrapper">
                     <div className="inline-grid" style={{
-                        gridTemplateColumns: `120px repeat(${activeCols.length}, var(--card-w))`,
+                        gridTemplateColumns: `minmax(0, 1fr) 120px repeat(${activeCols.length}, var(--card-w)) minmax(0, 1fr)`,
                         gap: 'var(--card-gap)',
-                        margin: '0 auto'
+                        width: '100%'
                     }}>
-                        <div className="sticky-header corner flex flex-col items-end justify-end p-3 border-b border-neutral-100">
+                        <div className="sticky-header corner flex flex-col items-end justify-end p-3 border-b border-neutral-100" style={{ gridColumn: '2', left: stickToScreen ? '0' : 'auto' }}>
                             <div className="text-[10px] font-medium text-neutral-200 uppercase tracking-[0.2em]">BG / FG</div>
                         </div>
 
-                        {activeCols.map(c => (
-                            <div key={c} className="sticky-header col flex flex-col items-center justify-center p-3 border-b border-neutral-100 overflow-hidden bg-neutral-50">
+                        {activeCols.map((c, idx) => (
+                            <div key={c} className="sticky-header col flex flex-col items-center justify-center p-3 border-b border-neutral-100 overflow-hidden bg-neutral-50" style={{ gridColumn: `${idx + 3}` }}>
                                 <div className="w-10 h-1.5 rounded-full mb-2 shrink-0" style={{ backgroundColor: c }}></div>
                                 <div className="font-mono text-[10px] text-neutral-500 font-medium tracking-tighter truncate w-full text-center">{c}</div>
                             </div>
@@ -874,14 +871,14 @@
 
                         {activeRows.map(bg => (
                             <React.Fragment key={bg}>
-                                <div className={`sticky-header row flex items-center justify-end pr-5 gap-3 border-r border-neutral-100 py-4 ${stickToScreen ? 'screen-sticky-row' : ''}`}>
+                                <div className="sticky-header row flex items-center justify-end pr-5 gap-3 border-r border-neutral-100 py-4 bg-neutral-50" style={{ gridColumn: '2', left: stickToScreen ? '0' : 'auto' }}>
                                     <div className="font-mono text-[11px] text-neutral-900 font-bold tracking-tight">{bg}</div>
                                     <div className="w-1.5 h-10 rounded-full" style={{ backgroundColor: bg }}></div>
                                 </div>
-                                {activeCols.map(fg => {
+                                {activeCols.map((fg, idx) => {
                                     const hidden = isHidden(bg, fg, activeRows, activeCols);
                                     return (
-                                        <div key={bg+fg} className={`transition-all duration-300 ${hidden ? "opacity-0 pointer-events-none" : ""}`}>
+                                        <div key={bg+fg} className={`transition-all duration-300 ${hidden ? "opacity-0 pointer-events-none" : ""}`} style={{ gridColumn: `${idx + 3}` }}>
                                             {!hidden && (
                                                 <Card bg={bg} fg={fg} mode={calcMode} font={font} headingFont={headingFont} tensionLimit={maxTension}
                                                       showBorder={showBorder} fontTestMode={fontTestMode} testText={testText} testFontSize={testFontSize} testFontWeight={testFontWeight}

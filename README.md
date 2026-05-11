@@ -1,33 +1,26 @@
-# WCAG Color Contrast Matrix Professional v3
+# WCAG Matrix Professional v8.1
 
-Profesjonalne narzędzie do analizy kontrastu kolorów w standardach WCAG 2.1 oraz APCA. Umożliwia masowe sprawdzanie dostępności całych palet kolorystycznych w czytelnej formie macierzy.
+Zaawansowane narzędzie do analizy kontrastu kolorystycznego zgodnie ze standardami WCAG 2.1 oraz APCA. Zaprojektowane z myślą o profesjonalnych designerach potrzebujących precyzyjnego narzędzia o neutralnej estetyce.
 
-## Główne Funkcje
+## Kluczowe Funkcje
 
-- **Macierz Kontrastu**: Generuje zestawienie wszystkich kombinacji kolorów z listy wejściowej.
-- **Tryby Obliczeń**: Wspiera standardowy WCAG 2.1 (ratio) oraz nowoczesny algorytm APCA (Lc).
-- **Zaawansowane Filtrowanie**:
-  - Filtrowanie trójstanowe dla wierszy i kolumn (Włącz / Wyklucz / Neutralny).
-  - Filtry jasności (Luminance) osobno dla tła i tekstu.
-  - Szybkie przełączniki: "Tło ciemniejsze od tekstu" i odwrotnie.
-  - Ukrywanie pustych wierszy/kolumn.
-- **Tryb Testu Typografii**: Podgląd tekstów (nagłówki H1, paragrafy) bezpośrednio na kartach kolorów z możliwością zmiany fontów, rozmiarów i wag.
-- **Eksport do SVG**: Generowanie wysokiej jakości grafiki wektorowej z zachowaniem wszystkich ustawień podglądu.
-- **Analiza Napięcia Wizualnego (Vibration)**: Ostrzeżenia przed kombinacjami kolorów, które mogą powodować męczliwość wzroku.
+- **Dwa tryby obliczeń**: Standardowy WCAG 2.1 oraz nowoczesny APCA (Advanced Perceptual Contrast Algorithm).
+- **Tryb Typografii**: Podgląd par kolorystycznych na konkretnych krojach pisma (Sans, Serif, Mono, Display) z możliwością ładowania fontów Google.
+- **Filtrowanie Tri-state**: Możliwość włączania, wykluczania lub ignorowania konkretnych kolorów w macierzy (osobno dla wierszy i kolumn).
+- **Analiza Wibracji**: Wykrywanie par kolorów o wysokim nasyceniu, które mogą powodować dyskomfort wizualny (chromostereopsis).
+- **Relacje Jasności**: Filtrowanie par na podstawie tego, czy tło jest ciemniejsze od tekstu (lub odwrotnie).
+- **Inteligentne Skalowanie**: Skalowanie 1:1 całego interfejsu macierzy (od 20% do 200%).
+- **Eksport do Figmy**: Funkcja "Copy SVG" generuje kod gotowy do wklejenia bezpośrednio do Figmy z zachowaniem wszystkich stylów i warstw.
+- **Sticky Headers**: Nagłówki wierszy i kolumn pozostają widoczne przy scrollowaniu. Dodatkowa opcja "Stick Rows to Screen" pozwala na przypięcie etykiet wierszy do krawędzi ekranu nawet przy wycentrowanej macierzy.
 
-## Jak używać
+## Obsługa
 
-1. Wprowadź listę kodów HEX w polu "Colors Input". Możesz szybko dodać czysty czarny (#000000) i biały (#ffffff) przyciskami pomocniczymi.
-2. Dostosuj progi kontrastu w sekcji "Thresholds", aby odfiltrować kombinacje niespełniające Twoich wymagań.
-3. Skorzystaj z filtrów trójstanowych przy próbkach kolorów, aby skupić się na konkretnych barwach.
-4. Włącz "Font Test Mode", aby sprawdzić jak kolory zachowują się przy różnych wielkościach pisma.
-5. Użyj przycisku "Copy SVG", aby skopiować gotową grafikę do schowka (idealne do Figmy lub Adobe XD).
+1. **Wprowadzanie kolorów**: Wklej kody HEX oddzielone przecinkami lub spacjami w polu "HEX List".
+2. **Dodawanie czystych kolorów**: Użyj przycisków "+ Black" i "+ White", aby szybko dodać czyste odcienie.
+3. **Filtrowanie**: Użyj sliderów kontrastu, aby zawęzić wyniki. Klikaj próbki kolorów w sekcji filtrów (1 klik: tylko ten kolor, 2 kliki: wyklucz ten kolor, 3 kliki: reset).
+4. **Typografia**: Włącz "Font Test Mode", aby zobaczyć kolory na żywym tekście. Możesz wybrać fonty z kategorii lub wpisać nazwę dowolnego Google Font.
+5. **Eksport**: Użyj przycisku "Copy SVG" i wklej wynik (Ctrl+V) bezpośrednio w Figmie.
 
-## Architektura
+## Filozofia Projektowa (v8)
 
-Narzędzie jest zbudowane jako jednostronicowa aplikacja (SPA) oparta na:
-- React (UI logic)
-- Tailwind CSS (stylizacja)
-- Babel (kompilacja in-browser)
-
-Całość zawarta jest w jednym pliku HTML, co ułatwia przenoszenie i korzystanie offline.
+Interfejs został zaprojektowany w skali neutralnych szarości (`neutral` z Tailwind), aby zminimalizować wpływ otoczenia na percepcję kolorów (zjawisko kontrastu równoczesnego). Miękkie zaokrąglenia (2.5rem), wysoka czytelność typografii i przemyślany UX sprawiają, że narzędzie nadaje się do codziennej pracy w profesjonalnych studiach projektowych.

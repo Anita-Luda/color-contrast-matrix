@@ -1,31 +1,31 @@
-# Analiza Rozwojowa Narzędzia WCAG Matrix
+# Analiza Rozwojowa Narzędzia WCAG Matrix (v8.1)
 
 ## Obecny Stan
-Narzędzie oferuje zaawansowane możliwości filtrowania i podglądu, które wykraczają poza standardowe kalkulatory kontrastu. Wprowadzenie standardu APCA oraz trybu testu typografii czyni je profesjonalnym narzędziem dla UI/UX Designerów.
+Wersja 8.1 stanowi dojrzałe, profesjonalne narzędzie do analizy systemów kolorystycznych. Wprowadzenie zaawansowanego filtrowania tri-state, trybu typograficznego z obsługą Google Fonts oraz precyzyjnego eksportu do SVG (Figma) rozwiązuje większość problemów zgłaszanych przez designerów.
 
 ## Zidentyfikowane Luki Funkcjonalne
 
-1. **Brak wsparcia dla kolorów z kanałem Alpha**: Obecnie narzędzie operuje tylko na stałych kodach HEX. Dodanie wsparcia dla RGBA/HSLA pozwoliłoby na testowanie półprzezroczystych nakładek na tła.
-2. **Brak automatycznej generacji palet**: Użytkownik musi ręcznie podawać kolory. Narzędzie mogłoby sugerować kolory dopełniające lub generować skale jasności (tints/shades) dla podanego koloru bazowego.
-3. **Ograniczona mobilność panelu**: Choć panel można dokować w 4 miejscach lub ustawić jako pływający, na małych ekranach mobilnych obsługa macierzy jest utrudniona.
-4. **Brak historii zmian**: Odświeżenie strony powoduje utratę wprowadzonych kolorów i ustawień.
+1. **Wsparcie dla kolorów z kanałem Alpha**: Narzędzie operuje głównie na kodach HEX. Dodanie obsługi RGBA/HSLA pozwoliłoby na testowanie "kolorów nakładkowych" (overlays) na różnych tłach, co jest standardem w nowoczesnych Design Systemach.
+2. **Automatyczna korekta (Auto-fix)**: Brak funkcji, która po znalezieniu pary niespełniającej norm, sugerowałaby najbliższy możliwy odcień (minimalna zmiana jasności), który "przepchnie" test.
+3. **Zarządzanie sesją**: Brak zapisu stanu (Local Storage) - po odświeżeniu strony użytkownik musi ponownie wklejać kolory i ustawiać filtry.
+4. **Brak trybu Multi-Text**: Obecnie testujemy jedną parę (BG/FG). W rzeczywistości na jednym tle często występuje kilka kolorów tekstu (np. Primary, Secondary, Link). Macierz mogłaby oferować "paski testowe".
 
 ## Propozycje Rozwojowe (Roadmap)
 
 ### Krótki termin (Quick Wins)
-- **Local Storage Support**: Zapisywanie listy kolorów i ustawień filtrów w przeglądarce użytkownika.
-- **Import z CSS/SASS/Figma**: Parsowanie plików tekstowych w poszukiwaniu kodów kolorów.
-- **Wsparcie dla kolorów systemowych**: Szybkie przełączniki dla Dark Mode / Light Mode.
+- **Persistence Layer**: Implementacja `localStorage`, aby zapamiętać ostatnio wpisane kolory i ustawienia filtrów.
+- **Import z URL/CSS**: Możliwość podania adresu strony www, z której narzędzie automatycznie wyciągnie użyte kolory.
+- **Copy as CSS/Object**: Przycisk do kopiowania pary kolorów jako zmienne CSS lub obiekt JS.
 
 ### Średni termin
-- **Generator Dostępnych Par**: Przycisk "Sugestia", który znajduje najbliższy dostępny odcień (minimalna zmiana jasności), aby spełnić wymogi WCAG.
-- **Symulator ślepoty barw (Color Blindness Simulator)**: Nakładka na całą macierz symulująca różne rodzaje daltonizmu (Protanopia, Deuteranopia, etc.).
-- **Interaktywne karty**: Możliwość kliknięcia w kartę, aby otworzyć pełnoekranowy podgląd "Hero Section" z tą parą kolorów.
+- **Color Blindness Simulation**: Integracja filtrów SVG symulujących protanopię, deuteranopię i tritanopię bezpośrednio na kartach kolorów.
+- **Accessibility Report Generator**: Generowanie jednostronicowego podsumowania (PDF/Print) z analizą całej palety, gotowego do przekazania klientowi lub deweloperom.
+- **Smart Grouping**: Automatyczne grupowanie kolorów o podobnej barwie (hue), aby macierz była bardziej czytelna przy 20+ kolorach.
 
 ### Długi termin
-- **Wtyczka do Figmy**: Przeniesienie logiki narzędzia bezpośrednio do środowiska projektowego.
-- **Eksport do PDF / Raport Dostępności**: Generowanie gotowego dokumentu PDF z analizą całej palety marki dla klienta.
-- **Wsparcie dla WCAG 3.0**: Pełna implementacja standardów Silver/WCAG 3.0 w miarę ich stabilizacji.
+- **Integracja z API Figma**: Dwustronna synchronizacja - zmiany w Figmie aktualizują macierz i odwrotnie.
+- **WCAG 3.0 (Silver) Ready**: Pełna implementacja punktacji wizualnej (Visual Contrast) zgodnie z nadchodzącymi wytycznymi WCAG 3.0, wykraczająca poza samo APCA.
+- **AI Color Palette Optimizer**: Wykorzystanie prostych algorytmów do optymalizacji całej palety kolorystycznej tak, aby każda para spełniała założone minimum kontrastu przy zachowaniu spójności marki.
 
-## Wnioski
-Narzędzie w wersji v3 jest solidną bazą do profesjonalnej pracy z kolorem. Największą wartością dodaną jest połączenie surowych danych liczbowych (ratio) z wizualnym testem typografii i zaawansowanym filtrowaniem, co pozwala na szybką selekcję użytecznych par kolorystycznych z dużych systemów projektowych (Design Systems).
+## Podsumowanie
+Wersja 8.1 jest narzędziem kompletnym pod względem analitycznym. Dalszy rozwój powinien skupić się na integracji z ekosystemem narzędzi projektowych oraz na automatyzacji procesu poprawiania błędów kontrastu, a nie tylko ich wskazywania.
