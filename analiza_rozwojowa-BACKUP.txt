@@ -1,0 +1,31 @@
+# Analiza Rozwojowa Narzędzia WCAG Matrix
+
+## Obecny Stan
+Narzędzie oferuje zaawansowane możliwości filtrowania i podglądu, które wykraczają poza standardowe kalkulatory kontrastu. Wprowadzenie standardu APCA oraz trybu testu typografii czyni je profesjonalnym narzędziem dla UI/UX Designerów.
+
+## Zidentyfikowane Luki Funkcjonalne
+
+1. **Brak wsparcia dla kolorów z kanałem Alpha**: Obecnie narzędzie operuje tylko na stałych kodach HEX. Dodanie wsparcia dla RGBA/HSLA pozwoliłoby na testowanie półprzezroczystych nakładek na tła.
+2. **Brak automatycznej generacji palet**: Użytkownik musi ręcznie podawać kolory. Narzędzie mogłoby sugerować kolory dopełniające lub generować skale jasności (tints/shades) dla podanego koloru bazowego.
+3. **Ograniczona mobilność panelu**: Choć panel można dokować w 4 miejscach lub ustawić jako pływający, na małych ekranach mobilnych obsługa macierzy jest utrudniona.
+4. **Brak historii zmian**: Odświeżenie strony powoduje utratę wprowadzonych kolorów i ustawień.
+
+## Propozycje Rozwojowe (Roadmap)
+
+### Krótki termin (Quick Wins)
+- **Local Storage Support**: Zapisywanie listy kolorów i ustawień filtrów w przeglądarce użytkownika.
+- **Import z CSS/SASS/Figma**: Parsowanie plików tekstowych w poszukiwaniu kodów kolorów.
+- **Wsparcie dla kolorów systemowych**: Szybkie przełączniki dla Dark Mode / Light Mode.
+
+### Średni termin
+- **Generator Dostępnych Par**: Przycisk "Sugestia", który znajduje najbliższy dostępny odcień (minimalna zmiana jasności), aby spełnić wymogi WCAG.
+- **Symulator ślepoty barw (Color Blindness Simulator)**: Nakładka na całą macierz symulująca różne rodzaje daltonizmu (Protanopia, Deuteranopia, etc.).
+- **Interaktywne karty**: Możliwość kliknięcia w kartę, aby otworzyć pełnoekranowy podgląd "Hero Section" z tą parą kolorów.
+
+### Długi termin
+- **Wtyczka do Figmy**: Przeniesienie logiki narzędzia bezpośrednio do środowiska projektowego.
+- **Eksport do PDF / Raport Dostępności**: Generowanie gotowego dokumentu PDF z analizą całej palety marki dla klienta.
+- **Wsparcie dla WCAG 3.0**: Pełna implementacja standardów Silver/WCAG 3.0 w miarę ich stabilizacji.
+
+## Wnioski
+Narzędzie w wersji v3 jest solidną bazą do profesjonalnej pracy z kolorem. Największą wartością dodaną jest połączenie surowych danych liczbowych (ratio) z wizualnym testem typografii i zaawansowanym filtrowaniem, co pozwala na szybką selekcję użytecznych par kolorystycznych z dużych systemów projektowych (Design Systems).
