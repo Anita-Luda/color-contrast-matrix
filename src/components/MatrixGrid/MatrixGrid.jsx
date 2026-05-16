@@ -21,6 +21,10 @@ const MatrixGrid = ({
             gap: '16px'
           }}
         >
+          {/* BACKGROUND STRIPS - Layered below headers */}
+          <div className="col-header-strip" style={{ gridColumn: `2 / span ${activeCols.length}`, gridRow: '1' }}></div>
+          <div className={`row-header-strip ${stickToScreen ? 'sticky' : ''}`} style={{ gridColumn: '1', gridRow: `2 / span ${activeRows.length}` }}></div>
+
           {/* Corner Header */}
           <div
             className={`sticky-header corner ${stickToScreen ? 'stick-screen' : ''}`}
@@ -28,10 +32,6 @@ const MatrixGrid = ({
           >
             <div className="header-label">BG / FG</div>
           </div>
-
-          {/* Unified Background Strips */}
-          <div className="col-header-strip" style={{ gridColumn: `2 / span ${activeCols.length}`, gridRow: '1' }}></div>
-          <div className="row-header-strip" style={{ gridColumn: '1', gridRow: `2 / span ${activeRows.length}` }}></div>
 
           {/* Column Headers */}
           {activeCols.map((c, idx) => (

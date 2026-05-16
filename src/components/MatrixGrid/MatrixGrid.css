@@ -18,29 +18,32 @@
   width: 100%;
 }
 
-.sticky-header {
-  position: sticky;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg-header);
-}
-
-/* Background strips */
+/* Common Background Strip for Header areas */
 .col-header-strip {
   position: sticky;
   top: 0;
   z-index: 99;
   background-color: var(--bg-header);
-  border-bottom: var(--border-width, 1px) solid var(--border-panel);
+  border-bottom: var(--border-w, 1px) solid var(--border-p);
 }
 
 .row-header-strip {
-  position: sticky;
-  left: 0;
-  z-index: 98;
+  z-index: 90;
   background-color: var(--bg-header);
-  border-right: var(--border-width, 1px) solid var(--border-panel);
+  border-right: var(--border-w, 1px) solid var(--border-p);
+}
+
+.row-header-strip.sticky {
+    position: sticky;
+    left: 0;
+    z-index: 105;
+}
+
+.sticky-header {
+  position: sticky;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sticky-header.corner {
@@ -48,17 +51,17 @@
   left: 0;
   z-index: 110;
   background-color: var(--bg-header);
-  border-bottom: var(--border-width, 1px) solid var(--border-panel);
-  border-right: var(--border-width, 1px) solid var(--border-panel);
+  border-bottom: var(--border-w, 1px) solid var(--border-p);
+  border-right: var(--border-w, 1px) solid var(--border-p);
   justify-content: flex-end;
-  padding-right: var(--space-6);
+  padding-right: var(--s-6);
 }
 
 .header-label {
-  font-family: var(--f-family-mono);
-  font-size: var(--f-size-xs);
+  font-family: var(--ff-mono);
+  font-size: var(--fs-xs);
   font-weight: 700;
-  color: var(--text-muted);
+  color: var(--text-m);
   text-transform: uppercase;
   letter-spacing: 0.2em;
 }
@@ -66,46 +69,49 @@
 .sticky-header.col {
   top: 0;
   z-index: 100;
-  padding: var(--space-6) var(--space-4) var(--space-8);
+  padding: var(--s-6) var(--s-4) var(--s-8);
   flex-direction: column;
+  background-color: transparent; /* Strip handles it */
 }
 
 .swatch-indicator {
   width: 40px;
   height: 6px;
   border-radius: 10px;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--s-4);
 }
 
 .header-color-code {
-  font-family: var(--f-family-mono);
-  font-size: var(--f-size-sm);
-  color: var(--text-secondary);
-  font-weight: 700;
+  font-family: var(--ff-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-s);
+  font-weight: var(--fw-header);
   letter-spacing: -0.05em;
 }
 
 .sticky-header.row {
   left: 0;
   z-index: 90;
-  padding: var(--space-5) var(--space-8);
+  padding: var(--s-5) var(--s-8);
   justify-content: flex-end;
-  gap: var(--space-4);
-  border-right: var(--border-width, 1px) solid var(--border-panel);
+  gap: var(--s-4);
+  background-color: transparent; /* Strip handles it */
+  border-right: var(--border-w, 1px) solid var(--border-p);
 }
 
 .sticky-header.row.stick-screen {
   position: sticky;
   left: 0;
-  z-index: 105;
+  z-index: 106;
   box-shadow: 10px 0 30px rgba(0,0,0,0.04);
+  background-color: var(--bg-header);
 }
 
 .row-color-code {
-  font-family: var(--f-family-mono);
-  font-size: var(--f-size-sm);
-  color: var(--text-primary);
-  font-weight: 700;
+  font-family: var(--ff-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-p);
+  font-weight: var(--fw-header);
   letter-spacing: -0.02em;
 }
 

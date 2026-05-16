@@ -10,18 +10,39 @@ const FONT_CATEGORIES = {
 
 export const FontSelector = ({ currentFont, onSelect }) => {
   const [activeCat, setActiveCat] = React.useState(null);
+  const [search, setSearch] = React.useState('');
 
   const handleSelect = (f) => {
-    onSelect(`'${f}', sans-serif`);
-    // Preload font if not already loaded (simplified)
+    const fontName = f.trim();
+    if (!fontName) return;
+    onSelect(`'${fontName}', sans-serif`);
+    // Preload font
     const link = document.createElement('link');
-    link.href = `https://fonts.googleapis.com/css2?family=${f.replace(/ /g, '+')}:wght@100..900&display=swap`;
+    link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@100..900&display=swap`;
     link.rel = 'stylesheet';
     document.head.appendChild(link);
   };
 
+  const handleSearchSubmit = (e) => {
+    if (e.key === 'Enter') {
+      handleSelect(search);
+    }
+  };
+
   return (
     <div className="font-selector">
+      <div className="font-search-box">
+        <input
+          type="text"
+          placeholder="Search Google Font... (Enter to apply)"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearchSubmit}
+          className="font-search-input"
+        />
+        <button onClick={() => handleSelect(search)} className="font-search-btn">Add</button>
+      </div>
+
       <div className="category-tabs">
         {Object.keys(FONT_CATEGORIES).map(cat => (
           <button

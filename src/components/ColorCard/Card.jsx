@@ -34,7 +34,7 @@ const Card = ({
       id: i,
       style: {
         top: `${Math.random() * 70 + 15}%`,
-        left: `${Math.random() * 35 + 55}%`,
+        left: `${Math.random() * 40 + 55}%`,
         width: `${Math.random() * 10 + 6}px`,
         opacity: Math.random() * 0.4 + 0.2,
         animationDelay: `${Math.random() * 2}s`
@@ -43,8 +43,8 @@ const Card = ({
   }, [isCute]);
 
   const renderStatus = (pass) => {
-    if (pass) return <CheckIcon size={12} color="#22c55e" />; // Keep green for pass
-    return <XIcon size={12} color="#ef4444" />; // Keep red for fail
+    if (pass) return <CheckIcon size={12} color="var(--color-success)" />;
+    return <XIcon size={12} color="var(--color-error)" />;
   };
 
   return (
@@ -89,7 +89,7 @@ const Card = ({
             </div>
         ) : (
             <div className="indicator-group">
-                <div className="contrast-value" style={{ fontSize: `32px`, fontWeight: 'var(--f-weight-contrast)' }}>
+                <div className="contrast-value" style={{ fontSize: `32px`, fontWeight: 'var(--fw-contrast-val)' }}>
                   {val}{suffix}
                 </div>
 

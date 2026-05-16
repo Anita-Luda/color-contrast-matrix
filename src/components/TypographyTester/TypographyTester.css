@@ -1,7 +1,38 @@
 .font-selector {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
+  gap: var(--s-2);
+}
+
+.font-search-box {
+  display: flex;
+  gap: 4px;
+}
+
+.font-search-input {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: var(--rad-i);
+  border: var(--brd-w) solid var(--brd-i);
+  background: var(--bg-i);
+  color: var(--txt-p);
+  font-size: var(--fs-sm);
+  outline: none;
+}
+
+.font-search-btn {
+  padding: 6px 12px;
+  border-radius: var(--rad-i);
+  border: none;
+  background: var(--n-800);
+  color: var(--n-0);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+}
+
+[data-theme='dark'] .font-search-btn {
+  background: var(--n-200);
+  color: var(--n-1000);
 }
 
 .category-tabs {

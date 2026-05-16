@@ -28,7 +28,7 @@ function App() {
   const [hideEmpty, setHideEmpty] = useState(false);
   const [showBorder, setShowBorder] = useState(() => visualStyle === 'professional');
 
-  // When visualStyle changes, we might want to reset the border default
+  // When visualStyle changes, we update the border default
   useEffect(() => {
     setShowBorder(visualStyle === 'professional');
   }, [visualStyle]);
