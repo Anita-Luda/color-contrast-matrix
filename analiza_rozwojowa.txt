@@ -1,31 +1,15 @@
-# Analiza Rozwojowa Narzędzia WCAG Matrix (v8.1)
+# Analiza Rozwojowa SPA (v8.2)
 
-## Obecny Stan
-Wersja 8.1 stanowi dojrzałe, profesjonalne narzędzie do analizy systemów kolorystycznych. Wprowadzenie zaawansowanego filtrowania tri-state, trybu typograficznego z obsługą Google Fonts oraz precyzyjnego eksportu do SVG (Figma) rozwiązuje większość problemów zgłaszanych przez designerów.
+## Nowa Architektura
+Przejście na model SPA z Reactem i Vanilla CSS (tokeny) otwiera nowe możliwości rozwoju, które wcześniej były trudne do zaimplementowania w jednym pliku HTML.
 
-## Zidentyfikowane Luki Funkcjonalne
+## Możliwości Rozwojowe
+1. **Routing**: Dodanie podstron dla biblioteki projektów lub galerii zapisanych palet.
+2. **State Management**: Możliwość przejścia na Redux Toolkit lub Zustand przy bardzo skomplikowanych filtrach krzyżowych.
+3. **Prawdziwy Dark Mode**: Dzięki tokenom CSS, dodanie nowych motywów (np. High Contrast, Sepia) sprowadza się do zdefiniowania kilku zmiennych.
+4. **Wtyczka do przeglądarki**: Architektura React ułatwia przeniesienie logiki do rozszerzenia Chrome/Firefox.
 
-1. **Wsparcie dla kolorów z kanałem Alpha**: Narzędzie operuje głównie na kodach HEX. Dodanie obsługi RGBA/HSLA pozwoliłoby na testowanie "kolorów nakładkowych" (overlays) na różnych tłach, co jest standardem w nowoczesnych Design Systemach.
-2. **Automatyczna korekta (Auto-fix)**: Brak funkcji, która po znalezieniu pary niespełniającej norm, sugerowałaby najbliższy możliwy odcień (minimalna zmiana jasności), który "przepchnie" test.
-3. **Zarządzanie sesją**: Brak zapisu stanu (Local Storage) - po odświeżeniu strony użytkownik musi ponownie wklejać kolory i ustawiać filtry.
-4. **Brak trybu Multi-Text**: Obecnie testujemy jedną parę (BG/FG). W rzeczywistości na jednym tle często występuje kilka kolorów tekstu (np. Primary, Secondary, Link). Macierz mogłaby oferować "paski testowe".
-
-## Propozycje Rozwojowe (Roadmap)
-
-### Krótki termin (Quick Wins)
-- **Persistence Layer**: Implementacja `localStorage`, aby zapamiętać ostatnio wpisane kolory i ustawienia filtrów.
-- **Import z URL/CSS**: Możliwość podania adresu strony www, z której narzędzie automatycznie wyciągnie użyte kolory.
-- **Copy as CSS/Object**: Przycisk do kopiowania pary kolorów jako zmienne CSS lub obiekt JS.
-
-### Średni termin
-- **Color Blindness Simulation**: Integracja filtrów SVG symulujących protanopię, deuteranopię i tritanopię bezpośrednio na kartach kolorów.
-- **Accessibility Report Generator**: Generowanie jednostronicowego podsumowania (PDF/Print) z analizą całej palety, gotowego do przekazania klientowi lub deweloperom.
-- **Smart Grouping**: Automatyczne grupowanie kolorów o podobnej barwie (hue), aby macierz była bardziej czytelna przy 20+ kolorach.
-
-### Długi termin
-- **Integracja z API Figma**: Dwustronna synchronizacja - zmiany w Figmie aktualizują macierz i odwrotnie.
-- **WCAG 3.0 (Silver) Ready**: Pełna implementacja punktacji wizualnej (Visual Contrast) zgodnie z nadchodzącymi wytycznymi WCAG 3.0, wykraczająca poza samo APCA.
-- **AI Color Palette Optimizer**: Wykorzystanie prostych algorytmów do optymalizacji całej palety kolorystycznej tak, aby każda para spełniała założone minimum kontrastu przy zachowaniu spójności marki.
-
-## Podsumowanie
-Wersja 8.1 jest narzędziem kompletnym pod względem analitycznym. Dalszy rozwój powinien skupić się na integracji z ekosystemem narzędzi projektowych oraz na automatyzacji procesu poprawiania błędów kontrastu, a nie tylko ich wskazywania.
+## Luki do uzupełnienia
+- **Eksport SVG**: W wersji SPA logika eksportu musi zostać odświeżona, aby generować SVG na podstawie aktualnego stanu komponentów React.
+- **Paczki ikon**: Warto rozważyć przejście na Lucide-react dla bardziej profesjonalnych piktogramów w UI.
+- **Testy Unitowe**: Dzięki nowej strukturze możliwe jest dodanie testów Jest/Vitest dla logiki obliczeń kontrastu.
