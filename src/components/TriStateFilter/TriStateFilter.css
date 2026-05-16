@@ -21,11 +21,13 @@
 .tri-state-filter.included {
   background-color: rgba(34, 197, 94, 0.1);
   border-color: var(--color-success);
+  border-width: var(--border-width, 1px);
 }
 
 .tri-state-filter.excluded {
   background-color: rgba(239, 68, 68, 0.1);
   border-color: var(--color-error);
+  border-width: var(--border-width, 1px);
 }
 
 .color-swatch {

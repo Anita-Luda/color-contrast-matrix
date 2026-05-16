@@ -1,19 +1,26 @@
-# WCAG Matrix Professional SPA v8.2
+# WCAG Matrix Pro & Cute SPA (v8.3)
 
-Nowoczesna aplikacja jednostronicowa (SPA) zbudowana w React, służąca do zaawansowanej analizy kontrastu kolorystycznego.
+Zaawansowana aplikacja SPA do analizy kontrastu, oferująca dwa unikalne style wizualne przy zachowaniu pełnej neutralności kolorystycznej (skala szarości).
+
+## Style Wizualne
+
+### 1. Professional (Profesjonalny)
+- **Estetyka**: Minimalistyczna, surowa, z ostrymi narożnikami.
+- **Typografia**: Font 'Inter' w lekkich odmianach.
+- **Interfejs**: Bardzo dyskretny, skupiony na danych.
+- **Eksport**: Czyste, techniczne pliki SVG gotowe do dokumentacji systemów projektowych.
+
+### 2. Cute Kawaii (Uroczy)
+- **Estetyka**: Miękka, z bardzo dużymi zaokrągleniami (radius-card: 3rem).
+- **Typografia**: Font 'Quicksand' o przyjaznym charakterze.
+- **Dekoracje**: Subtelne "sparkles" i urocze ikony statusu (✨, 🌸, 👑) w skali szarości.
+- **Eksport**: Przyjazne wizualnie SVG zachowujące "miękki" charakter interfejsu.
+
+## Nowości w v8.3
+- **Przełącznik Stylów**: Możliwość błyskawicznej zmiany charakteru narzędzia bez utraty danych.
+- **Dark Mode dla obu stylów**: Pełna obsługa motywu ciemnego, niezależnie od wybranej estetyki.
+- **SVG Engine v2**: Silnik generujący SVG odzwierciedla teraz wybrany styl wizualny.
+- **Vanilla CSS Tokens**: Całe stylowanie oparte na dynamicznych tokenach CSS, co zapewnia wysoką wydajność i łatwość modyfikacji.
 
 ## Architektura
-- **Framework**: React 18 + Vite
-- **Stylizacja**: Vanilla CSS z wykorzystaniem Design Tokens (zmienne CSS)
-- **Persystencja**: localStorage dla kolorów i ustawień
-- **Optymalizacja**: Memoizacja komponentów i obliczeń dla płynnego działania dużych macierzy
-
-## Główne Funkcje
-- **Design Tokens**: Pełna tokenizacja stylów umożliwiająca łatwe dostosowanie UI.
-- **Dark Mode**: Wbudowany tryb ciemny przełączany jednym przyciskiem.
-- **Modułowość**: Każdy komponent (Sidebar, Matrix, Card) jest odizolowany i posiada własne style.
-- **Filtrowanie Tri-state**: Zaawansowane zarządzanie widocznością kolorów.
-- **Tryb Typograficzny**: Testowanie par kolorystycznych na realnych krojach pisma.
-
-## Rozwój
-Aplikacja została przepisana z monolitycznego pliku HTML na nowoczesną strukturę projektową, co pozwala na łatwą rozbudowę o nowe funkcje, takie jak symulator ślepoty barw czy integrację z zewnętrznymi API.
+Projekt zbudowany w oparciu o **React 18** i **Vite**. Logika biznesowa jest odizolowana od warstwy prezentacji, co pozwala na bezpieczne wprowadzanie zmian wizualnych przy użyciu atrybutów `data-style` i `data-theme`.

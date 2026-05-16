@@ -43,7 +43,8 @@ const Sidebar = ({
   resetAll,
   copySVG,
   panelPos, setPanelPos,
-  theme, setTheme
+  theme, setTheme,
+  visualStyle, setVisualStyle
 }) => {
 
   const addColor = useCallback((hex) => {
@@ -83,10 +84,17 @@ const Sidebar = ({
         <div className="header-actions">
           <button
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="theme-toggle"
+            className="icon-btn"
             title="Toggle Dark Mode"
           >
             {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+          <button
+            onClick={() => setVisualStyle(visualStyle === 'professional' ? 'cute' : 'professional')}
+            className="icon-btn"
+            title="Toggle Style"
+          >
+            {visualStyle === 'professional' ? '👔' : '✨'}
           </button>
           <select value={panelPos} onChange={(e) => setPanelPos(e.target.value)} className="pos-select">
             <option value="left">Left</option>
@@ -124,6 +132,7 @@ const Sidebar = ({
 
         <Collapsible title="Global Modes">
           <div className="section-stack gap-4">
+            <SegmentedControl label="Visual Style" value={visualStyle} onChange={setVisualStyle} options={[{ label: 'Professional', value: 'professional' }, { label: 'Cute Kawaii', value: 'cute' }]} />
             <SegmentedControl label="Calc Mode" value={calcMode} onChange={setCalcMode} options={[{ label: 'WCAG 2.1', value: 'wcag' }, { label: 'APCA', value: 'apca' }]} />
             <SegmentedControl label="Uniqueness" value={uniqueMode} onChange={setUniqueMode} options={[{ label: 'All', value: 'all' }, { label: 'Half (BG)', value: 'bg' }, { label: 'Half (FG)', value: 'fg' }]} />
             <SegmentedControl label="Contrast Rel" value={darknessFilter} onChange={setDarknessFilter} options={[{ label: 'All', value: 'all' }, { label: 'Dark BG', value: 'bg-darker' }, { label: 'Dark FG', value: 'fg-darker' }]} />

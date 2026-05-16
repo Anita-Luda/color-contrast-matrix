@@ -17,35 +17,7 @@
   --color-warning: #f59e0b;
   --color-info: #3b82f6;
 
-  /* Semantic Tokens - Light Mode (Default) */
-  --bg-app: var(--neutral-50);
-  --bg-panel: #ffffff;
-  --bg-input: var(--neutral-50);
-  --bg-card-bottom: #ffffff;
-  --bg-header-sticky: var(--neutral-50);
-
-  --text-primary: var(--neutral-900);
-  --text-secondary: var(--neutral-500);
-  --text-muted: var(--neutral-400);
-  --text-accent: var(--neutral-900);
-
-  --border-subtle: var(--neutral-100);
-  --border-panel: var(--neutral-100);
-  --border-input: var(--neutral-200);
-
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-
-  /* Layout & Spacing */
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-card: 2.5rem; /* 40px */
-
+  /* Layout & Spacing Defaults */
   --spacing-1: 0.25rem;
   --spacing-2: 0.5rem;
   --spacing-3: 0.75rem;
@@ -56,8 +28,6 @@
   --spacing-10: 2.5rem;
   --spacing-12: 3rem;
 
-  /* Typography */
-  --font-family-base: 'Inter', -apple-system, sans-serif;
   --font-family-mono: 'JetBrains Mono', monospace;
 
   --font-size-xs: 10px;
@@ -68,28 +38,103 @@
   --font-size-2xl: 20px;
   --font-size-3xl: 24px;
   --font-size-4xl: 32px;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme='dark'] {
+/* PROFESSIONAL STYLE */
+[data-style='professional'] {
+  --font-family-base: 'Inter', sans-serif;
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-card: 0px;
+
+  --bg-app: #ffffff;
+  --bg-panel: #ffffff;
+  --bg-input: #ffffff;
+  --bg-card-bottom: #ffffff;
+  --bg-header-sticky: #ffffff;
+
+  --text-primary: var(--neutral-900);
+  --text-secondary: var(--neutral-600);
+  --text-muted: var(--neutral-400);
+  --text-accent: var(--neutral-900);
+
+  --border-subtle: var(--neutral-100);
+  --border-panel: var(--neutral-200);
+  --border-input: var(--neutral-300);
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --border-width: 1px;
+}
+
+[data-style='professional'][data-theme='dark'] {
+  --bg-app: var(--neutral-900);
+  --bg-panel: var(--neutral-900);
+  --bg-input: var(--neutral-900);
+  --bg-card-bottom: var(--neutral-900);
+  --bg-header-sticky: var(--neutral-900);
+
+  --text-primary: var(--neutral-50);
+  --text-secondary: var(--neutral-400);
+  --text-muted: var(--neutral-600);
+
+  --border-subtle: var(--neutral-800);
+  --border-panel: var(--neutral-700);
+  --border-input: var(--neutral-700);
+}
+
+/* CUTE STYLE */
+[data-style='cute'] {
+  --font-family-base: 'Quicksand', sans-serif;
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 32px;
+  --radius-xl: 40px;
+  --radius-card: 3rem;
+
+  --bg-app: var(--neutral-50);
+  --bg-panel: #ffffff;
+  --bg-input: var(--neutral-100);
+  --bg-card-bottom: #ffffff;
+  --bg-header-sticky: var(--neutral-50);
+
+  --text-primary: var(--neutral-800);
+  --text-secondary: var(--neutral-500);
+  --text-muted: var(--neutral-300);
+
+  --border-subtle: var(--neutral-100);
+  --border-panel: var(--neutral-100);
+  --border-input: var(--neutral-200);
+
+  --border-width: 0px;
+  --sparkle-opacity: 1;
+}
+
+[data-style='cute'][data-theme='dark'] {
   --bg-app: var(--neutral-900);
   --bg-panel: var(--neutral-800);
   --bg-input: var(--neutral-900);
   --bg-card-bottom: var(--neutral-800);
   --bg-header-sticky: var(--neutral-900);
 
-  --text-primary: var(--neutral-50);
+  --text-primary: var(--neutral-100);
   --text-secondary: var(--neutral-300);
   --text-muted: var(--neutral-500);
-  --text-accent: var(--neutral-50);
 
   --border-subtle: var(--neutral-700);
   --border-panel: var(--neutral-700);
   --border-input: var(--neutral-600);
-
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
 }
 
 * {
@@ -104,6 +149,7 @@ body, html {
   background-color: var(--bg-app);
   color: var(--text-primary);
   overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ::-webkit-scrollbar {

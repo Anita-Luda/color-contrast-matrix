@@ -16,6 +16,7 @@ import {
 function App() {
   // --- State ---
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+  const [visualStyle, setVisualStyle] = useState(() => localStorage.getItem('visualStyle') || 'cute');
   const [input, setInput] = useState(() => localStorage.getItem('colors') || "#000000, #ffffff, #2563eb, #db2777, #f59e0b, #10b981");
   const [minContrast, setMinContrast] = useState(0);
   const [maxContrast, setMaxContrast] = useState(Infinity);
@@ -54,6 +55,11 @@ function App() {
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('visualStyle', visualStyle);
+    document.documentElement.setAttribute('data-style', visualStyle);
+  }, [visualStyle]);
 
   useEffect(() => {
     localStorage.setItem('colors', input);
@@ -110,9 +116,108 @@ function App() {
   }, []);
 
   const copySVG = useCallback(() => {
-    // legacy export
-    alert('SVG Export functionality to be updated for SPA architecture');
-  }, []);
+    const scale = gridScale / 100;
+    const cardScale = gridScale;
+    const baseW = cardBaseWidth;
+    const CARD_W = baseW * scale;
+    const CARD_H_BOT = 100 * scale;
+    const CARD_H_TOP = fontTestMode ? CARD_W : (baseW * 1.6 * scale - CARD_H_BOT);
+    const totalCardH = CARD_H_TOP + CARD_H_BOT;
+
+    const GAP = 16 * scale;
+    const HEADER_W = 120;
+    const HEADER_H = 60;
+    const cols = activeCols, rows = activeRows;
+    const rowTotalH = totalCardH + GAP;
+
+    const width = HEADER_W + cols.length * (CARD_W + GAP);
+    const height = HEADER_H + rows.length * rowTotalH;
+
+    let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+    svg += `<rect width="100%" height="100%" fill="${theme === 'dark' ? '#171717' : '#fafafa'}" />`;
+
+    // Corner & Headers
+    cols.forEach((c, i) => {
+      const x = HEADER_W + i * (CARD_W + GAP) + CARD_W / 2;
+      svg += `<text x="${x}" y="40" font-family="monospace" font-size="14" font-weight="500" text-anchor="middle" fill="#737373">${c}</text>`;
+    });
+    rows.forEach((r, i) => {
+      const y = HEADER_H + i * rowTotalH + rowTotalH / 2;
+      svg += `<text x="${HEADER_W - 20}" y="${y}" font-family="monospace" font-size="14" font-weight="500" text-anchor="end" fill="#737373">${r}</text>`;
+    });
+
+    // Style properties
+    const isCute = visualStyle === 'cute';
+    const borderRadius = isCute ? (scale * 3 * 16) : 0;
+    const borderWidth = isCute ? 0 : 1;
+    const fontName = isCute ? 'Quicksand' : 'Inter';
+
+    // Matrix
+    rows.forEach((bg, rowI) => {
+      cols.forEach((fg, colI) => {
+        const x = HEADER_W + colI * (CARD_W + GAP), y = HEADER_H + rowI * rowTotalH + (GAP / 2);
+        if (isHidden(bg, fg)) return;
+
+        const ratio = getContrastRatio(bg, fg);
+        const apca = getApcaContrast(fg, bg);
+        const val = calcMode === 'apca' ? apca : ratio;
+        const suffix = calcMode === 'apca' ? '' : ':1';
+
+        const pass3 = calcMode === 'apca' ? Math.abs(apca) >= 30 : ratio >= 3;
+        const pass45 = calcMode === 'apca' ? Math.abs(apca) >= 45 : ratio >= 4.5;
+        const pass7 = calcMode === 'apca' ? Math.abs(apca) >= 75 : ratio >= 7;
+
+        // Card Body
+        const cardBg = theme === 'dark' ? '#262626' : '#ffffff';
+        svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${totalCardH}" rx="${borderRadius}" fill="${cardBg}" ${borderWidth > 0 ? `stroke="${fg}" stroke-width="${borderWidth}"` : ''} />`;
+
+        // Color Section (Top)
+        svg += `<clipPath id="clip-${rowI}-${colI}"><rect x="${x}" y="${y}" width="${CARD_W}" height="${totalCardH}" rx="${borderRadius}"/></clipPath>`;
+        svg += `<g clip-path="url(#clip-${rowI}-${colI})">`;
+        svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H_TOP}" fill="${bg}" />`;
+
+        if (isCute) {
+           svg += `<circle cx="${x + 20*scale}" cy="${y + 20*scale}" r="${4*scale}" fill="${fg}" opacity="0.4" />`;
+           svg += `<circle cx="${x + CARD_W - 20*scale}" cy="${y + 40*scale}" r="${3*scale}" fill="${fg}" opacity="0.3" />`;
+        }
+
+        if (fontTestMode) {
+            const padding = 20 * scale;
+            let currentY = y + (CARD_H_TOP / 2);
+            if (headingEnabled) {
+                const hFont = headingFont.replace(/'/g, "").split(',')[0];
+                svg += `<text x="${x + padding}" y="${currentY}" font-family="${hFont}, ${fontName}, sans-serif" font-size="${headingSize * scale}" font-weight="${headingWeight}" fill="${fg}">${headingText || "Heading"}</text>`;
+                currentY += headingSize * scale * 1.2;
+            }
+            const pFont = font.replace(/'/g, "").split(',')[0];
+            svg += `<text x="${x + padding}" y="${currentY}" font-family="${pFont}, ${fontName}, sans-serif" font-size="${testFontSize * scale}" font-weight="${testFontWeight}" fill="${fg}">${testText || "Sample"}</text>`;
+        } else {
+            svg += `<text x="${x + 20 * scale}" y="${y + 22 * scale + 32 * scale}" font-family="${fontName}, sans-serif" font-size="${32 * scale}" font-weight="${isCute ? 700 : 400}" fill="${fg}">${val}${suffix}</text>`;
+
+            const passLabelsY = y + 75 * scale;
+            svg += `<text x="${x + 20 * scale}" y="${passLabelsY + 14 * scale}" font-family="${fontName}, sans-serif" font-size="${14 * scale}" fill="${fg}">${pass3 ? (isCute ? '✨' : '✅') : '❌'} ${calcMode === 'apca' ? 'Lc 30' : '3:1'}</text>`;
+            svg += `<text x="${x + 20 * scale}" y="${passLabelsY + 32 * scale}" font-family="${fontName}, sans-serif" font-size="${14 * scale}" fill="${fg}">${pass45 ? (isCute ? '🌸' : '✅') : '❌'} ${calcMode === 'apca' ? 'Lc 45' : '4.5:1'}</text>`;
+            svg += `<text x="${x + 20 * scale}" y="${passLabelsY + 50 * scale}" font-family="${fontName}, sans-serif" font-size="${14 * scale}" fill="${fg}">${pass7 ? (isCute ? '👑' : '✅') : '❌'} ${calcMode === 'apca' ? 'Lc 75' : '7:1'}</text>`;
+        }
+
+        // Bottom Section
+        const textCol = theme === 'dark' ? '#fafafa' : '#171717';
+        const bY = y + CARD_H_TOP + 20 * scale;
+        svg += `<text x="${x + 20 * scale}" y="${bY + 12 * scale}" font-family="monospace" font-size="${12 * scale}" fill="${textCol}">${bg} ⇆ ${fg}</text>`;
+        svg += `<text x="${x + CARD_W - 20 * scale}" y="${bY + 12 * scale}" font-family="${fontName}, sans-serif" font-size="${12 * scale}" font-weight="700" text-anchor="end" fill="${textCol}">${val}${suffix}</text>`;
+
+        const statusY = bY + 12 * scale + 20 * scale;
+        svg += `<text x="${x + 20 * scale}" y="${statusY + 12 * scale}" font-family="${fontName}, sans-serif" font-size="${11 * scale}" fill="${textCol}">${pass3 ? (isCute ? '✨' : '✅') : '❌'} Icons</text>`;
+        svg += `<text x="${x + CARD_W/2}" y="${statusY + 12 * scale}" font-family="${fontName}, sans-serif" font-size="${11 * scale}" text-anchor="middle" fill="${textCol}">${pass45 ? (isCute ? '🌸' : '✅') : '❌'} AA</text>`;
+        svg += `<text x="${x + CARD_W - 20 * scale}" y="${statusY + 12 * scale}" font-family="${fontName}, sans-serif" font-size="${11 * scale}" text-anchor="end" fill="${textCol}">${pass7 ? (isCute ? '👑' : '✅') : '❌'} AAA</text>`;
+
+        svg += `</g>`;
+      });
+    });
+
+    svg += `</svg>`;
+    navigator.clipboard.writeText(svg).then(() => alert('SVG Exported to clipboard!'));
+  }, [activeCols, activeRows, gridScale, cardBaseWidth, fontTestMode, theme, visualStyle, isHidden, calcMode, headingEnabled, headingFont, headingSize, headingWeight, font, testFontSize, testFontWeight, testText]);
 
   return (
     <div className={`app-layout theme-${theme}`}>
@@ -137,6 +242,7 @@ function App() {
           gridScale={gridScale}
           cardBaseWidth={cardBaseWidth}
           stickToScreen={stickToScreen}
+          visualStyle={visualStyle}
         />
       </main>
 
@@ -175,6 +281,7 @@ function App() {
         copySVG={copySVG}
         panelPos={panelPos} setPanelPos={setPanelPos}
         theme={theme} setTheme={setTheme}
+        visualStyle={visualStyle} setVisualStyle={setVisualStyle}
       />
     </div>
   );

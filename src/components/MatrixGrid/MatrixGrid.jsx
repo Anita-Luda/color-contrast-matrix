@@ -6,7 +6,7 @@ const MatrixGrid = ({
   activeRows, activeCols, isHidden, calcMode, font, headingFont, maxTension,
   showBorder, fontTestMode, testText, testFontSize, testFontWeight,
   headingEnabled, headingText, headingSize, headingWeight,
-  gridScale, cardBaseWidth, stickToScreen
+  gridScale, cardBaseWidth, stickToScreen, visualStyle
 }) => {
 
   // Memoized hidden check to avoid re-calculating inside the map if not needed
@@ -80,6 +80,7 @@ const MatrixGrid = ({
                         headingEnabled={headingEnabled} headingText={headingText}
                         headingSize={headingSize} headingWeight={headingWeight}
                         cardScale={gridScale} baseW={cardBaseWidth}
+                        visualStyle={visualStyle}
                       />
                     )}
                   </div>

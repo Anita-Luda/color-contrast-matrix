@@ -1,15 +1,17 @@
-# Analiza Rozwojowa SPA (v8.2)
+# Analiza Rozwojowa SPA (v8.3)
 
-## Nowa Architektura
-Przejście na model SPA z Reactem i Vanilla CSS (tokeny) otwiera nowe możliwości rozwoju, które wcześniej były trudne do zaimplementowania w jednym pliku HTML.
+## Ewolucja Wizualna
+Wprowadzenie stylów 'Professional' i 'Cute' pokazało, że architektura oparta na tokenach CSS jest niezwykle elastyczna. Narzędzie przestało być tylko kalkulatorem, a stało się platformą, która może dostosować się do nastroju i preferencji projektanta.
 
-## Możliwości Rozwojowe
-1. **Routing**: Dodanie podstron dla biblioteki projektów lub galerii zapisanych palet.
-2. **State Management**: Możliwość przejścia na Redux Toolkit lub Zustand przy bardzo skomplikowanych filtrach krzyżowych.
-3. **Prawdziwy Dark Mode**: Dzięki tokenom CSS, dodanie nowych motywów (np. High Contrast, Sepia) sprowadza się do zdefiniowania kilku zmiennych.
-4. **Wtyczka do przeglądarki**: Architektura React ułatwia przeniesienie logiki do rozszerzenia Chrome/Firefox.
+## Nowe Możliwości (Roadmap v8.4+)
+1. **Dynamiczne Fonty**: Pozwolenie użytkownikowi na przypisanie własnych fontów do stylów Professional/Cute.
+2. **Animacje (Motion Design)**: Dodanie delikatnych przejść Framer Motion, szczególnie przy przełączaniu stylów (np. efekt "morphing" dla kart).
+3. **Sound Design**: Dodanie opcjonalnych, bardzo delikatnych dźwięków interfejsu (kliknięcia, sukcesy), innych dla stylu Professional (techniczne) i Cute (miękkie).
+4. **Więcej Stylów**: Możliwość dodania stylu "Retro/Terminal" (monospace, stała szerokość) lub "Neumorphic".
 
-## Luki do uzupełnienia
-- **Eksport SVG**: W wersji SPA logika eksportu musi zostać odświeżona, aby generować SVG na podstawie aktualnego stanu komponentów React.
-- **Paczki ikon**: Warto rozważyć przejście na Lucide-react dla bardziej profesjonalnych piktogramów w UI.
-- **Testy Unitowe**: Dzięki nowej strukturze możliwe jest dodanie testów Jest/Vitest dla logiki obliczeń kontrastu.
+## Wyzwania Techniczne
+- **Złożoność SVG**: W miarę dodawania kolejnych elementów wizualnych (jak sparkles), kod generatora SVG staje się coraz bardziej skomplikowany. Warto rozważyć przejście na bibliotekę do manipulacji SVG.
+- **Wydajność przy dużych listach**: Przy 50+ kolorach i stylu 'Cute' (dużo zaokrągleń i SVG in-line), przeglądarka może zacząć odczuwać spadek wydajności. Virtual scrolling staje się priorytetem.
+
+## Podsumowanie
+Wersja 8.3 udowadnia, że "profesjonalny" nie musi oznaczać "nudny". Dzięki skali szarości, nawet styl Cute pozostaje narzędziem, na którym można polegać przy podejmowaniu decyzji o kolorach i dostępności.
