@@ -34,16 +34,15 @@ const Card = ({
       id: i,
       style: {
         top: `${Math.random() * 80 + 5}%`,
-        left: `${Math.random() * 45 + 50}%`, // Stay on the right half
+        left: `${Math.random() * 45 + 50}%`,
         width: `${Math.random() * 10 + 6}px`,
-        opacity: Math.random() * 0.5 + 0.3,
+        opacity: Math.random() * 0.4 + 0.2,
         animationDelay: `${Math.random() * 2}s`
       }
     }));
   }, [isCute]);
 
-  const renderStatus = (pass, label) => {
-    // Both styles now use green check for PASS as requested
+  const renderStatus = (pass) => {
     if (pass) return <CheckIcon size={12} color="var(--color-success)" />;
     return <XIcon size={12} color="var(--color-error)" />;
   };
@@ -55,7 +54,7 @@ const Card = ({
            height: `var(--card-h)`,
            borderRadius: `var(--radius-card)`,
            borderColor: fg,
-           borderWidth: `var(--card-border-default)`
+           borderWidth: showBorder ? '2px' : 'var(--card-border-default)'
          }}>
 
       {/* Top part - Dynamic Background */}
@@ -67,9 +66,8 @@ const Card = ({
              justifyContent: fontTestMode ? 'center' : 'flex-start'
            }}>
 
-        {/* Cute Sparkles - localized to right side */}
         <div className="sparkles-container">
-           {sparkles.map(s => <Sparkle key={s.id} style={s.style} />)}
+           {isCute && sparkles.map(s => <Sparkle key={s.id} style={s.style} />)}
         </div>
 
         {tension >= tensionLimit && (
@@ -97,15 +95,15 @@ const Card = ({
 
                 <div className="pass-indicators" style={{ fontSize: `14px` }}>
                   <div className="indicator-row">
-                    {renderStatus(isPass3, 'Icons')}
+                    {renderStatus(isPass3)}
                     <span className="indicator-label">{mode === 'apca' ? 'Lc 30' : '3:1'}</span>
                   </div>
                   <div className="indicator-row">
-                    {renderStatus(isPass45, 'AA')}
+                    {renderStatus(isPass45)}
                     <span className="indicator-label">{mode === 'apca' ? 'Lc 45' : '4.5:1'}</span>
                   </div>
                   <div className="indicator-row">
-                    {renderStatus(isPass7, 'AAA')}
+                    {renderStatus(isPass7)}
                     <span className="indicator-label">{mode === 'apca' ? 'Lc 75' : '7:1'}</span>
                   </div>
                 </div>
@@ -131,9 +129,9 @@ const Card = ({
         </div>
 
         <div className="bottom-status">
-          <span className="status-item">{renderStatus(isPass3, 'Icons')} <span className="status-text">Icons</span></span>
-          <span className="status-item">{renderStatus(isPass45, 'AA')} <span className="status-text">AA</span></span>
-          <span className="status-item">{renderStatus(isPass7, 'AAA')} <span className="status-text">AAA</span></span>
+          <span className="status-item">{renderStatus(isPass3)} <span className="status-text">Icons</span></span>
+          <span className="status-item">{renderStatus(isPass45)} <span className="status-text">AA</span></span>
+          <span className="status-item">{renderStatus(isPass7)} <span className="status-text">AAA</span></span>
         </div>
       </div>
     </div>

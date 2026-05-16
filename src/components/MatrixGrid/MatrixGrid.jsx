@@ -17,7 +17,7 @@ const MatrixGrid = ({
         <div
           className="matrix-grid"
           style={{
-            gridTemplateColumns: `minmax(0, 1fr) 140px repeat(${activeCols.length}, ${cardBaseWidth}px) minmax(0, 1fr)`,
+            gridTemplateColumns: `140px repeat(${activeCols.length}, ${cardBaseWidth}px)`,
             '--card-w': `${cardBaseWidth}px`,
             gap: '16px'
           }}
@@ -25,20 +25,20 @@ const MatrixGrid = ({
           {/* Corner Header */}
           <div
             className={`sticky-header corner ${stickToScreen ? 'stick-screen-x' : ''}`}
-            style={{ gridColumn: '2' }}
+            style={{ gridColumn: '1' }}
           >
             <div className="header-label">BG / FG</div>
           </div>
 
           {/* Column Header Strip Background */}
-          <div className="col-header-strip" style={{ gridColumn: `3 / span ${activeCols.length + 1}` }}></div>
+          <div className="col-header-strip" style={{ gridColumn: `2 / span ${activeCols.length}` }}></div>
 
           {/* Column Headers */}
           {activeCols.map((c, idx) => (
             <div
               key={c}
               className="sticky-header col"
-              style={{ gridColumn: `${idx + 3}` }}
+              style={{ gridColumn: `${idx + 2}` }}
             >
               <div className="swatch-indicator" style={{ backgroundColor: c }}></div>
               <div className="header-color-code">{c}</div>
@@ -51,7 +51,7 @@ const MatrixGrid = ({
               {/* Row Header */}
               <div
                 className={`sticky-header row ${stickToScreen ? 'stick-screen-x' : ''}`}
-                style={{ gridColumn: '2' }}
+                style={{ gridColumn: '1' }}
               >
                 <div className="row-color-code">{bg}</div>
                 <div className="row-swatch" style={{ backgroundColor: bg }}></div>
@@ -64,7 +64,7 @@ const MatrixGrid = ({
                   <div
                     key={`${bg}-${fg}`}
                     className={`cell ${hidden ? 'hidden' : ''}`}
-                    style={{ gridColumn: `${idx + 3}` }}
+                    style={{ gridColumn: `${idx + 2}` }}
                   >
                     {!hidden && (
                       <Card

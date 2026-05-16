@@ -6,7 +6,7 @@
 }
 
 .grid-wrapper {
-  padding: 40px;
+  padding: 60px;
   display: flex;
   flex-direction: column;
   width: max-content;
@@ -20,19 +20,28 @@
 
 .sticky-header {
   position: sticky;
-  background: var(--bg-header-sticky);
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.col-header-strip {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  background-color: var(--bg-header);
+  border-bottom: var(--border-width, 1px) solid var(--border-panel);
+}
+
 .sticky-header.corner {
   top: 0;
-  border-bottom: var(--border-width, 1px) solid var(--border-subtle);
-  justify-content: flex-end;
-  padding: var(--spacing-3) var(--spacing-4);
+  left: 0;
   z-index: 110;
+  justify-content: flex-end;
+  padding: var(--spacing-xl);
+  background-color: var(--bg-header);
+  border-bottom: var(--border-width, 1px) solid var(--border-panel);
 }
 
 .header-label {
@@ -44,27 +53,18 @@
   letter-spacing: 0.2em;
 }
 
-.col-header-strip {
-  position: sticky;
-  top: 0;
-  z-index: 99;
-  background-color: var(--bg-header-sticky);
-  border-bottom: var(--border-width, 1px) solid var(--border-subtle);
-}
-
 .sticky-header.col {
   top: 0;
-  padding: var(--spacing-3) var(--spacing-3) var(--spacing-6); /* Bottom padding below hex */
-  border-bottom: var(--border-width, 1px) solid var(--border-subtle);
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-3xl);
   flex-direction: column;
-  background-color: transparent;
+  background-color: var(--bg-header);
 }
 
 .swatch-indicator {
   width: 40px;
   height: 6px;
   border-radius: 10px;
-  margin-bottom: var(--spacing-3);
+  margin-bottom: var(--spacing-lg);
 }
 
 .header-color-code {
@@ -76,19 +76,20 @@
 }
 
 .sticky-header.row {
-  border-right: var(--border-width, 1px) solid var(--border-subtle);
-  padding: var(--spacing-4) var(--spacing-5);
-  justify-content: flex-end;
-  gap: var(--spacing-3);
+  left: 0;
   z-index: 90;
+  padding: var(--spacing-2xl) var(--spacing-3xl);
+  justify-content: flex-end;
+  gap: var(--spacing-xl);
+  background-color: var(--bg-header);
+  border-right: var(--border-width, 1px) solid var(--border-panel);
 }
 
-.sticky-header.stick-screen-x {
+.sticky-header.row.stick-screen-x {
     position: sticky;
     left: 0;
-    z-index: 110;
-    box-shadow: 4px 0 16px rgba(0,0,0,0.05);
-    background-color: var(--bg-header-sticky);
+    z-index: 105;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.03);
 }
 
 .row-color-code {
