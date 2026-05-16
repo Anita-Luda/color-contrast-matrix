@@ -96,6 +96,8 @@
 /* CUTE STYLE */
 [data-style='cute'] {
   --font-family-base: 'Quicksand', sans-serif;
+  --font-weight-normal: 500;
+  --font-weight-bold: 700;
   --radius-xs: 8px;
   --radius-sm: 12px;
   --radius-md: 20px;
@@ -146,10 +148,15 @@ body, html {
   padding: 0;
   height: 100%;
   font-family: var(--font-family-base);
+  font-weight: var(--font-weight-normal, 400);
   background-color: var(--bg-app);
   color: var(--text-primary);
   overflow: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+b, strong {
+  font-weight: var(--font-weight-bold, 700);
 }
 
 ::-webkit-scrollbar {

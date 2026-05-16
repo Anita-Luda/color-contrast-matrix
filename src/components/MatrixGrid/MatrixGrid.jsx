@@ -14,14 +14,13 @@ const MatrixGrid = ({
 
   return (
     <main className="grid-area">
-      <div className="grid-wrapper">
+      <div className="grid-wrapper" style={{ transform: `scale(${gridScale/100})`, transformOrigin: 'top left' }}>
         <div
           className="matrix-grid"
           style={{
-            gridTemplateColumns: `minmax(0, 1fr) 120px repeat(${activeCols.length}, var(--card-w)) minmax(0, 1fr)`,
-            '--card-w': `calc(${cardBaseWidth}px * ${gridScale/100})`,
-            '--card-gap': `calc(16px * ${gridScale/100})`,
-            gap: 'var(--card-gap)'
+            gridTemplateColumns: `minmax(0, 1fr) 120px repeat(${activeCols.length}, ${cardBaseWidth}px) minmax(0, 1fr)`,
+            '--card-w': `${cardBaseWidth}px`,
+            gap: '16px'
           }}
         >
           {/* Corner Header */}

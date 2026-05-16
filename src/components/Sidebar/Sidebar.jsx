@@ -6,6 +6,7 @@ import {
   SegmentedControl,
   Toggle
 } from '../Common';
+import { SunIcon, MoonIcon, BriefcaseIcon, SparklesIcon } from '../Common/Icons';
 import TriStateFilter from '../TriStateFilter/TriStateFilter';
 import { FontSelector } from '../TypographyTester/FontSelector';
 
@@ -87,14 +88,14 @@ const Sidebar = ({
             className="icon-btn"
             title="Toggle Dark Mode"
           >
-            {theme === 'dark' ? '☀️' : '🌙'}
+            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
           </button>
           <button
             onClick={() => setVisualStyle(visualStyle === 'professional' ? 'cute' : 'professional')}
             className="icon-btn"
             title="Toggle Style"
           >
-            {visualStyle === 'professional' ? '👔' : '✨'}
+            {visualStyle === 'professional' ? <SparklesIcon /> : <BriefcaseIcon />}
           </button>
           <select value={panelPos} onChange={(e) => setPanelPos(e.target.value)} className="pos-select">
             <option value="left">Left</option>

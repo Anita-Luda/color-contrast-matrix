@@ -1,6 +1,7 @@
 import React from 'react';
 import './Card.css';
 import { getContrastRatio, getApcaContrast, getVisualTensionScore } from '../../utils/color';
+import { CheckIcon, XIcon } from '../Common/Icons';
 
 const Sparkle = ({ style }) => (
   <svg className="sparkle" viewBox="0 0 24 24" fill="currentColor" style={style}>
@@ -27,8 +28,22 @@ const Card = ({
   const suffix = mode === 'apca' ? '' : ':1';
 
   const scale = cardScale / 100;
-  const cardW = baseW * scale;
-  const cardH = fontTestMode ? cardW : (baseW * 1.6 * scale);
+  const cardW = baseW; // Scale is now handled by container transform
+  const cardH = fontTestMode ? cardW : (baseW * 1.6);
+
+  const isCute = visualStyle === 'cute';
+
+  const renderStatus = (pass, label) => {
+    if (isCute) {
+      if (pass) {
+        if (label === 'Icons') return "✨";
+        if (label === 'AA') return "🌸";
+        if (label === 'AAA') return "👑";
+      }
+      return "❌";
+    }
+    return pass ? <CheckIcon /> : <XIcon />;
+  };
 
   return (
     <div className={`color-card ${showBorder ? 'with-border' : ''}`}
@@ -45,57 +60,67 @@ const Card = ({
            style={{
              background: bg,
              color: fg,
-             padding: `${1.25 * scale}rem`,
+             padding: `1.25rem`,
              justifyContent: fontTestMode ? 'center' : 'flex-start'
            }}>
 
-        {/* Cute Sparkles - only visible in cute style via CSS */}
+        {/* Cute Sparkles - moved to edges to not obscure text */}
         <div className="sparkles-container">
-           <Sparkle style={{ top: '10%', left: '10%', width: '12px' }} />
-           <Sparkle style={{ top: '20%', right: '15%', width: '8px' }} />
-           <Sparkle style={{ bottom: '20%', left: '15%', width: '10px' }} />
+           <Sparkle style={{ top: '5%', left: '5%', width: '14px' }} />
+           <Sparkle style={{ top: '5%', right: '5%', width: '10px' }} />
+           <Sparkle style={{ bottom: '5%', left: '5%', width: '12px' }} />
+           <Sparkle style={{ bottom: '5%', right: '5%', width: '16px' }} />
         </div>
 
         {tension >= tensionLimit && (
-          <div className="tension-warning" style={{ fontSize: `${1 * scale}rem` }} title={`Vibration Score: ${tension}`}>⚠️</div>
+          <div className="tension-warning" style={{ fontSize: `1rem` }} title={`Vibration Score: ${tension}`}>⚠️</div>
         )}
 
         {fontTestMode ? (
             <div className="font-test-container">
                 {headingEnabled && (
-                  <div style={{ fontFamily: headingFont, fontSize: `${headingSize * scale}px`, fontWeight: headingWeight, lineHeight: 1.1 }}>
+                  <div style={{ fontFamily: headingFont, fontSize: `${headingSize}px`, fontWeight: headingWeight, lineHeight: 1.1 }}>
                     {headingText || "Heading"}
                   </div>
                 )}
-                <div style={{ fontFamily: font, fontSize: `${testFontSize * scale}px`, fontWeight: testFontWeight, lineHeight: 1.2 }}>
+                <div style={{ fontFamily: font, fontSize: `${testFontSize}px`, fontWeight: testFontWeight, lineHeight: 1.2 }}>
                     {testText || "Sample Text"}
                 </div>
             </div>
         ) : (
-            <>
-                <div className="contrast-value" style={{ fontSize: `${32 * scale}px` }}>
+            <div className="indicator-group">
+                <div className="contrast-value" style={{ fontSize: `32px` }}>
                   {val}{suffix}
                 </div>
 
-                <div className="pass-indicators" style={{ fontSize: `${14 * scale}px` }}>
-                  <div>{isPass3 ? (visualStyle === 'cute' ? "✨" : "✅") : "❌"} {mode === 'apca' ? 'Lc 30' : '3:1'}</div>
-                  <div>{isPass45 ? (visualStyle === 'cute' ? "🌸" : "✅") : "❌"} {mode === 'apca' ? 'Lc 45' : '4.5:1'}</div>
-                  <div>{isPass7 ? (visualStyle === 'cute' ? "👑" : "✅") : "❌"} {mode === 'apca' ? 'Lc 75' : '7:1'}</div>
+                <div className="pass-indicators" style={{ fontSize: `14px` }}>
+                  <div className="indicator-row">
+                    {renderStatus(isPass3, 'Icons')}
+                    <span>{mode === 'apca' ? 'Lc 30' : '3:1'}</span>
+                  </div>
+                  <div className="indicator-row">
+                    {renderStatus(isPass45, 'AA')}
+                    <span>{mode === 'apca' ? 'Lc 45' : '4.5:1'}</span>
+                  </div>
+                  <div className="indicator-row">
+                    {renderStatus(isPass7, 'AAA')}
+                    <span>{mode === 'apca' ? 'Lc 75' : '7:1'}</span>
+                  </div>
                 </div>
 
-                <div className="hex-labels" style={{ fontSize: `${10 * scale}px` }}>
+                <div className="hex-labels" style={{ fontSize: `10px` }}>
                   <div>{bg} - BG</div>
                   <div>{fg} - FG</div>
                 </div>
-            </>
+            </div>
         )}
       </div>
 
       {/* Bottom part - Persistent Background */}
       <div className="card-bottom" style={{
-           padding: `${1.25 * scale}rem`,
-           fontSize: `${11 * scale}px`,
-           height: `${100 * scale}px`,
+           padding: `1.25rem`,
+           fontSize: `11px`,
+           height: `100px`,
            borderRadius: `0 0 var(--radius-card) var(--radius-card)`
       }}>
         <div className="bottom-info">
@@ -104,9 +129,9 @@ const Card = ({
         </div>
 
         <div className="bottom-status">
-          <span className="status-item">{isPass3 ? (visualStyle === 'cute' ? "✨" : "✅") : "❌"} Icons</span>
-          <span className="status-item">{isPass45 ? (visualStyle === 'cute' ? "🌸" : "✅") : "❌"} AA</span>
-          <span className="status-item">{isPass7 ? (visualStyle === 'cute' ? "👑" : "✅") : "❌"} AAA</span>
+          <span className="status-item">{renderStatus(isPass3, 'Icons')} <span className="status-label">Icons</span></span>
+          <span className="status-item">{renderStatus(isPass45, 'AA')} <span className="status-label">AA</span></span>
+          <span className="status-item">{renderStatus(isPass7, 'AAA')} <span className="status-label">AAA</span></span>
         </div>
       </div>
     </div>

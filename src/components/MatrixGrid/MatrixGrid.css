@@ -7,10 +7,9 @@
 
 .grid-wrapper {
   padding: 40px;
-  min-width: 100%;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
+  width: max-content;
 }
 
 .matrix-grid {

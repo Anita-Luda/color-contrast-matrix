@@ -46,13 +46,32 @@
   letter-spacing: -0.02em;
 }
 
-.status-dot-container {
-  margin-left: auto;
+.checkbox-mock {
+  width: 16px;
+  height: 16px;
+  border: var(--border-width, 1px) solid var(--border-input);
+  background: var(--bg-panel);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-primary);
+  transition: all 0.2s;
 }
 
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
+[data-style='cute'] .checkbox-mock {
+  border-radius: 4px;
+}
+
+.tri-state-filter.included .checkbox-mock {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-panel);
+}
+
+.tri-state-filter.excluded .checkbox-mock {
+  background: var(--neutral-400);
+  border-color: var(--neutral-400);
+  color: var(--bg-panel);
 }

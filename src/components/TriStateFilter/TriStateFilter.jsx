@@ -1,5 +1,6 @@
 import React from 'react';
 import './TriStateFilter.css';
+import { CheckIcon, XIcon } from '../Common/Icons';
 
 const TriStateFilter = ({ color, state, onChange }) => {
   // state: 0 (neutral), 1 (include), -1 (exclude)
@@ -20,13 +21,12 @@ const TriStateFilter = ({ color, state, onChange }) => {
 
   return (
     <div className={getClassName()} onClick={handleClick}>
+      <div className="checkbox-mock">
+        {state === 1 && <CheckIcon size={10} />}
+        {state === -1 && <XIcon size={10} />}
+      </div>
       <div className="color-swatch" style={{ backgroundColor: color }}></div>
       <span className="color-code">{color}</span>
-      <div className="status-dot-container">
-        <div className={`status-dot ${state !== 0 ? 'active' : ''}`}
-             style={{ backgroundColor: state === 1 ? 'var(--color-success)' : state === -1 ? 'var(--color-error)' : 'var(--neutral-200)' }}>
-        </div>
-      </div>
     </div>
   );
 };
