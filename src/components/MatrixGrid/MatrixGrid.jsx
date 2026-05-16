@@ -9,7 +9,6 @@ const MatrixGrid = ({
   gridScale, cardBaseWidth, stickToScreen, visualStyle
 }) => {
 
-  // Memoized hidden check to avoid re-calculating inside the map if not needed
   const checkHidden = useCallback((bg, fg) => isHidden(bg, fg), [isHidden]);
 
   return (
@@ -18,25 +17,21 @@ const MatrixGrid = ({
         <div
           className="matrix-grid"
           style={{
-            gridTemplateColumns: `minmax(0, 1fr) 120px repeat(${activeCols.length}, ${cardBaseWidth}px) minmax(0, 1fr)`,
+            gridTemplateColumns: `minmax(0, 1fr) 140px repeat(${activeCols.length}, ${cardBaseWidth}px) minmax(0, 1fr)`,
             '--card-w': `${cardBaseWidth}px`,
             gap: '16px'
           }}
         >
           {/* Corner Header */}
           <div
-            className="sticky-header corner"
-            style={{
-                gridColumn: '2',
-                left: stickToScreen ? '0' : 'auto',
-                zIndex: stickToScreen ? '110' : '100'
-            }}
+            className={`sticky-header corner ${stickToScreen ? 'stick-screen-x' : ''}`}
+            style={{ gridColumn: '2' }}
           >
             <div className="header-label">BG / FG</div>
           </div>
 
           {/* Column Header Strip Background */}
-          <div className="col-header-strip" style={{ gridColumn: `3 / span ${activeCols.length}` }}></div>
+          <div className="col-header-strip" style={{ gridColumn: `3 / span ${activeCols.length + 1}` }}></div>
 
           {/* Column Headers */}
           {activeCols.map((c, idx) => (
@@ -55,11 +50,8 @@ const MatrixGrid = ({
             <React.Fragment key={bg}>
               {/* Row Header */}
               <div
-                className={`sticky-header row ${stickToScreen ? 'stick-screen' : ''}`}
-                style={{
-                    gridColumn: '2',
-                    left: stickToScreen ? '0' : 'auto'
-                }}
+                className={`sticky-header row ${stickToScreen ? 'stick-screen-x' : ''}`}
+                style={{ gridColumn: '2' }}
               >
                 <div className="row-color-code">{bg}</div>
                 <div className="row-swatch" style={{ backgroundColor: bg }}></div>
@@ -81,7 +73,7 @@ const MatrixGrid = ({
                         testText={testText} testFontSize={testFontSize} testFontWeight={testFontWeight}
                         headingEnabled={headingEnabled} headingText={headingText}
                         headingSize={headingSize} headingWeight={headingWeight}
-                        cardScale={gridScale} baseW={cardBaseWidth}
+                        baseW={cardBaseWidth}
                         visualStyle={visualStyle}
                       />
                     )}

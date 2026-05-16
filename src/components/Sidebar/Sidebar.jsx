@@ -194,8 +194,8 @@ const Sidebar = ({
             <SegmentedControl label="Uniqueness" value={uniqueMode} onChange={setUniqueMode} options={[{ label: 'All', value: 'all' }, { label: 'Half (BG)', value: 'bg' }, { label: 'Half (FG)', value: 'fg' }]} />
             <SegmentedControl label="Contrast Rel" value={darknessFilter} onChange={setDarknessFilter} options={[{ label: 'All', value: 'all' }, { label: 'Dark BG', value: 'bg-darker' }, { label: 'Dark FG', value: 'fg-darker' }]} />
             <div className="toggle-grid">
-              <Toggle label="Hide Empty" active={hideEmpty} onChange={setHideEmpty} />
-              <Toggle label="Borders" active={showBorder} onChange={setShowBorder} />
+              <Toggle label="Hide Empty" active={hideEmpty} onChange={setHideEmpty} icon={SparklesIcon} />
+              <Toggle label="Borders" active={showBorder} onChange={setShowBorder} icon={BriefcaseIcon} />
             </div>
           </div>
         </Collapsible>

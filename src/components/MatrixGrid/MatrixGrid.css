@@ -31,24 +31,17 @@
   top: 0;
   border-bottom: var(--border-width, 1px) solid var(--border-subtle);
   justify-content: flex-end;
-  padding: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  z-index: 110;
 }
 
 .header-label {
+  font-family: var(--font-family-mono);
   font-size: var(--font-size-xs);
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.2em;
-}
-
-.sticky-header.col {
-  top: 0;
-  padding: var(--spacing-3);
-  border-bottom: var(--border-width, 1px) solid var(--border-subtle);
-  flex-direction: column;
-  box-shadow: 0 4px 12px -4px rgba(0,0,0,0.03);
-  background-color: transparent;
 }
 
 .col-header-strip {
@@ -59,18 +52,26 @@
   border-bottom: var(--border-width, 1px) solid var(--border-subtle);
 }
 
+.sticky-header.col {
+  top: 0;
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-6); /* Bottom padding below hex */
+  border-bottom: var(--border-width, 1px) solid var(--border-subtle);
+  flex-direction: column;
+  background-color: transparent;
+}
+
 .swatch-indicator {
   width: 40px;
   height: 6px;
   border-radius: 10px;
-  margin-bottom: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
 }
 
 .header-color-code {
   font-family: var(--font-family-mono);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -0.05em;
 }
 
@@ -79,18 +80,15 @@
   padding: var(--spacing-4) var(--spacing-5);
   justify-content: flex-end;
   gap: var(--spacing-3);
-  box-shadow: 4px 0 12px -4px rgba(0,0,0,0.03);
   z-index: 90;
 }
 
-.sticky-header.row.stick-screen {
+.sticky-header.stick-screen-x {
     position: sticky;
     left: 0;
-    width: 120px;
-    display: flex;
-    border-right: var(--border-width, 1px) solid var(--border-subtle);
-    box-shadow: 4px 0 12px -4px rgba(0,0,0,0.1);
     z-index: 110;
+    box-shadow: 4px 0 16px rgba(0,0,0,0.05);
+    background-color: var(--bg-header-sticky);
 }
 
 .row-color-code {

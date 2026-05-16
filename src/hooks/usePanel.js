@@ -5,7 +5,7 @@ export function useDraggable(initialPos = { x: 100, y: 100 }, enabled = false) {
 
   const onMouseDown = useCallback((e) => {
     if (!enabled) return;
-    if (e.target.closest('button') || e.target.closest('input') || e.target.closest('select') || e.target.closest('textarea')) return;
+    if (e.target.closest('button') || e.target.closest('input') || e.target.closest('select') || e.target.closest('textarea') || e.target.closest('.resize-handle')) return;
 
     const startX = e.clientX - pos.x;
     const startY = e.clientY - pos.y;
@@ -29,7 +29,7 @@ export function useDraggable(initialPos = { x: 100, y: 100 }, enabled = false) {
   return { pos, onMouseDown, setPos };
 }
 
-export function useResizable(initialSize = { w: 380, h: 600 }, panelPos = 'right') {
+export function useResizable(initialSize = { w: 380, h: 200 }, panelPos = 'right', setFloatPos) {
   const [size, setSize] = useState(initialSize);
 
   const startResizing = useCallback((e, direction) => {
@@ -44,7 +44,6 @@ export function useResizable(initialSize = { w: 380, h: 600 }, panelPos = 'right
     const onMouseMove = (moveEvent) => {
       let newW = startW;
       let newH = startH;
-
       const deltaX = moveEvent.clientX - startX;
       const deltaY = moveEvent.clientY - startY;
 
@@ -58,14 +57,20 @@ export function useResizable(initialSize = { w: 380, h: 600 }, panelPos = 'right
           newH = startH - deltaY;
       } else if (panelPos === 'floating') {
           if (direction.includes('e')) newW = startW + deltaX;
-          if (direction.includes('w')) newW = startW - deltaX;
+          if (direction.includes('w')) {
+              newW = startW - deltaX;
+              if (newW >= 250) setFloatPos(prev => ({ ...prev, x: moveEvent.clientX }));
+          }
           if (direction.includes('s')) newH = startH + deltaY;
-          if (direction.includes('n')) newH = startH - deltaY;
+          if (direction.includes('n')) {
+              newH = startH - deltaY;
+              if (newH >= 100) setFloatPos(prev => ({ ...prev, y: moveEvent.clientY }));
+          }
       }
 
       setSize({
         w: Math.max(250, newW),
-        h: Math.max(100, newH)
+        h: Math.max(isHorizontal(panelPos) ? 80 : 100, newH)
       });
     };
 
@@ -76,7 +81,9 @@ export function useResizable(initialSize = { w: 380, h: 600 }, panelPos = 'right
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-  }, [size, panelPos]);
+  }, [size, panelPos, setFloatPos]);
+
+  const isHorizontal = (pos) => pos === 'top' || pos === 'bottom';
 
   return { size, startResizing, setSize };
 }

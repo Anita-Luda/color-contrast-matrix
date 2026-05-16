@@ -5,33 +5,36 @@ export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds
   <div className="slider-group">
     <div className="slider-header">
       <div className="label-with-icon">
-        {Icon && <span className="slider-icon"><Icon size={10} /></span>}
+        {Icon && <span className="slider-icon"><Icon size={12} /></span>}
         <label className="slider-label">{label}</label>
       </div>
       <span className="slider-value">{value === Infinity ? '∞' : value}{unit}</span>
     </div>
-    <input
-      type="range"
-      min={min}
-      max={max}
-      step={step}
-      value={value === Infinity ? max : value}
-      onChange={(e) => onChange(Number(e.target.value) === max && max === 21 ? Infinity : Number(e.target.value))}
-    />
-    <div className="slider-thresholds">
-      {thresholds.map(t => {
-        const percent = ((t === Infinity ? max : t) - min) / (max - min) * 100;
-        return (
-          <button
-            key={t}
-            onClick={() => onChange(t)}
-            className={`threshold-btn ${value === t ? 'active' : ''}`}
-            style={{ left: `calc(${percent}% - 0px)` }}
-          >
-            {t}
-          </button>
-        );
-      })}
+    <div className="slider-track-container">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value === Infinity ? max : value}
+          onChange={(e) => onChange(Number(e.target.value) === max && max === 21 ? Infinity : Number(e.target.value))}
+        />
+        <div className="slider-thresholds">
+          {thresholds.map(t => {
+            const val = t === Infinity ? max : t;
+            const percent = (val - min) / (max - min) * 100;
+            return (
+              <button
+                key={t}
+                onClick={() => onChange(t)}
+                className={`threshold-btn ${value === t ? 'active' : ''}`}
+                style={{ left: `${percent}%` }}
+              >
+                {t}
+              </button>
+            );
+          })}
+        </div>
     </div>
   </div>
 );
@@ -69,16 +72,12 @@ export const Collapsible = ({ title, children, defaultOpen = true }) => {
 export const Toggle = ({ label, active, onChange, icon: Icon }) => (
   <div className="toggle-container">
     <div className="label-with-icon">
-        {Icon && <span className="slider-icon"><Icon size={10} /></span>}
+        {Icon && <span className="slider-icon"><Icon size={12} /></span>}
         <label className="toggle-label">{label}</label>
     </div>
     <button onClick={() => onChange(!active)} className={`toggle-switch ${active ? 'active' : ''}`}>
         <div className="toggle-handle">
-            {active ? (
-                <div className="toggle-status-dot active"></div>
-            ) : (
-                <div className="toggle-status-dot"></div>
-            )}
+            <div className={`toggle-status-dot ${active ? 'active' : ''}`}></div>
         </div>
     </button>
   </div>

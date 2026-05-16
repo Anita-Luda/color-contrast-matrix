@@ -26,7 +26,11 @@ function App() {
   const [uniqueMode, setUniqueMode] = useState('all');
   const [darknessFilter, setDarknessFilter] = useState('all');
   const [hideEmpty, setHideEmpty] = useState(false);
-  const [showBorder, setShowBorder] = useState(true);
+  const [showBorder, setShowBorder] = useState(() => visualStyle === 'professional');
+
+  useEffect(() => {
+    setShowBorder(visualStyle === 'professional');
+  }, [visualStyle]);
   const [fontTestMode, setFontTestMode] = useState(false);
   const [gridScale, setGridScale] = useState(100);
   const [stickToScreen, setStickToScreen] = useState(false);
@@ -123,7 +127,11 @@ function App() {
   }, []);
 
   const { pos: floatPos, onMouseDown: onDrag, setPos: setFloatPos } = useDraggable({ x: 100, y: 100 }, panelPos === 'floating');
-  const { size: panelSize, startResizing, setSize: setPanelSize } = useResizable({ w: 380, h: 600 }, panelPos);
+  const { size: panelSize, startResizing, setSize: setPanelSize } = useResizable(
+    panelPos === 'top' || panelPos === 'bottom' ? { w: 100, h: 220 } : { w: 380, h: 600 },
+    panelPos,
+    setFloatPos
+  );
 
   const copySVG = useCallback(() => {
     const scale = gridScale / 100;
