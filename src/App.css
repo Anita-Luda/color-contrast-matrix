@@ -6,9 +6,9 @@
   background-color: var(--bg-app);
 }
 
-.app-layout.theme-top { flex-direction: column; }
+.app-layout.theme-top { flex-direction: column-reverse; }
 .app-layout.theme-bottom { flex-direction: column; }
-.app-layout.theme-left { flex-direction: row; }
+.app-layout.theme-left { flex-direction: row-reverse; }
 .app-layout.theme-right { flex-direction: row; }
 .app-layout.theme-floating { flex-direction: row; }
 

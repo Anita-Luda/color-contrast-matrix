@@ -15,7 +15,7 @@
 }
 
 .color-card.with-border {
-  border: 2px solid;
+  border-width: 2px !important;
 }
 
 .sparkles-container {

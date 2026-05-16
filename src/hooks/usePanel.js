@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 
 export function useDraggable(initialPos = { x: 100, y: 100 }, enabled = false) {
   const [pos, setPos] = useState(initialPos);
-  const dragRef = useRef(null);
 
   const onMouseDown = useCallback((e) => {
     if (!enabled) return;
@@ -30,11 +29,13 @@ export function useDraggable(initialPos = { x: 100, y: 100 }, enabled = false) {
   return { pos, onMouseDown, setPos };
 }
 
-export function useResizable(initialSize = { w: 380, h: 600 }, pos = 'right') {
+export function useResizable(initialSize = { w: 380, h: 600 }, panelPos = 'right') {
   const [size, setSize] = useState(initialSize);
 
   const startResizing = useCallback((e, direction) => {
     e.preventDefault();
+    e.stopPropagation();
+
     const startX = e.clientX;
     const startY = e.clientY;
     const startW = size.w;
@@ -44,23 +45,22 @@ export function useResizable(initialSize = { w: 380, h: 600 }, pos = 'right') {
       let newW = startW;
       let newH = startH;
 
-      if (direction.includes('w')) {
-        const delta = startX - moveEvent.clientX;
-        newW = pos === 'right' ? startW + delta : startW - (startX - moveEvent.clientX);
-        // Special case for right/left panel
-        if (pos === 'right') newW = startW + (startX - moveEvent.clientX);
-        if (pos === 'left') newW = startW - (startX - moveEvent.clientX);
-      }
+      const deltaX = moveEvent.clientX - startX;
+      const deltaY = moveEvent.clientY - startY;
 
-      // Simpler logic for sidebar positions
-      if (pos === 'right') newW = startW + (startX - moveEvent.clientX);
-      if (pos === 'left') newW = startW - (startX - moveEvent.clientX);
-      if (pos === 'top') newH = startH - (startY - moveEvent.clientY);
-      if (pos === 'bottom') newH = startH + (startY - moveEvent.clientY);
-
-      if (pos === 'floating') {
-          if (direction.includes('e')) newW = startW + (moveEvent.clientX - startX);
-          if (direction.includes('s')) newH = startH + (moveEvent.clientY - startY);
+      if (panelPos === 'right') {
+          newW = startW - deltaX;
+      } else if (panelPos === 'left') {
+          newW = startW + deltaX;
+      } else if (panelPos === 'top') {
+          newH = startH + deltaY;
+      } else if (panelPos === 'bottom') {
+          newH = startH - deltaY;
+      } else if (panelPos === 'floating') {
+          if (direction.includes('e')) newW = startW + deltaX;
+          if (direction.includes('w')) newW = startW - deltaX;
+          if (direction.includes('s')) newH = startH + deltaY;
+          if (direction.includes('n')) newH = startH - deltaY;
       }
 
       setSize({
@@ -76,7 +76,7 @@ export function useResizable(initialSize = { w: 380, h: 600 }, pos = 'right') {
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-  }, [size, pos]);
+  }, [size, panelPos]);
 
   return { size, startResizing, setSize };
 }

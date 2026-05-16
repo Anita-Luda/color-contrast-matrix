@@ -26,7 +26,7 @@ export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds
             key={t}
             onClick={() => onChange(t)}
             className={`threshold-btn ${value === t ? 'active' : ''}`}
-            style={{ left: `${percent}%` }}
+            style={{ left: `calc(${percent}% - 0px)` }}
           >
             {t}
           </button>
@@ -66,11 +66,20 @@ export const Collapsible = ({ title, children, defaultOpen = true }) => {
   );
 };
 
-export const Toggle = ({ label, active, onChange }) => (
+export const Toggle = ({ label, active, onChange, icon: Icon }) => (
   <div className="toggle-container">
-    <label className="toggle-label">{label}</label>
+    <div className="label-with-icon">
+        {Icon && <span className="slider-icon"><Icon size={10} /></span>}
+        <label className="toggle-label">{label}</label>
+    </div>
     <button onClick={() => onChange(!active)} className={`toggle-switch ${active ? 'active' : ''}`}>
-        <div className="toggle-handle"></div>
+        <div className="toggle-handle">
+            {active ? (
+                <div className="toggle-status-dot active"></div>
+            ) : (
+                <div className="toggle-status-dot"></div>
+            )}
+        </div>
     </button>
   </div>
 );

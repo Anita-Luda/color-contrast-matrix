@@ -65,21 +65,21 @@ input[type=range]::-webkit-slider-runnable-track {
 input[type=range]::-webkit-slider-thumb {
   height: 16px;
   width: 16px;
-  border-radius: 50%;
+  border-radius: var(--toggle-handle-radius, 50%);
   background: var(--text-primary);
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -6px;
   box-shadow: 0 0 0 4px var(--bg-panel);
-  border: 1px solid var(--border-input);
+  border: var(--border-width, 1px) solid var(--border-input);
 }
 
 .slider-thresholds {
-  display: flex;
-  justify-content: space-between;
-  padding: 0;
+  display: block;
+  padding: 0 8px;
   position: relative;
-  height: 12px;
+  height: 14px;
+  margin-top: 4px;
 }
 
 .threshold-btn {
@@ -137,7 +137,7 @@ input[type=range]::-webkit-slider-thumb {
   padding: 0.35rem 0.5rem;
   font-size: 0.65rem;
   font-weight: 600;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   cursor: pointer;
   color: var(--text-secondary);
   text-transform: uppercase;
@@ -239,6 +239,9 @@ input[type=range]::-webkit-slider-thumb {
   left: 2px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 [data-style='cute'] .toggle-handle {
@@ -249,11 +252,26 @@ input[type=range]::-webkit-slider-thumb {
   left: 1px;
 }
 
+.toggle-switch.active .toggle-handle {
+  left: 18px;
+  background: var(--bg-panel);
+}
+
 [data-style='cute'] .toggle-switch.active .toggle-handle {
   left: 17px;
 }
 
-.toggle-switch.active .toggle-handle {
-  left: 18px;
-  background: var(--bg-panel);
+.toggle-status-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--neutral-300);
+    border-radius: 50%;
+}
+
+.toggle-status-dot.active {
+    background: var(--color-success);
+}
+
+[data-style='professional'] .toggle-status-dot {
+    border-radius: 0;
 }

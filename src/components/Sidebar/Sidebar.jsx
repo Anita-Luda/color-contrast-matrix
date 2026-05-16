@@ -101,7 +101,16 @@ const Sidebar = ({
       {!isFloating && panelPos === 'left' && <div className="resize-handle right" onMouseDown={(e) => startResizing(e, 'e')}></div>}
       {!isFloating && panelPos === 'top' && <div className="resize-handle bottom" onMouseDown={(e) => startResizing(e, 's')}></div>}
       {!isFloating && panelPos === 'bottom' && <div className="resize-handle top" onMouseDown={(e) => startResizing(e, 'n')}></div>}
-      {isFloating && <div className="resize-handle corner-se" onMouseDown={(e) => startResizing(e, 'se')}></div>}
+
+      {isFloating && (
+          <>
+              <div className="resize-handle top" onMouseDown={(e) => startResizing(e, 'n')}></div>
+              <div className="resize-handle bottom" onMouseDown={(e) => startResizing(e, 's')}></div>
+              <div className="resize-handle left" onMouseDown={(e) => startResizing(e, 'w')}></div>
+              <div className="resize-handle right" onMouseDown={(e) => startResizing(e, 'e')}></div>
+              <div className="resize-handle corner-se" onMouseDown={(e) => startResizing(e, 'se')}></div>
+          </>
+      )}
 
       <header className="sidebar-header" onMouseDown={onDrag} style={{ cursor: isFloating ? 'grab' : 'default' }}>
         <div className="header-title">
@@ -139,7 +148,7 @@ const Sidebar = ({
         </div>
       </header>
 
-      <div className="sidebar-content custom-scrollbar">
+      <div className={`sidebar-content custom-scrollbar ${isHorizontal ? 'horizontal-layout' : ''}`}>
         <Collapsible title="Colors Input">
           <div className="section-stack">
             <div className="input-header">

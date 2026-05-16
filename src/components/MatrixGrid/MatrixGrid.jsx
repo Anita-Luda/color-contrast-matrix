@@ -35,6 +35,9 @@ const MatrixGrid = ({
             <div className="header-label">BG / FG</div>
           </div>
 
+          {/* Column Header Strip Background */}
+          <div className="col-header-strip" style={{ gridColumn: `3 / span ${activeCols.length}` }}></div>
+
           {/* Column Headers */}
           {activeCols.map((c, idx) => (
             <div
@@ -52,7 +55,7 @@ const MatrixGrid = ({
             <React.Fragment key={bg}>
               {/* Row Header */}
               <div
-                className="sticky-header row"
+                className={`sticky-header row ${stickToScreen ? 'stick-screen' : ''}`}
                 style={{
                     gridColumn: '2',
                     left: stickToScreen ? '0' : 'auto'

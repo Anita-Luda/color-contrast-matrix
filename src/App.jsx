@@ -26,7 +26,7 @@ function App() {
   const [uniqueMode, setUniqueMode] = useState('all');
   const [darknessFilter, setDarknessFilter] = useState('all');
   const [hideEmpty, setHideEmpty] = useState(false);
-  const [showBorder, setShowBorder] = useState(false);
+  const [showBorder, setShowBorder] = useState(true);
   const [fontTestMode, setFontTestMode] = useState(false);
   const [gridScale, setGridScale] = useState(100);
   const [stickToScreen, setStickToScreen] = useState(false);

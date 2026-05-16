@@ -48,7 +48,15 @@
   border-bottom: var(--border-width, 1px) solid var(--border-subtle);
   flex-direction: column;
   box-shadow: 0 4px 12px -4px rgba(0,0,0,0.03);
+  background-color: transparent;
+}
+
+.col-header-strip {
+  position: sticky;
+  top: 0;
+  z-index: 99;
   background-color: var(--bg-header-sticky);
+  border-bottom: var(--border-width, 1px) solid var(--border-subtle);
 }
 
 .swatch-indicator {
@@ -72,6 +80,17 @@
   justify-content: flex-end;
   gap: var(--spacing-3);
   box-shadow: 4px 0 12px -4px rgba(0,0,0,0.03);
+  z-index: 90;
+}
+
+.sticky-header.row.stick-screen {
+    position: sticky;
+    left: 0;
+    width: 120px;
+    display: flex;
+    border-right: var(--border-width, 1px) solid var(--border-subtle);
+    box-shadow: 4px 0 12px -4px rgba(0,0,0,0.1);
+    z-index: 110;
 }
 
 .row-color-code {

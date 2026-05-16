@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import './Card.css';
 import { getContrastRatio, getApcaContrast, getVisualTensionScore } from '../../utils/color';
-import { CheckIcon, XIcon } from '../Common/Icons';
+import { CheckIcon, XIcon, WarningIcon } from '../Common/Icons';
 
 const Sparkle = ({ style }) => (
   <svg className="sparkle" viewBox="0 0 24 24" fill="currentColor" style={style}>
@@ -55,7 +55,7 @@ const Card = ({
            height: `var(--card-h)`,
            borderRadius: `var(--radius-card)`,
            borderColor: fg,
-           borderWidth: showBorder ? '2px' : 'var(--card-border-default)'
+           borderWidth: `var(--card-border-default)`
          }}>
 
       {/* Top part - Dynamic Background */}
@@ -73,7 +73,9 @@ const Card = ({
         </div>
 
         {tension >= tensionLimit && (
-          <div className="tension-warning" title={`Vibration Score: ${tension}`}>⚠️</div>
+          <div className="tension-warning" title={`Vibration Score: ${tension}`}>
+            <WarningIcon size={20} />
+          </div>
         )}
 
         {fontTestMode ? (
@@ -89,7 +91,7 @@ const Card = ({
             </div>
         ) : (
             <div className="indicator-group">
-                <div className="contrast-value" style={{ fontSize: `32px` }}>
+                <div className="contrast-value" style={{ fontSize: `32px`, fontWeight: 'var(--contrast-value-weight)' }}>
                   {val}{suffix}
                 </div>
 
