@@ -58,19 +58,25 @@ export function useResizable(initialSize = { w: 380, h: 200 }, panelPos = 'right
       } else if (panelPos === 'floating') {
           if (direction.includes('e')) newW = startW + deltaX;
           if (direction.includes('w')) {
-              newW = startW - deltaX;
-              if (newW >= 250) setFloatPos(prev => ({ ...prev, x: moveEvent.clientX }));
+              const possibleW = startW - deltaX;
+              if (possibleW >= 250) {
+                  newW = possibleW;
+                  setFloatPos(prev => ({ ...prev, x: moveEvent.clientX }));
+              }
           }
           if (direction.includes('s')) newH = startH + deltaY;
           if (direction.includes('n')) {
-              newH = startH - deltaY;
-              if (newH >= 100) setFloatPos(prev => ({ ...prev, y: moveEvent.clientY }));
+              const possibleH = startH - deltaY;
+              if (possibleH >= 100) {
+                  newH = possibleH;
+                  setFloatPos(prev => ({ ...prev, y: moveEvent.clientY }));
+              }
           }
       }
 
       setSize({
         w: Math.max(250, newW),
-        h: Math.max(isHorizontal(panelPos) ? 80 : 100, newH)
+        h: Math.max(80, newH)
       });
     };
 
@@ -82,8 +88,6 @@ export function useResizable(initialSize = { w: 380, h: 200 }, panelPos = 'right
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   }, [size, panelPos, setFloatPos]);
-
-  const isHorizontal = (pos) => pos === 'top' || pos === 'bottom';
 
   return { size, startResizing, setSize };
 }

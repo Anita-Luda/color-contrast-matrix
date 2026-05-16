@@ -216,7 +216,7 @@ input[type=range]::-webkit-slider-thumb {
   width: 14px;
   height: 14px;
   background: #ffffff;
-  border-radius: var(--toggle-handle-radius);
+  border-radius: var(--radius-toggle-handle);
   position: absolute;
   top: 50%;
   left: 3px;

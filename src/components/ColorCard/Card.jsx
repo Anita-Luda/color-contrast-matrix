@@ -30,11 +30,11 @@ const Card = ({
 
   const sparkles = useMemo(() => {
     if (!isCute) return [];
-    return Array.from({ length: 6 }).map((_, i) => ({
+    return Array.from({ length: 5 }).map((_, i) => ({
       id: i,
       style: {
-        top: `${Math.random() * 80 + 5}%`,
-        left: `${Math.random() * 45 + 50}%`,
+        top: `${Math.random() * 70 + 15}%`,
+        left: `${Math.random() * 35 + 55}%`,
         width: `${Math.random() * 10 + 6}px`,
         opacity: Math.random() * 0.4 + 0.2,
         animationDelay: `${Math.random() * 2}s`
@@ -43,8 +43,8 @@ const Card = ({
   }, [isCute]);
 
   const renderStatus = (pass) => {
-    if (pass) return <CheckIcon size={12} color="var(--color-success)" />;
-    return <XIcon size={12} color="var(--color-error)" />;
+    if (pass) return <CheckIcon size={12} color="#22c55e" />; // Keep green for pass
+    return <XIcon size={12} color="#ef4444" />; // Keep red for fail
   };
 
   return (
@@ -54,7 +54,7 @@ const Card = ({
            height: `var(--card-h)`,
            borderRadius: `var(--radius-card)`,
            borderColor: fg,
-           borderWidth: showBorder ? '2px' : 'var(--card-border-default)'
+           borderWidth: showBorder ? '2px' : '0px'
          }}>
 
       {/* Top part - Dynamic Background */}
@@ -89,7 +89,7 @@ const Card = ({
             </div>
         ) : (
             <div className="indicator-group">
-                <div className="contrast-value" style={{ fontSize: `32px`, fontWeight: 'var(--contrast-value-weight)' }}>
+                <div className="contrast-value" style={{ fontSize: `32px`, fontWeight: 'var(--f-weight-contrast)' }}>
                   {val}{suffix}
                 </div>
 
@@ -109,8 +109,8 @@ const Card = ({
                 </div>
 
                 <div className="hex-labels" style={{ fontSize: `10px` }}>
-                  <div>{bg} - BG</div>
-                  <div>{fg} - FG</div>
+                  <div className="hex-line"><span>BG</span> <span className="mono">{bg}</span></div>
+                  <div className="hex-line"><span>FG</span> <span className="mono">{fg}</span></div>
                 </div>
             </div>
         )}

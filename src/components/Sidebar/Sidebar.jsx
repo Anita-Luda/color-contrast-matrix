@@ -8,7 +8,7 @@ import {
 } from '../Common';
 import {
     SunIcon, MoonIcon, BriefcaseIcon, SparklesIcon, LayoutIcon,
-    CheckIcon, XIcon
+    CheckIcon, XIcon, WarningIcon
 } from '../Common/Icons';
 import TriStateFilter from '../TriStateFilter/TriStateFilter';
 import { FontSelector } from '../TypographyTester/FontSelector';
@@ -79,30 +79,32 @@ const Sidebar = ({
     />
   )), [filteredColors, colFilters, setColFilters]);
 
-  const isFloating = panelPos === 'floating';
   const isHorizontal = panelPos === 'top' || panelPos === 'bottom';
+  const isCute = visualStyle === 'cute';
 
   return (
     <aside
       className={`sidebar panel-${panelPos}`}
       style={{
         width: isHorizontal ? '100%' : `${panelSize.w}px`,
-        height: isHorizontal ? `${panelSize.h}px` : (isFloating ? `${panelSize.h}px` : '100vh'),
-        ...(isFloating ? {
+        height: isHorizontal ? `${panelSize.h}px` : (panelPos === 'floating' ? `${panelSize.h}px` : '100vh'),
+        ...(panelPos === 'floating' ? {
             position: 'absolute',
             left: floatPos.x,
             top: floatPos.y,
-            borderRadius: 'var(--radius-xl)'
+            borderRadius: 'var(--radius-panel)'
         } : {})
       }}
     >
       {/* Resize Handles */}
-      {!isFloating && panelPos === 'right' && <div className="resize-handle left" onMouseDown={(e) => startResizing(e, 'w')}></div>}
-      {!isFloating && panelPos === 'left' && <div className="resize-handle right" onMouseDown={(e) => startResizing(e, 'e')}></div>}
-      {!isFloating && panelPos === 'top' && <div className="resize-handle bottom" onMouseDown={(e) => startResizing(e, 's')}></div>}
-      {!isFloating && panelPos === 'bottom' && <div className="resize-handle top" onMouseDown={(e) => startResizing(e, 'n')}></div>}
+      {!isHorizontal && panelPos !== 'floating' && (
+          <div className={`resize-handle ${panelPos === 'right' ? 'left' : 'right'}`} onMouseDown={(e) => startResizing(e, panelPos === 'right' ? 'w' : 'e')}></div>
+      )}
+      {isHorizontal && (
+          <div className={`resize-handle ${panelPos === 'top' ? 'bottom' : 'top'}`} onMouseDown={(e) => startResizing(e, panelPos === 'top' ? 's' : 'n')}></div>
+      )}
 
-      {isFloating && (
+      {panelPos === 'floating' && (
           <>
               <div className="resize-handle top" onMouseDown={(e) => startResizing(e, 'n')}></div>
               <div className="resize-handle bottom" onMouseDown={(e) => startResizing(e, 's')}></div>
@@ -112,10 +114,10 @@ const Sidebar = ({
           </>
       )}
 
-      <header className="sidebar-header" onMouseDown={onDrag} style={{ cursor: isFloating ? 'grab' : 'default' }}>
+      <header className="sidebar-header" onMouseDown={onDrag} style={{ cursor: panelPos === 'floating' ? 'grab' : 'default' }}>
         <div className="header-title">
           <h2>Settings</h2>
-          <span className="version">PRO V8.2 SPA</span>
+          <span className="version">PRO V9.0 SPA</span>
         </div>
         <div className="header-actions">
           <button
@@ -168,7 +170,7 @@ const Sidebar = ({
         </Collapsible>
 
         <Collapsible title="Thresholds">
-          <div className="section-stack gap-5">
+          <div className="section-stack">
             <RangeSlider
                 label="Contrast Min" value={minContrast} min={0} max={21} step={0.1}
                 onChange={setMinContrast} thresholds={[0, 3, 4.5, 7, 21]}
@@ -182,27 +184,27 @@ const Sidebar = ({
             <RangeSlider
                 label="Vibration Limit" value={maxTension} min={0} max={10} step={0.5}
                 onChange={setMaxTension} thresholds={[2, 5, 8, 10]} unit="/10"
-                icon={SparklesIcon}
+                icon={WarningIcon}
             />
           </div>
         </Collapsible>
 
         <Collapsible title="Global Modes">
-          <div className="section-stack gap-4">
+          <div className="section-stack">
             <SegmentedControl label="Visual Style" value={visualStyle} onChange={setVisualStyle} options={[{ label: 'Professional', value: 'professional' }, { label: 'Cute Kawaii', value: 'cute' }]} />
             <SegmentedControl label="Calc Mode" value={calcMode} onChange={setCalcMode} options={[{ label: 'WCAG 2.1', value: 'wcag' }, { label: 'APCA', value: 'apca' }]} />
+            <div className="toggle-grid">
+              <Toggle label="Hide Empty" active={hideEmpty} onChange={setHideEmpty} icon={isCute ? SparklesIcon : null} />
+              <Toggle label="Borders" active={showBorder} onChange={setShowBorder} icon={isCute ? BriefcaseIcon : null} />
+            </div>
             <SegmentedControl label="Uniqueness" value={uniqueMode} onChange={setUniqueMode} options={[{ label: 'All', value: 'all' }, { label: 'Half (BG)', value: 'bg' }, { label: 'Half (FG)', value: 'fg' }]} />
             <SegmentedControl label="Contrast Rel" value={darknessFilter} onChange={setDarknessFilter} options={[{ label: 'All', value: 'all' }, { label: 'Dark BG', value: 'bg-darker' }, { label: 'Dark FG', value: 'fg-darker' }]} />
-            <div className="toggle-grid">
-              <Toggle label="Hide Empty" active={hideEmpty} onChange={setHideEmpty} icon={SparklesIcon} />
-              <Toggle label="Borders" active={showBorder} onChange={setShowBorder} icon={BriefcaseIcon} />
-            </div>
           </div>
         </Collapsible>
 
         <Collapsible title="Typography">
-          <div className="section-stack gap-4">
-            <Toggle label="Font Test Mode" active={fontTestMode} onChange={setFontTestMode} />
+          <div className="section-stack">
+            <Toggle label="Font Test Mode" active={fontTestMode} onChange={setFontTestMode} icon={isCute ? SparklesIcon : null} />
 
             {fontTestMode && (
               <div className="typography-subpanel animate-fade">
@@ -244,9 +246,9 @@ const Sidebar = ({
         </Collapsible>
 
         <Collapsible title="Visual Matrix">
-          <div className="section-stack gap-5">
-            <RangeSlider label="Grid Scale (1:1)" value={gridScale} min={20} max={200} step={1} onChange={setGridScale} thresholds={[20, 50, 100, 150, 200]} unit="%" />
-            <Toggle label="Stick Rows to Screen" active={stickToScreen} onChange={setStickToScreen} />
+          <div className="section-stack">
+            <RangeSlider label="Grid Scale (1:1)" value={gridScale} min={20} max={200} step={1} onChange={setGridScale} thresholds={[20, 50, 100, 150, 200]} unit="%" icon={isCute ? SparklesIcon : null} />
+            <Toggle label="Stick Row Labels to Screen" active={stickToScreen} onChange={setStickToScreen} icon={isCute ? LayoutIcon : null} />
 
             <div className="sorting-panel">
               <label>Sorting</label>
@@ -274,25 +276,25 @@ const Sidebar = ({
 
             <div className="filters-panel">
               <div className="filters-header">
-              <label>Global Filters</label>
+                <label>Global Filters</label>
                 <button onClick={resetAll} className="reset-btn">Reset All</button>
               </div>
               <input type="text" placeholder="Search colors..." value={search} onChange={e => setSearch(e.target.value)} className="search-input" />
               <div className="filters-grid">
                 <div className="filter-column">
-                <div className="filter-column-header">
-                  <span className="col-label">Rows</span>
-                  <button onClick={() => setRowFilters({})} className="mini-reset-btn">Reset</button>
-                </div>
+                  <div className="filter-column-header">
+                    <span className="col-label">Rows</span>
+                    <button onClick={() => setRowFilters({})} className="mini-reset-btn">Reset</button>
+                  </div>
                   <div className="filter-list custom-scrollbar">
                     {rowFilterItems}
                   </div>
                 </div>
                 <div className="filter-column">
-                <div className="filter-column-header">
-                  <span className="col-label">Cols</span>
-                  <button onClick={() => setColFilters({})} className="mini-reset-btn">Reset</button>
-                </div>
+                  <div className="filter-column-header">
+                    <span className="col-label">Cols</span>
+                    <button onClick={() => setColFilters({})} className="mini-reset-btn">Reset</button>
+                  </div>
                   <div className="filter-list custom-scrollbar">
                     {colFilterItems}
                   </div>

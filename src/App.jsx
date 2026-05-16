@@ -129,7 +129,7 @@ function App() {
 
   const { pos: floatPos, onMouseDown: onDrag, setPos: setFloatPos } = useDraggable({ x: 100, y: 100 }, panelPos === 'floating');
   const { size: panelSize, startResizing, setSize: setPanelSize } = useResizable(
-    panelPos === 'top' || panelPos === 'bottom' ? { w: 100, h: 220 } : { w: 380, h: 600 },
+    panelPos === 'top' || panelPos === 'bottom' ? { w: 100, h: 200 } : { w: 380, h: 600 },
     panelPos,
     setFloatPos
   );
