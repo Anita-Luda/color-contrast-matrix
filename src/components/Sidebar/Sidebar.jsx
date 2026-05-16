@@ -6,7 +6,10 @@ import {
   SegmentedControl,
   Toggle
 } from '../Common';
-import { SunIcon, MoonIcon, BriefcaseIcon, SparklesIcon } from '../Common/Icons';
+import {
+    SunIcon, MoonIcon, BriefcaseIcon, SparklesIcon, LayoutIcon,
+    CheckIcon, XIcon
+} from '../Common/Icons';
 import TriStateFilter from '../TriStateFilter/TriStateFilter';
 import { FontSelector } from '../TypographyTester/FontSelector';
 
@@ -45,7 +48,8 @@ const Sidebar = ({
   copySVG,
   panelPos, setPanelPos,
   theme, setTheme,
-  visualStyle, setVisualStyle
+  visualStyle, setVisualStyle,
+  floatPos, onDrag, panelSize, startResizing
 }) => {
 
   const addColor = useCallback((hex) => {
@@ -75,9 +79,31 @@ const Sidebar = ({
     />
   )), [filteredColors, colFilters, setColFilters]);
 
+  const isFloating = panelPos === 'floating';
+  const isHorizontal = panelPos === 'top' || panelPos === 'bottom';
+
   return (
-    <aside className={`sidebar panel-${panelPos}`}>
-      <header className="sidebar-header">
+    <aside
+      className={`sidebar panel-${panelPos}`}
+      style={{
+        width: isHorizontal ? '100%' : `${panelSize.w}px`,
+        height: isHorizontal ? `${panelSize.h}px` : (isFloating ? `${panelSize.h}px` : '100vh'),
+        ...(isFloating ? {
+            position: 'absolute',
+            left: floatPos.x,
+            top: floatPos.y,
+            borderRadius: 'var(--radius-xl)'
+        } : {})
+      }}
+    >
+      {/* Resize Handles */}
+      {!isFloating && panelPos === 'right' && <div className="resize-handle left" onMouseDown={(e) => startResizing(e, 'w')}></div>}
+      {!isFloating && panelPos === 'left' && <div className="resize-handle right" onMouseDown={(e) => startResizing(e, 'e')}></div>}
+      {!isFloating && panelPos === 'top' && <div className="resize-handle bottom" onMouseDown={(e) => startResizing(e, 's')}></div>}
+      {!isFloating && panelPos === 'bottom' && <div className="resize-handle top" onMouseDown={(e) => startResizing(e, 'n')}></div>}
+      {isFloating && <div className="resize-handle corner-se" onMouseDown={(e) => startResizing(e, 'se')}></div>}
+
+      <header className="sidebar-header" onMouseDown={onDrag} style={{ cursor: isFloating ? 'grab' : 'default' }}>
         <div className="header-title">
           <h2>Settings</h2>
           <span className="version">PRO V8.2 SPA</span>
@@ -97,10 +123,19 @@ const Sidebar = ({
           >
             {visualStyle === 'professional' ? <SparklesIcon /> : <BriefcaseIcon />}
           </button>
-          <select value={panelPos} onChange={(e) => setPanelPos(e.target.value)} className="pos-select">
-            <option value="left">Left</option>
-            <option value="right">Right</option>
-          </select>
+
+          <div className="layout-switcher">
+             {['left', 'right', 'top', 'bottom', 'floating'].map(pos => (
+               <button
+                key={pos}
+                onClick={() => setPanelPos(pos)}
+                className={`icon-btn sm ${panelPos === pos ? 'active' : ''}`}
+                title={`Dock ${pos}`}
+               >
+                 <LayoutIcon pos={pos} size={12} />
+               </button>
+             ))}
+          </div>
         </div>
       </header>
 
@@ -125,9 +160,21 @@ const Sidebar = ({
 
         <Collapsible title="Thresholds">
           <div className="section-stack gap-5">
-            <RangeSlider label="Contrast Min" value={minContrast} min={0} max={21} step={0.1} onChange={setMinContrast} thresholds={[0, 3, 4.5, 7, 21]} />
-            <RangeSlider label="Contrast Max" value={maxContrast} min={0} max={21} step={0.1} onChange={setMaxContrast} thresholds={[0, 3, 4.5, 7, 21]} />
-            <RangeSlider label="Vibration Limit" value={maxTension} min={0} max={10} step={0.5} onChange={setMaxTension} thresholds={[2, 5, 8, 10]} unit="/10" />
+            <RangeSlider
+                label="Contrast Min" value={minContrast} min={0} max={21} step={0.1}
+                onChange={setMinContrast} thresholds={[0, 3, 4.5, 7, 21]}
+                icon={CheckIcon}
+            />
+            <RangeSlider
+                label="Contrast Max" value={maxContrast} min={0} max={21} step={0.1}
+                onChange={setMaxContrast} thresholds={[0, 3, 4.5, 7, 21]}
+                icon={XIcon}
+            />
+            <RangeSlider
+                label="Vibration Limit" value={maxTension} min={0} max={10} step={0.5}
+                onChange={setMaxTension} thresholds={[2, 5, 8, 10]} unit="/10"
+                icon={SparklesIcon}
+            />
           </div>
         </Collapsible>
 
@@ -218,19 +265,25 @@ const Sidebar = ({
 
             <div className="filters-panel">
               <div className="filters-header">
-                <label>Filters</label>
+              <label>Global Filters</label>
                 <button onClick={resetAll} className="reset-btn">Reset All</button>
               </div>
               <input type="text" placeholder="Search colors..." value={search} onChange={e => setSearch(e.target.value)} className="search-input" />
               <div className="filters-grid">
                 <div className="filter-column">
+                <div className="filter-column-header">
                   <span className="col-label">Rows</span>
+                  <button onClick={() => setRowFilters({})} className="mini-reset-btn">Reset</button>
+                </div>
                   <div className="filter-list custom-scrollbar">
                     {rowFilterItems}
                   </div>
                 </div>
                 <div className="filter-column">
+                <div className="filter-column-header">
                   <span className="col-label">Cols</span>
+                  <button onClick={() => setColFilters({})} className="mini-reset-btn">Reset</button>
+                </div>
                   <div className="filter-list custom-scrollbar">
                     {colFilterItems}
                   </div>

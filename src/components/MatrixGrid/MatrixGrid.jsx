@@ -14,7 +14,7 @@ const MatrixGrid = ({
 
   return (
     <main className="grid-area">
-      <div className="grid-wrapper" style={{ transform: `scale(${gridScale/100})`, transformOrigin: 'top left' }}>
+      <div className="grid-wrapper" style={{ transform: `scale(${gridScale/100})`, transformOrigin: 'top center' }}>
         <div
           className="matrix-grid"
           style={{

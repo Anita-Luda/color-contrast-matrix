@@ -1,21 +1,34 @@
 .sidebar {
-  width: 380px;
-  min-width: 320px;
-  height: 100vh;
   background-color: var(--bg-panel);
-  border-left: var(--border-width, 1px) solid var(--border-panel);
   display: flex;
   flex-direction: column;
   padding: var(--spacing-6);
   flex-shrink: 0;
   z-index: 1000;
   box-shadow: var(--shadow-lg);
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.panel-right {
+  border-left: var(--border-width, 1px) solid var(--border-panel);
 }
 
 .panel-left {
-  order: -1;
-  border-left: none;
   border-right: var(--border-width, 1px) solid var(--border-panel);
+}
+
+.panel-top {
+  border-bottom: var(--border-width, 1px) solid var(--border-panel);
+}
+
+.panel-bottom {
+  border-top: var(--border-width, 1px) solid var(--border-panel);
+  order: 1;
+}
+
+.panel-floating {
+  border: var(--border-width, 1px) solid var(--border-panel);
 }
 
 .sidebar-header {
@@ -54,11 +67,32 @@
   border-radius: var(--radius-sm);
   padding: 4px;
   cursor: pointer;
-  font-size: 14px;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+}
+
+.icon-btn.sm {
+  padding: 3px;
+}
+
+.icon-btn.active {
+  background: var(--text-primary);
+  color: var(--bg-panel);
+}
+
+.layout-switcher {
+  display: flex;
+  gap: 2px;
+  background: var(--neutral-100);
+  padding: 2px;
+  border-radius: var(--radius-sm);
+}
+
+[data-theme='dark'] .layout-switcher {
+  background: var(--neutral-900);
 }
 
 .icon-btn:hover {
@@ -347,6 +381,27 @@
   gap: var(--spacing-2);
 }
 
+.filter-column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.mini-reset-btn {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.mini-reset-btn:hover {
+  color: var(--text-primary);
+}
+
 .col-label {
   font-size: 8px;
   font-weight: 700;
@@ -369,6 +424,17 @@
 [data-theme='dark'] .filter-list {
   background: var(--neutral-900);
 }
+
+.resize-handle {
+  position: absolute;
+  z-index: 1001;
+}
+
+.resize-handle.left { left: 0; top: 0; bottom: 0; width: 4px; cursor: ew-resize; }
+.resize-handle.right { right: 0; top: 0; bottom: 0; width: 4px; cursor: ew-resize; }
+.resize-handle.top { top: 0; left: 0; right: 0; height: 4px; cursor: ns-resize; }
+.resize-handle.bottom { bottom: 0; left: 0; right: 0; height: 4px; cursor: ns-resize; }
+.resize-handle.corner-se { right: 0; bottom: 0; width: 10px; height: 10px; cursor: nwse-resize; }
 
 .animate-fade {
   animation: fadeIn 0.3s ease;

@@ -6,6 +6,12 @@
   background-color: var(--bg-app);
 }
 
+.app-layout.theme-top { flex-direction: column; }
+.app-layout.theme-bottom { flex-direction: column; }
+.app-layout.theme-left { flex-direction: row; }
+.app-layout.theme-right { flex-direction: row; }
+.app-layout.theme-floating { flex-direction: row; }
+
 .content-area {
   flex: 1;
   display: flex;

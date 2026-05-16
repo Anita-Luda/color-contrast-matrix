@@ -3,6 +3,7 @@ import './App.css';
 import './styles/variables.css';
 import Sidebar from './components/Sidebar/Sidebar';
 import MatrixGrid from './components/MatrixGrid/MatrixGrid';
+import { useDraggable, useResizable } from './hooks/usePanel';
 import {
   getContrastRatio,
   getVisualTensionScore,
@@ -30,7 +31,7 @@ function App() {
   const [gridScale, setGridScale] = useState(100);
   const [stickToScreen, setStickToScreen] = useState(false);
   const [cardBaseWidth, setCardBaseWidth] = useState(220);
-  const [panelPos, setPanelPos] = useState('right');
+  const [panelPos, setPanelPos] = useState(() => localStorage.getItem('panelPos') || 'right');
   const [search, setSearch] = useState('');
 
   const [rowFilters, setRowFilters] = useState({});
@@ -60,6 +61,10 @@ function App() {
     localStorage.setItem('visualStyle', visualStyle);
     document.documentElement.setAttribute('data-style', visualStyle);
   }, [visualStyle]);
+
+  useEffect(() => {
+    localStorage.setItem('panelPos', panelPos);
+  }, [panelPos]);
 
   useEffect(() => {
     localStorage.setItem('colors', input);
@@ -116,6 +121,9 @@ function App() {
     setHideEmpty(false); setShowBorder(false); setRowFilters({}); setColFilters({});
     setSearch(''); setGridScale(100); setCardBaseWidth(220); setStickToScreen(false);
   }, []);
+
+  const { pos: floatPos, onMouseDown: onDrag, setPos: setFloatPos } = useDraggable({ x: 100, y: 100 }, panelPos === 'floating');
+  const { size: panelSize, startResizing, setSize: setPanelSize } = useResizable({ w: 380, h: 600 }, panelPos);
 
   const copySVG = useCallback(() => {
     const scale = gridScale / 100;
@@ -225,7 +233,7 @@ function App() {
   }, [activeCols, activeRows, gridScale, cardBaseWidth, fontTestMode, theme, visualStyle, isHidden, calcMode, headingEnabled, headingFont, headingSize, headingWeight, font, testFontSize, testFontWeight, testText]);
 
   return (
-    <div className={`app-layout theme-${theme}`}>
+    <div className={`app-layout theme-${theme} theme-${panelPos}`}>
       <main className="content-area">
         <MatrixGrid
           activeRows={activeRows}
@@ -253,6 +261,8 @@ function App() {
 
       <Sidebar
         input={input} setInput={setInput}
+        floatPos={floatPos} onDrag={onDrag}
+        panelSize={panelSize} startResizing={startResizing}
         minContrast={minContrast} setMinContrast={setMinContrast}
         maxContrast={maxContrast} setMaxContrast={setMaxContrast}
         maxTension={maxTension} setMaxTension={setMaxTension}

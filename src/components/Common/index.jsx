@@ -1,10 +1,13 @@
 import React from 'react';
 import './Common.css';
 
-export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds, unit = "" }) => (
+export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds, unit = "", icon: Icon }) => (
   <div className="slider-group">
     <div className="slider-header">
-      <label className="slider-label">{label}</label>
+      <div className="label-with-icon">
+        {Icon && <span className="slider-icon"><Icon size={10} /></span>}
+        <label className="slider-label">{label}</label>
+      </div>
       <span className="slider-value">{value === Infinity ? '∞' : value}{unit}</span>
     </div>
     <input
@@ -16,15 +19,19 @@ export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds
       onChange={(e) => onChange(Number(e.target.value) === max && max === 21 ? Infinity : Number(e.target.value))}
     />
     <div className="slider-thresholds">
-      {thresholds.map(t => (
-        <button
-          key={t}
-          onClick={() => onChange(t)}
-          className={`threshold-btn ${value === t ? 'active' : ''}`}
-        >
-          {t}
-        </button>
-      ))}
+      {thresholds.map(t => {
+        const percent = ((t === Infinity ? max : t) - min) / (max - min) * 100;
+        return (
+          <button
+            key={t}
+            onClick={() => onChange(t)}
+            className={`threshold-btn ${value === t ? 'active' : ''}`}
+            style={{ left: `${percent}%` }}
+          >
+            {t}
+          </button>
+        );
+      })}
     </div>
   </div>
 );
