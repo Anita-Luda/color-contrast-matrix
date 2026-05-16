@@ -151,7 +151,7 @@ const Sidebar = ({
       </header>
 
       <div className={`sidebar-content custom-scrollbar ${isHorizontal ? 'horizontal-layout' : ''}`}>
-        <Collapsible title="Colors Input">
+        <Collapsible title="Colors Input" defaultOpen={false}>
           <div className="section-stack">
             <div className="input-header">
               <label>HEX List</label>
@@ -169,18 +169,22 @@ const Sidebar = ({
           </div>
         </Collapsible>
 
-        <Collapsible title="Thresholds">
+        <Collapsible title="Thresholds" defaultOpen={true}>
           <div className="section-stack">
-            <RangeSlider
-                label="Contrast Min" value={minContrast} min={0} max={21} step={0.1}
-                onChange={setMinContrast} thresholds={[0, 3, 4.5, 7, 21]}
-                icon={CheckIcon}
-            />
-            <RangeSlider
-                label="Contrast Max" value={maxContrast} min={0} max={21} step={0.1}
-                onChange={setMaxContrast} thresholds={[0, 3, 4.5, 7, 21]}
-                icon={XIcon}
-            />
+            <div className="toggle-grid">
+               <RangeSlider
+                  label="Contrast Min" value={minContrast} min={0} max={21} step={0.1}
+                  onChange={setMinContrast} thresholds={[0, 3, 4.5, 7, 21]}
+                  icon={CheckIcon}
+                  style={{ gridColumn: isHorizontal ? 'span 1' : 'span 2' }}
+               />
+               <RangeSlider
+                  label="Contrast Max" value={maxContrast} min={0} max={21} step={0.1}
+                  onChange={setMaxContrast} thresholds={[0, 3, 4.5, 7, 21]}
+                  icon={XIcon}
+                  style={{ gridColumn: isHorizontal ? 'span 1' : 'span 2' }}
+               />
+            </div>
             <RangeSlider
                 label="Vibration Limit" value={maxTension} min={0} max={10} step={0.5}
                 onChange={setMaxTension} thresholds={[2, 5, 8, 10]} unit="/10"
@@ -189,7 +193,7 @@ const Sidebar = ({
           </div>
         </Collapsible>
 
-        <Collapsible title="Global Modes">
+        <Collapsible title="Global Modes" defaultOpen={false}>
           <div className="section-stack">
             <SegmentedControl label="Visual Style" value={visualStyle} onChange={setVisualStyle} options={[{ label: 'Professional', value: 'professional' }, { label: 'Cute Kawaii', value: 'cute' }]} />
             <SegmentedControl label="Calc Mode" value={calcMode} onChange={setCalcMode} options={[{ label: 'WCAG 2.1', value: 'wcag' }, { label: 'APCA', value: 'apca' }]} />
@@ -202,7 +206,7 @@ const Sidebar = ({
           </div>
         </Collapsible>
 
-        <Collapsible title="Typography">
+        <Collapsible title="Typography" defaultOpen={false}>
           <div className="section-stack">
             <Toggle label="Font Test Mode" active={fontTestMode} onChange={setFontTestMode} icon={isCute ? SparklesIcon : null} />
 
@@ -245,7 +249,7 @@ const Sidebar = ({
           </div>
         </Collapsible>
 
-        <Collapsible title="Visual Matrix">
+        <Collapsible title="Visual Matrix" defaultOpen={true}>
           <div className="section-stack">
             <RangeSlider label="Grid Scale (1:1)" value={gridScale} min={20} max={200} step={1} onChange={setGridScale} thresholds={[20, 50, 100, 150, 200]} unit="%" icon={isCute ? SparklesIcon : null} />
             <Toggle label="Stick Row Labels to Screen" active={stickToScreen} onChange={setStickToScreen} icon={isCute ? LayoutIcon : null} />

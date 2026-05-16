@@ -15,7 +15,7 @@
 }
 
 .color-card.with-border {
-  border: 2px solid var(--text-p) !important;
+  border: 2px solid var(--text-p);
 }
 
 .card-top {

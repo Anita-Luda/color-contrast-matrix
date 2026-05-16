@@ -1,8 +1,8 @@
 import React from 'react';
 import './Common.css';
 
-export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds, unit = "", icon: Icon }) => (
-  <div className="slider-group">
+export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds, unit = "", icon: Icon, style }) => (
+  <div className="slider-group" style={style}>
     <div className="slider-header">
       <div className="label-with-icon">
         {Icon && <span className="slider-icon"><Icon size={12} /></span>}

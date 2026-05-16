@@ -37,6 +37,14 @@
   --s-6: 1.5rem;
   --s-8: 2rem;
 
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
   /* --- COLORS --- */
   --clr-err: #ef4444;
   --clr-succ: #22c55e;
