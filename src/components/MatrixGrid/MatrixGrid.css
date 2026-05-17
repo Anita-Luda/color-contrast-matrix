@@ -27,14 +27,14 @@
   position: sticky;
   top: 0;
   z-index: 99;
-  background-color: var(--bg-header);
-  border-bottom: var(--border-w, 1px) solid var(--border-p);
+  background-color: var(--bg-h);
+  border-bottom: var(--brd-w, 1px) solid var(--brd-p);
 }
 
 .row-header-strip {
   z-index: 90;
-  background-color: var(--bg-header);
-  border-right: var(--border-w, 1px) solid var(--border-p);
+  background-color: var(--bg-h);
+  border-right: var(--brd-w, 1px) solid var(--brd-p);
 }
 
 .row-header-strip.sticky {
@@ -54,9 +54,9 @@
   top: 0;
   left: 0;
   z-index: 110;
-  background-color: var(--bg-header);
-  border-bottom: var(--border-w, 1px) solid var(--border-p);
-  border-right: var(--border-w, 1px) solid var(--border-p);
+  background-color: var(--bg-h);
+  border-bottom: var(--brd-w, 1px) solid var(--brd-p);
+  border-right: var(--brd-w, 1px) solid var(--brd-p);
   justify-content: flex-end;
   padding-right: var(--s-6);
 }
@@ -65,7 +65,7 @@
   font-family: var(--ff-mono);
   font-size: var(--fs-xs);
   font-weight: 700;
-  color: var(--text-m);
+  color: var(--txt-m);
   text-transform: uppercase;
   letter-spacing: 0.2em;
 }
@@ -73,34 +73,36 @@
 .sticky-header.col {
   top: 0;
   z-index: 100;
-  padding: var(--s-6) var(--s-4) var(--s-8);
+  padding: 0 var(--s-4);
   flex-direction: column;
   background-color: transparent; /* Strip handles it */
+  justify-content: center;
 }
 
 .swatch-indicator {
   width: 40px;
   height: 6px;
   border-radius: 10px;
-  margin-bottom: var(--s-4);
+  margin-bottom: var(--s-2);
 }
 
 .header-color-code {
   font-family: var(--ff-mono);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   color: var(--txt-s);
   font-weight: var(--fw-hdr);
   letter-spacing: -0.05em;
+  text-transform: uppercase;
 }
 
 .sticky-header.row {
   left: 0;
   z-index: 90;
-  padding: var(--s-5) var(--s-8);
+  padding: 0 var(--s-8);
   justify-content: flex-end;
   gap: var(--s-4);
   background-color: transparent; /* Strip handles it */
-  border-right: var(--border-w, 1px) solid var(--border-p);
+  border-right: var(--brd-w, 1px) solid var(--brd-p);
 }
 
 .sticky-header.row.stick-screen {
@@ -108,15 +110,16 @@
   left: 0;
   z-index: 106;
   box-shadow: 10px 0 30px rgba(0,0,0,0.04);
-  background-color: var(--bg-header);
+  background-color: var(--bg-h);
 }
 
 .row-color-code {
   font-family: var(--ff-mono);
-  font-size: var(--fs-sm);
-  color: var(--txt-p);
+  font-size: var(--fs-xs);
+  color: var(--txt-s);
   font-weight: var(--fw-hdr);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
 }
 
 .row-swatch {
@@ -126,7 +129,7 @@
 }
 
 .cell {
-  transition: opacity 0.3s ease, transform 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 .cell.hidden {

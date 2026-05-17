@@ -205,6 +205,12 @@
   gap: var(--space-4);
 }
 
+.vertical-control-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
 .typography-subpanel {
   display: flex;
   flex-direction: column;

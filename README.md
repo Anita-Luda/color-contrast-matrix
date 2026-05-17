@@ -1,26 +1,39 @@
-# WCAG Matrix Pro & Cute SPA (v8.3)
+# WCAG & APCA Color Matrix Professional
 
-Zaawansowana aplikacja SPA do analizy kontrastu, oferująca dwa unikalne style wizualne przy zachowaniu pełnej neutralności kolorystycznej (skala szarości).
+Zaawansowane narzędzie do analizy kontrastu kolorów zgodnie ze standardami WCAG 2.1 oraz APCA (WCAG 3.0). Zaprojektowane dla profesjonalnych designerów i deweloperów dbających o dostępność cyfrową.
 
-## Style Wizualne
+## Główne Funkcje
 
-### 1. Professional (Profesjonalny)
-- **Estetyka**: Minimalistyczna, surowa, z ostrymi narożnikami.
-- **Typografia**: Font 'Inter' w lekkich odmianach.
-- **Interfejs**: Bardzo dyskretny, skupiony na danych.
-- **Eksport**: Czyste, techniczne pliki SVG gotowe do dokumentacji systemów projektowych.
+- **Dwa tryby obliczeń:**
+    - **WCAG 2.1:** Standardowy współczynnik (np. 4.5:1).
+    - **APCA (WCAG 3.0):** Nowoczesny algorytm uwzględniający percepcję ludzkiego oka i kontekst (wielkość fontu).
+- **Analiza napięcia wizualnego (Vibration/Tension):** Wykrywa pary kolorów, które "wibrują" i męczą wzrok, nawet jeśli spełniają normy kontrastu.
+- **Dwa style wizualne:**
+    - **Professional:** Maksymalna gęstość informacji, czysty i surowy interfejs.
+    - **Cute Kawaii:** Przyjazny, zaokrąglony interfejs z efektami wizualnymi (sparkles).
+- **Zaawansowane filtrowanie:**
+    - Tri-state filtry dla wierszy i kolumn (Uwzględnij / Wyklucz / Neutralny).
+    - Filtrowanie po relacji jasności (np. tylko Ciemne Tło / Jasny Tekst).
+    - Suwaki progowe dla kontrastu i napięcia.
+- **Typography Tester:** Możliwość testowania konkretnych rodzin fontów (Heading & Body) bezpośrednio na próbkach kolorów.
+- **Export do Figmy:** Kopiowanie całej matrycy jako wysokiej jakości plik SVG, gotowy do wklejenia w narzędziach projektowych.
+- **Docking System:** Panel ustawień można przypiąć do dowolnej krawędzi ekranu lub używać jako pływającego okna.
 
-### 2. Cute Kawaii (Uroczy)
-- **Estetyka**: Miękka, z bardzo dużymi zaokrągleniami (radius-card: 3rem).
-- **Typografia**: Font 'Quicksand' o przyjaznym charakterze.
-- **Dekoracje**: Subtelne "sparkles" i urocze ikony statusu (✨, 🌸, 👑) w skali szarości.
-- **Eksport**: Przyjazne wizualnie SVG zachowujące "miękki" charakter interfejsu.
+## Szybki Start
 
-## Nowości w v8.3
-- **Przełącznik Stylów**: Możliwość błyskawicznej zmiany charakteru narzędzia bez utraty danych.
-- **Dark Mode dla obu stylów**: Pełna obsługa motywu ciemnego, niezależnie od wybranej estetyki.
-- **SVG Engine v2**: Silnik generujący SVG odzwierciedla teraz wybrany styl wizualny.
-- **Vanilla CSS Tokens**: Całe stylowanie oparte na dynamicznych tokenach CSS, co zapewnia wysoką wydajność i łatwość modyfikacji.
+1. Wklej listę kolorów HEX w polu "Colors Input".
+2. Skorzystaj z przycisków "+ Black" / "+ White", aby szybko dopełnić paletę.
+3. Użyj suwaków "Thresholds", aby odsiać pary o zbyt niskim kontraście.
+4. Przełączaj tryby wizualne w nagłówku panelu (ikona teczki / gwiazdek).
 
-## Architektura
-Projekt zbudowany w oparciu o **React 18** i **Vite**. Logika biznesowa jest odizolowana od warstwy prezentacji, co pozwala na bezpieczne wprowadzanie zmian wizualnych przy użyciu atrybutów `data-style` i `data-theme`.
+## Wymagania Techniczne
+
+- Node.js 18+
+- Przeglądarka wspierająca nowoczesne CSS (Flexbox, Grid, Variables).
+
+## Instalacja i Uruchomienie
+
+```bash
+npm install
+npm run dev
+```

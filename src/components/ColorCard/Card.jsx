@@ -43,8 +43,8 @@ const Card = ({
   }, [isCute]);
 
   const renderStatus = (pass) => {
-    if (pass) return <CheckIcon size={12} color="var(--color-success)" />;
-    return <XIcon size={12} color="var(--color-error)" />;
+    if (pass) return <CheckIcon size={12} color="var(--clr-succ)" />;
+    return <XIcon size={12} color="var(--clr-err)" />;
   };
 
   return (
@@ -52,9 +52,10 @@ const Card = ({
          style={{
            width: `${baseW}px`,
            height: `var(--card-h)`,
-           borderRadius: `var(--radius-card)`,
+           borderRadius: `var(--rad-card)`,
            borderColor: fg,
-           borderWidth: showBorder ? '2px' : '0px'
+           borderWidth: showBorder ? '3px' : '0px',
+           borderStyle: 'solid'
          }}>
 
       {/* Top part - Dynamic Background */}
@@ -121,7 +122,7 @@ const Card = ({
            padding: `1rem 1.5rem`,
            fontSize: `11px`,
            height: `var(--card-bottom-h)`,
-           borderRadius: `0 0 var(--radius-card) var(--radius-card)`
+           borderRadius: `0 0 var(--rad-card) var(--rad-card)`
       }}>
         <div className="bottom-info">
           <div className="pair-label">{bg} ⇆ {fg}</div>

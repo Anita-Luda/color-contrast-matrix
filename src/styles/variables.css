@@ -17,6 +17,7 @@
   --card-h: 310px;
   --card-bottom-h: 90px;
   --header-row-w: 150px;
+  --header-col-h: 80px;
 
   /* --- TYPOGRAPHY --- */
   --fs-xs: 9px;
@@ -64,6 +65,7 @@
   --rad-t: 0px;
   --rad-th: 0px;
   --rad-btn: 0px;
+  --rad-card: 0px;
 
   --bg-app: var(--n-0);
   --bg-p: var(--n-0);
@@ -125,6 +127,7 @@
   --rad-t: 2rem;
   --rad-th: 50%;
   --rad-btn: 2rem;
+  --rad-card: 2.5rem;
 
   --bg-app: #fafafa;
   --bg-p: var(--n-0);

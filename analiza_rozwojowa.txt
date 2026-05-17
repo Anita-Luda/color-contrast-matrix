@@ -1,22 +1,35 @@
-# Analiza Rozwojowa SPA (v9.2 Final)
+# Analiza Rozwojowa Narzędzia WCAG Matrix
 
-## Ewolucja Wizualna
-Wprowadzenie stylów 'Professional' i 'Cute' pokazało, że architektura oparta na tokenach CSS jest niezwykle elastyczna. Narzędzie przestało być tylko kalkulatorem, a stało się platformą, która może dostosować się do nastroju i preferencji projektanta. Tryb Professional (Gęstość UI, małe fonty, ostre krawędzie) naśladuje profesjonalne narzędzia projektowe jak Figma czy Adobe CC.
+## Obecny stan (V9.0 SPA)
+Narzędzie zostało zmigrowane do nowoczesnej architektury React i zyskało zaawansowany system filtrowania oraz personalizacji UI. Pod względem funkcjonalnym pokrywa większość potrzeb projektowych związanych z kontrastem.
 
-## Rozwiązane Problemy
-1. **Scrolling**: Poprawiono przewijanie poziome dla dużych macierzy kolorów. Usunięto marginesy centrujące na rzecz swobodnego scrollowania.
-2. **Layout Paneli**: Dodano dokowalny pasek narzędzi (Toolbar) dla pozycji Top/Bottom, co zapobiega zasłanianiu całej zawartości przy zachowaniu funkcjonalności.
-3. **Filtrowanie**: Wprowadzono trójstanowe filtry (Włącz/Wyłącz/Neutralny) z próbkami kolorów, co pozwala na precyzyjną selekcję bez znajomości kodów HEX.
+## Potencjalne Dziury Funkcjonalne
 
-## Nowe Możliwości (Roadmap v10.0+)
-1. **Dynamiczne Fonty**: Integracja z Google Fonts API z podglądem na żywo w gridzie.
-2. **Animacje (Motion Design)**: Dodanie delikatnych przejść Framer Motion, szczególnie przy przełączaniu stylów (np. efekt "morphing" dla kart).
-3. **Virtual Scrolling**: Konieczny przy listach > 100 kolorów (macierz 100x100 to 10 000 kart, co może obciążyć DOM).
-4. **Więcej Stylów**: Możliwość dodania stylu "Retro/Terminal" (monospace, stała szerokość) lub "Neumorphic".
-5. **Eksport JSON/CSS**: Generowanie gotowych zmiennych CSS lub tokenów projektowych z macierzy.
+1. **Brak wsparcia dla formatów innych niż HEX:**
+   Obecnie narzędzie akceptuje tylko pełne kody HEX (#RRGGBB). Brak obsługi RGB, HSL czy krótkich kodów HEX (#RGB) ogranicza elastyczność przy kopiowaniu wartości z CSS.
 
-## Wyzwania Techniczne
-- **Złożoność SVG**: Eksport do Figmy wymaga precyzyjnego odwzorowania stylów CSS w formacie SVG. Obecny silnik obsługuje proste zaokrąglenia i kolory, ale może wymagać rozbudowy dla efektów typu "glow" czy "glassmorphism".
+2. **Brak symulacji wad wzroku (Color Blindness):**
+   Mimo zaawansowanej analizy kontrastu, narzędzie nie pokazuje, jak kolory widzą osoby z protanopią, deuteranopią czy tritanopią.
 
-## Podsumowanie
-Wersja 9.2 udowadnia, że narzędzie techniczne może być jednocześnie profesjonalne i estetyczne. Dzięki skali szarości interfejsu, percepcja kolorów w macierzy nie jest zakłócana przez UI.
+3. **Brak automatycznych sugestii naprawczych:**
+   Narzędzie pokazuje, że kontrast jest zły, ale nie podpowiada, o ile należy przesunąć jasność tła lub tekstu, aby "wskoczyć" na poziom AA/AAA.
+
+4. **Brak zapisu sesji w chmurze / Linków do udostępniania:**
+   Ustawienia są zapisywane w LocalStorage, co jest dobre dla jednego urządzenia, ale uniemożliwia przesłanie gotowej matrycy do innego członka zespołu za pomocą URL.
+
+## Sugestie Rozwojowe (Roadmap)
+
+### Priorytet Wysoki (P0):
+- **Smart Fixer:** Przycisk na karcie koloru "Fix for AA", który automatycznie generuje najbliższy kolor spełniający normę.
+- **Obsługa wielu formatów:** Parser potrafiący wyciągnąć kolory z dowolnego bloku tekstu (np. całego pliku CSS/SCSS).
+
+### Priorytet Średni (P1):
+- **Color Blindness Simulator:** Warstwa nakładana na całą matrycę, renderująca widok w wybranych trybach daltonizmu (za pomocą filtrów SVG feColorMatrix).
+- **Export do JSON/Tokens:** Eksport danych nie tylko jako wizualny SVG, ale jako struktura danych (Design Tokens) dla deweloperów.
+
+### Priorytet Niski (P2):
+- **Interaktywny Color Picker:** Możliwość zmiany koloru "w locie" na karcie (Live Preview) bez konieczności edycji pola tekstowego.
+- **Tryb Batch Export:** Generowanie osobnych plików PNG/SVG dla każdej pary kolorów, która przeszła testy.
+
+## Wnioski Końcowe
+Narzędzie jest obecnie jednym z najbardziej kompleksowych darmowych rozwiązań do analizy matrycowej. Kolejnym krokiem milowym powinno być przejście z "analizatora" w stronę "generatora rozwiązań" (Smart Fixer).

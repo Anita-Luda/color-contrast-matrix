@@ -171,7 +171,7 @@ const Sidebar = ({
 
         <Collapsible title="Thresholds" defaultOpen={true}>
           <div className="section-stack">
-            <div className={isHorizontal ? 'horizontal-control-stack' : 'toggle-grid'}>
+            <div className={isHorizontal ? 'horizontal-control-stack' : 'vertical-control-stack'}>
                <RangeSlider
                   label="Contrast Min"
                   value={minContrast}
@@ -203,7 +203,6 @@ const Sidebar = ({
 
         <Collapsible title="Global Modes" defaultOpen={!isHorizontal}>
           <div className="section-stack">
-            <SegmentedControl label="Visual Style" value={visualStyle} onChange={setVisualStyle} options={[{ label: 'Professional', value: 'professional' }, { label: 'Cute Kawaii', value: 'cute' }]} />
             <SegmentedControl label="Calc Mode" value={calcMode} onChange={setCalcMode} options={[{ label: 'WCAG 2.1', value: 'wcag' }, { label: 'APCA', value: 'apca' }]} />
             <div className="toggle-grid">
               <Toggle label="Hide Empty" active={hideEmpty} onChange={setHideEmpty} icon={isCute ? SparklesIcon : null} />

@@ -108,6 +108,7 @@ input[type=range]::-webkit-slider-thumb:active {
   flex-direction: column;
   align-items: center;
   gap: 1px;
+  z-index: 10;
 }
 
 .threshold-tick {
@@ -118,9 +119,10 @@ input[type=range]::-webkit-slider-thumb:active {
 }
 
 .threshold-btn {
-  background: none;
-  border: none;
-  padding: 1px 2px;
+  background: var(--bg-p);
+  border: 1px solid var(--brd-i);
+  border-radius: 2px;
+  padding: 0 2px;
   font-size: 7px;
   color: var(--txt-m);
   font-weight: 800;

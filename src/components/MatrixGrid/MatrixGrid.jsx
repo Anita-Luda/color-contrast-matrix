@@ -12,6 +12,7 @@ const MatrixGrid = ({
   const checkHidden = useCallback((bg, fg) => isHidden(bg, fg), [isHidden]);
 
   const cardScale = gridScale / 100;
+  const cardHeight = 310; // Match --card-h in variables.css
 
   return (
     <main className="grid-area">
@@ -20,6 +21,7 @@ const MatrixGrid = ({
           className="matrix-grid"
           style={{
             gridTemplateColumns: `var(--header-row-w) repeat(${activeCols.length}, ${cardBaseWidth * cardScale}px)`,
+            gridTemplateRows: `var(--header-col-h) repeat(${activeRows.length}, ${cardHeight * cardScale}px)`,
             gap: `${16 * cardScale}px`
           }}
         >
@@ -69,23 +71,29 @@ const MatrixGrid = ({
                     style={{
                         gridColumn: `${colIdx + 2}`,
                         gridRow: `${rowIdx + 2}`,
+                        width: `${cardBaseWidth * cardScale}px`,
+                        height: `${cardHeight * cardScale}px`,
+                        overflow: 'visible'
+                    }}
+                  >
+                    <div style={{
                         transform: `scale(${cardScale})`,
                         transformOrigin: 'top left',
                         width: `${cardBaseWidth}px`,
-                        height: `var(--card-h)`
-                    }}
-                  >
-                    {!hidden && (
-                      <Card
-                        bg={bg} fg={fg} mode={calcMode} font={font} headingFont={headingFont}
-                        tensionLimit={maxTension} showBorder={showBorder} fontTestMode={fontTestMode}
-                        testText={testText} testFontSize={testFontSize} testFontWeight={testFontWeight}
-                        headingEnabled={headingEnabled} headingText={headingText}
-                        headingSize={headingSize} headingWeight={headingWeight}
-                        baseW={cardBaseWidth}
-                        visualStyle={visualStyle}
-                      />
-                    )}
+                        height: `${cardHeight}px`
+                    }}>
+                        {!hidden && (
+                        <Card
+                            bg={bg} fg={fg} mode={calcMode} font={font} headingFont={headingFont}
+                            tensionLimit={maxTension} showBorder={showBorder} fontTestMode={fontTestMode}
+                            testText={testText} testFontSize={testFontSize} testFontWeight={testFontWeight}
+                            headingEnabled={headingEnabled} headingText={headingText}
+                            headingSize={headingSize} headingWeight={headingWeight}
+                            baseW={cardBaseWidth}
+                            visualStyle={visualStyle}
+                        />
+                        )}
+                    </div>
                   </div>
                 );
               })}
