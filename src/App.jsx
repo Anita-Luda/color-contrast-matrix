@@ -37,6 +37,17 @@ function App() {
   const [stickToScreen, setStickToScreen] = useState(false);
   const [cardBaseWidth, setCardBaseWidth] = useState(220);
   const [panelPos, setPanelPos] = useState(() => localStorage.getItem('panelPos') || 'right');
+
+  // Handle panel size reset on position change
+  useEffect(() => {
+    if (panelPos === 'top' || panelPos === 'bottom') {
+        setPanelSize({ w: window.innerWidth, h: 180 });
+    } else if (panelPos === 'floating') {
+        setPanelSize({ w: 400, h: 500 });
+    } else {
+        setPanelSize({ w: 340, h: window.innerHeight });
+    }
+  }, [panelPos]);
   const [search, setSearch] = useState('');
 
   const [rowFilters, setRowFilters] = useState({});
@@ -129,7 +140,7 @@ function App() {
 
   const { pos: floatPos, onMouseDown: onDrag, setPos: setFloatPos } = useDraggable({ x: 100, y: 100 }, panelPos === 'floating');
   const { size: panelSize, startResizing, setSize: setPanelSize } = useResizable(
-    panelPos === 'top' || panelPos === 'bottom' ? { w: 100, h: 200 } : { w: 380, h: 600 },
+    panelPos === 'top' || panelPos === 'bottom' ? { w: 100, h: 180 } : { w: 380, h: 600 },
     panelPos,
     setFloatPos
   );

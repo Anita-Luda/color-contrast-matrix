@@ -89,7 +89,7 @@ const Card = ({
             </div>
         ) : (
             <div className="indicator-group">
-                <div className="contrast-value" style={{ fontSize: `32px`, fontWeight: 'var(--fw-contrast-val)' }}>
+                <div className="contrast-value" style={{ fontSize: `32px`, fontWeight: 'var(--fw-contrast)' }}>
                   {val}{suffix}
                 </div>
 

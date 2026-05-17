@@ -151,7 +151,7 @@ const Sidebar = ({
       </header>
 
       <div className={`sidebar-content custom-scrollbar ${isHorizontal ? 'horizontal-layout' : ''}`}>
-        <Collapsible title="Colors Input" defaultOpen={false}>
+        <Collapsible title="Colors Input" defaultOpen={!isHorizontal}>
           <div className="section-stack">
             <div className="input-header">
               <label>HEX List</label>
@@ -171,18 +171,26 @@ const Sidebar = ({
 
         <Collapsible title="Thresholds" defaultOpen={true}>
           <div className="section-stack">
-            <div className="toggle-grid">
+            <div className={isHorizontal ? 'horizontal-control-stack' : 'toggle-grid'}>
                <RangeSlider
-                  label="Contrast Min" value={minContrast} min={0} max={21} step={0.1}
-                  onChange={setMinContrast} thresholds={[0, 3, 4.5, 7, 21]}
+                  label="Contrast Min"
+                  value={minContrast}
+                  min={0}
+                  max={calcMode === 'apca' ? 106 : 21}
+                  step={calcMode === 'apca' ? 1 : 0.1}
+                  onChange={setMinContrast}
+                  thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 106] : [0, 3, 4.5, 7, 21]}
                   icon={CheckIcon}
-                  style={{ gridColumn: isHorizontal ? 'span 1' : 'span 2' }}
                />
                <RangeSlider
-                  label="Contrast Max" value={maxContrast} min={0} max={21} step={0.1}
-                  onChange={setMaxContrast} thresholds={[0, 3, 4.5, 7, 21]}
+                  label="Contrast Max"
+                  value={maxContrast === Infinity ? (calcMode === 'apca' ? 106 : 21) : maxContrast}
+                  min={0}
+                  max={calcMode === 'apca' ? 106 : 21}
+                  step={calcMode === 'apca' ? 1 : 0.1}
+                  onChange={setMaxContrast}
+                  thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 106] : [0, 3, 4.5, 7, 21]}
                   icon={XIcon}
-                  style={{ gridColumn: isHorizontal ? 'span 1' : 'span 2' }}
                />
             </div>
             <RangeSlider
@@ -193,7 +201,7 @@ const Sidebar = ({
           </div>
         </Collapsible>
 
-        <Collapsible title="Global Modes" defaultOpen={false}>
+        <Collapsible title="Global Modes" defaultOpen={!isHorizontal}>
           <div className="section-stack">
             <SegmentedControl label="Visual Style" value={visualStyle} onChange={setVisualStyle} options={[{ label: 'Professional', value: 'professional' }, { label: 'Cute Kawaii', value: 'cute' }]} />
             <SegmentedControl label="Calc Mode" value={calcMode} onChange={setCalcMode} options={[{ label: 'WCAG 2.1', value: 'wcag' }, { label: 'APCA', value: 'apca' }]} />
@@ -206,7 +214,7 @@ const Sidebar = ({
           </div>
         </Collapsible>
 
-        <Collapsible title="Typography" defaultOpen={false}>
+        <Collapsible title="Typography" defaultOpen={!isHorizontal}>
           <div className="section-stack">
             <Toggle label="Font Test Mode" active={fontTestMode} onChange={setFontTestMode} icon={isCute ? SparklesIcon : null} />
 

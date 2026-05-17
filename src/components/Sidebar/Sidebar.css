@@ -2,7 +2,7 @@
   background-color: var(--bg-p);
   display: flex;
   flex-direction: column;
-  padding: var(--space-6);
+  padding: var(--space-4);
   flex-shrink: 0;
   z-index: 1000;
   box-shadow: var(--shd-p);
@@ -24,25 +24,25 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-5);
-  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
+  padding-bottom: var(--space-2);
   border-bottom: var(--brd-w, 1px) solid var(--brd-s);
 }
 
 .header-title h2 {
   margin: 0;
-  font-size: var(--fs-xl);
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--txt-p);
 }
 
 .version {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-muted);
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.1em;
 }
 
 .header-actions {
@@ -72,32 +72,65 @@
   border-color: var(--txt-p);
 }
 
+[data-theme='dark'] .icon-btn:hover { background: var(--brd-s); }
+
 .layout-switcher {
   display: flex;
   gap: 2px;
-  background: var(--n-100);
+  background: var(--bg-i);
   padding: 2px;
   border-radius: var(--rad-btn);
+  border: var(--brd-w, 1px) solid var(--brd-i);
 }
-[data-theme='dark'] .layout-switcher { background: var(--n-900); }
 
 .sidebar-content {
   flex: 1;
   overflow-y: auto;
-  padding-right: var(--space-2);
+  padding-right: var(--space-1);
+  min-height: 0;
 }
 
 .sidebar-content.horizontal-layout {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-6);
-  align-items: start;
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-5);
+  align-items: stretch;
+  overflow-x: auto;
+  padding-top: var(--space-1);
+  padding-bottom: var(--space-2);
+  height: 100%;
+  scrollbar-width: thin;
+}
+
+.sidebar-content.horizontal-layout .collapsible-container {
+  min-width: 280px;
+  max-width: 380px;
+  flex-shrink: 0;
+  border-bottom: none;
+  border-right: var(--brd-w, 1px) solid var(--brd-s);
+  padding-right: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-content.horizontal-layout .collapsible-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: var(--space-4);
+  margin-right: -2px;
+  scrollbar-width: thin;
+}
+
+.sidebar-content.horizontal-layout .collapsible-container:last-child {
+  border-right: none;
+  padding-right: 0;
 }
 
 .section-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5); /* Fixed gap between sections */
+  gap: var(--space-4); /* Fixed gap between sections */
 }
 
 .input-header {
@@ -108,7 +141,7 @@
 }
 
 .input-header label {
-  font-size: var(--fs-xs);
+  font-size: 8px;
   font-weight: 700;
   color: var(--txt-m);
   text-transform: uppercase;
@@ -121,31 +154,36 @@
 }
 
 .quick-adds button {
-  font-size: 9px;
-  font-weight: 700;
-  padding: 3px 10px;
-  background: var(--bg-i);
+  font-size: 8px;
+  font-weight: 800;
+  padding: 2px 8px;
+  background: var(--bg-p);
   border: var(--brd-w, 1px) solid var(--brd-i);
   border-radius: var(--rad-btn);
   cursor: pointer;
   text-transform: uppercase;
-  color: var(--txt-s);
+  color: var(--txt-m);
   transition: all 0.2s;
+}
+
+.horizontal-layout .collapsible-trigger {
+  padding-top: 0;
+  padding-bottom: 6px;
 }
 .quick-adds button:hover { background: var(--brd-p); color: var(--txt-p); }
 
 .hex-textarea {
   width: 100%;
-  padding: var(--space-4);
+  padding: var(--space-2);
   background: var(--bg-i);
   border: var(--brd-w, 1px) solid var(--brd-i);
   border-radius: var(--rad-i);
   font-family: var(--ff-mono);
-  font-size: 11px;
+  font-size: 9px;
   resize: vertical;
-  min-height: 80px;
+  min-height: 60px;
   max-height: 300px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--txt-p);
   outline: none;
   transition: border-color 0.2s;
@@ -161,14 +199,24 @@
   gap: var(--space-3);
 }
 
+.horizontal-control-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
 .typography-subpanel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  padding: var(--space-5);
+  gap: var(--space-4);
+  padding: var(--space-3);
   background: var(--bg-i);
   border-radius: var(--rad-i);
   border: var(--brd-w, 1px) solid var(--brd-i);
+}
+
+[data-theme='dark'] .segmented-item.active {
+  border-color: var(--brd-p);
 }
 
 .sub-header {
@@ -179,7 +227,7 @@
 }
 
 .sub-header label {
-  font-size: var(--fs-xs);
+  font-size: 8px;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--txt-m);
@@ -201,7 +249,7 @@
 .sub-fields {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .sub-fields input, .sub-fields textarea {
@@ -220,15 +268,15 @@
 .sorting-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-4);
+  gap: var(--space-3);
+  padding: var(--space-3);
   background: var(--bg-i);
   border-radius: var(--rad-i);
   border: var(--brd-w, 1px) solid var(--brd-i);
 }
 
 .sorting-panel label {
-  font-size: var(--fs-xs);
+  font-size: 8px;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--txt-m);
@@ -247,7 +295,7 @@
 }
 
 .sort-group span {
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -263,7 +311,7 @@
   background: var(--bg-p);
   color: var(--txt-s);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: var(--rad-btn);
   transition: all 0.2s;
 }
 .btn-group button:hover { background: var(--brd-p); }
@@ -271,13 +319,13 @@
 
 .primary-btn {
   width: 100%;
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4);
   background: var(--txt-p);
   color: var(--bg-p);
   border-radius: var(--rad-btn);
   border: none;
-  font-size: var(--fs-xs);
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   cursor: pointer;
@@ -288,13 +336,18 @@
 .primary-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-  opacity: 0.95;
+  opacity: 0.9;
+}
+
+[data-theme='dark'] .primary-btn {
+  background: var(--n-100);
+  color: var(--n-1000);
 }
 
 .filters-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .filters-header {
@@ -304,33 +357,35 @@
 }
 
 .filters-header label {
-  font-size: var(--fs-xs);
+  font-size: 8px;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--txt-m);
 }
 
 .reset-btn {
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 800;
-  padding: 4px 10px;
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--color-error);
-  border: 1px solid var(--color-error);
-  border-radius: 20px;
+  padding: 2px 8px;
+  background: transparent;
+  color: var(--clr-err);
+  border: 1px solid var(--clr-err);
+  border-radius: var(--rad-btn);
   cursor: pointer;
   text-transform: uppercase;
   transition: all 0.2s;
+  opacity: 0.6;
 }
-.reset-btn:hover { background: var(--color-error); color: white; }
+
+.reset-btn:hover { background: var(--clr-err); color: white; opacity: 1; }
 
 .search-input {
   width: 100%;
-  padding: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   background: var(--bg-i);
   border: var(--brd-w, 1px) solid var(--brd-i);
   border-radius: var(--rad-i);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   color: var(--txt-p);
   outline: none;
 }
@@ -338,7 +393,7 @@
 .filters-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .filter-column {
@@ -355,18 +410,21 @@
 }
 
 .mini-reset-btn {
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 800;
-  color: var(--color-error);
+  color: var(--clr-err);
   background: none;
   border: none;
   cursor: pointer;
   text-transform: uppercase;
-  opacity: 0.7;
+  opacity: 0.6;
+  transition: opacity 0.2s;
 }
 
+.mini-reset-btn:hover { opacity: 1; }
+
 .col-label {
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--text-muted);

@@ -24,14 +24,19 @@ export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds
             const val = t === Infinity ? max : t;
             const percent = (val - min) / (max - min) * 100;
             return (
-              <button
+              <div
                 key={t}
-                onClick={() => onChange(t)}
-                className={`threshold-btn ${value === t ? 'active' : ''}`}
+                className={`threshold-marker ${value === t ? 'active' : ''}`}
                 style={{ left: `${percent}%` }}
               >
-                {t}
-              </button>
+                <div className="threshold-tick"></div>
+                <button
+                  onClick={() => onChange(t)}
+                  className="threshold-btn"
+                >
+                  {t === Infinity ? '∞' : t}
+                </button>
+              </div>
             );
           })}
         </div>
@@ -58,6 +63,11 @@ export const SegmentedControl = ({ options, value, onChange, label }) => (
 
 export const Collapsible = ({ title, children, defaultOpen = true }) => {
   const [isOpen, setIsOpen] = React.useState(defaultOpen);
+
+  React.useEffect(() => {
+    setIsOpen(defaultOpen);
+  }, [defaultOpen]);
+
   return (
     <div className="collapsible-container">
       <div className="collapsible-trigger" onClick={() => setIsOpen(!isOpen)}>

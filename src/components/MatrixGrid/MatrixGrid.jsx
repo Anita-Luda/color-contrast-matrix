@@ -11,14 +11,16 @@ const MatrixGrid = ({
 
   const checkHidden = useCallback((bg, fg) => isHidden(bg, fg), [isHidden]);
 
+  const cardScale = gridScale / 100;
+
   return (
     <main className="grid-area">
-      <div className="grid-wrapper" style={{ transform: `scale(${gridScale/100})`, transformOrigin: 'top center' }}>
+      <div className="grid-wrapper">
         <div
           className="matrix-grid"
           style={{
-            gridTemplateColumns: `var(--header-row-w) repeat(${activeCols.length}, ${cardBaseWidth}px)`,
-            gap: '16px'
+            gridTemplateColumns: `var(--header-row-w) repeat(${activeCols.length}, ${cardBaseWidth * cardScale}px)`,
+            gap: `${16 * cardScale}px`
           }}
         >
           {/* BACKGROUND STRIPS - Layered below headers */}
@@ -64,7 +66,14 @@ const MatrixGrid = ({
                   <div
                     key={`${bg}-${fg}`}
                     className={`cell ${hidden ? 'hidden' : ''}`}
-                    style={{ gridColumn: `${colIdx + 2}`, gridRow: `${rowIdx + 2}` }}
+                    style={{
+                        gridColumn: `${colIdx + 2}`,
+                        gridRow: `${rowIdx + 2}`,
+                        transform: `scale(${cardScale})`,
+                        transformOrigin: 'top left',
+                        width: `${cardBaseWidth}px`,
+                        height: `var(--card-h)`
+                    }}
                   >
                     {!hidden && (
                       <Card
