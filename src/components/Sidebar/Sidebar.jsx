@@ -175,21 +175,21 @@ const Sidebar = ({
                <RangeSlider
                   label="Contrast Min"
                   value={minContrast}
-                  min={0}
+                  min={calcMode === 'apca' ? 0 : 1}
                   max={calcMode === 'apca' ? 106 : 21}
                   step={calcMode === 'apca' ? 1 : 0.1}
                   onChange={setMinContrast}
-                  thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 106] : [0, 3, 4.5, 7, 21]}
+                  thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 106] : [1, 3, 4.5, 7, 21]}
                   icon={CheckIcon}
                />
                <RangeSlider
                   label="Contrast Max"
                   value={maxContrast === Infinity ? (calcMode === 'apca' ? 106 : 21) : maxContrast}
-                  min={0}
+                  min={calcMode === 'apca' ? 0 : 1}
                   max={calcMode === 'apca' ? 106 : 21}
                   step={calcMode === 'apca' ? 1 : 0.1}
                   onChange={setMaxContrast}
-                  thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 106] : [0, 3, 4.5, 7, 21]}
+                  thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 106] : [1, 3, 4.5, 7, 21]}
                   icon={XIcon}
                />
             </div>

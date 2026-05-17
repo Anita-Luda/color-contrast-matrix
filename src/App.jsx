@@ -17,7 +17,7 @@ import {
 function App() {
   // --- State ---
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
-  const [visualStyle, setVisualStyle] = useState(() => localStorage.getItem('visualStyle') || 'cute');
+  const [visualStyle, setVisualStyle] = useState(() => localStorage.getItem('visualStyle') || 'professional');
   const [input, setInput] = useState(() => localStorage.getItem('colors') || "#000000, #ffffff, #2563eb, #db2777, #f59e0b, #10b981");
   const [minContrast, setMinContrast] = useState(0);
   const [maxContrast, setMaxContrast] = useState(Infinity);
@@ -207,12 +207,6 @@ function App() {
         svg += `<g clip-path="url(#clip-${rowI}-${colI})">`;
         svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H_TOP}" fill="${bg}" />`;
 
-        if (isCute) {
-           svg += `<circle cx="${x + 10}" cy="${y + 10}" r="4" fill="${fg}" opacity="0.4" />`;
-           svg += `<circle cx="${x + CARD_W - 10}" cy="${y + 10}" r="3" fill="${fg}" opacity="0.3" />`;
-           svg += `<circle cx="${x + 10}" cy="${y + CARD_H_TOP - 10}" r="3" fill="${fg}" opacity="0.3" />`;
-           svg += `<circle cx="${x + CARD_W - 10}" cy="${y + CARD_H_TOP - 10}" r="4" fill="${fg}" opacity="0.4" />`;
-        }
 
         if (fontTestMode) {
             const padding = 20;
@@ -234,15 +228,24 @@ function App() {
         }
 
         // Bottom Section
+        const botBg = theme === 'dark' ? '#111111' : '#f5f5f5';
         const textCol = theme === 'dark' ? '#fafafa' : '#171717';
-        const bY = y + CARD_H_TOP + 20;
-        svg += `<text x="${x + 20}" y="${bY + 12}" font-family="monospace" font-size="12" fill="${textCol}">${bg} ⇆ ${fg}</text>`;
-        svg += `<text x="${x + CARD_W - 20}" y="${bY + 12}" font-family="${fontName}, sans-serif" font-size="12" font-weight="700" text-anchor="end" fill="${textCol}">${val}${suffix}</text>`;
+        const bY = y + CARD_H_TOP;
 
-        const statusY = bY + 12 + 20;
-        svg += `<text x="${x + 20}" y="${statusY + 12}" font-family="${fontName}, sans-serif" font-size="11" fill="${textCol}">${pass3 ? (isCute ? '✨' : '✅') : '❌'} Icons</text>`;
-        svg += `<text x="${x + CARD_W/2}" y="${statusY + 12}" font-family="${fontName}, sans-serif" font-size="11" text-anchor="middle" fill="${textCol}">${pass45 ? (isCute ? '🌸' : '✅') : '❌'} AA</text>`;
-        svg += `<text x="${x + CARD_W - 20}" y="${statusY + 12}" font-family="${fontName}, sans-serif" font-size="11" text-anchor="end" fill="${textCol}">${pass7 ? (isCute ? '👑' : '✅') : '❌'} AAA</text>`;
+        // Bottom background
+        svg += `<rect x="${x}" y="${bY}" width="${CARD_W}" height="${CARD_H_BOT}" fill="${botBg}" />`;
+
+        const bTextY = bY + 25;
+        svg += `<text x="${x + 20}" y="${bTextY + 12}" font-family="monospace" font-size="12" fill="${textCol}">${bg} ⇆ ${fg}</text>`;
+        svg += `<text x="${x + CARD_W - 20}" y="${bTextY + 12}" font-family="${fontName}, sans-serif" font-size="12" font-weight="700" text-anchor="end" fill="${textCol}">${val}${suffix}</text>`;
+
+        const statusY = bTextY + 12 + 15;
+        svg += `<line x1="${x + 20}" y1="${statusY}" x2="${x + CARD_W - 20}" y2="${statusY}" stroke="${theme === 'dark' ? '#333' : '#ddd'}" stroke-width="1" />`;
+
+        const bStatusY = statusY + 10;
+        svg += `<text x="${x + 20}" y="${bStatusY + 12}" font-family="${fontName}, sans-serif" font-size="11" fill="${textCol}">${pass3 ? '✅' : '❌'} Icons</text>`;
+        svg += `<text x="${x + CARD_W/2}" y="${bStatusY + 12}" font-family="${fontName}, sans-serif" font-size="11" text-anchor="middle" fill="${textCol}">${pass45 ? '✅' : 'AA'}</text>`;
+        svg += `<text x="${x + CARD_W - 20}" y="${bStatusY + 12}" font-family="${fontName}, sans-serif" font-size="11" text-anchor="end" fill="${textCol}">${pass7 ? '✅' : 'AAA'}</text>`;
 
         svg += `</g>`;
       });

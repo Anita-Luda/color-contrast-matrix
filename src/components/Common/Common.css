@@ -49,7 +49,7 @@
 
 .slider-track-container {
     position: relative;
-    padding: 10px 15px 24px;
+    padding: 10px 15px 28px;
 }
 
 input[type=range] {
@@ -94,7 +94,7 @@ input[type=range]::-webkit-slider-thumb:active {
 
 .slider-thresholds {
   position: absolute;
-  top: 14px;
+  top: 16px;
   left: 15px;
   right: 15px;
   height: 20px;
@@ -113,9 +113,10 @@ input[type=range]::-webkit-slider-thumb:active {
 
 .threshold-tick {
   width: 1px;
-  height: 4px;
+  height: 6px;
   background: var(--brd-i);
   transition: all 0.2s;
+  margin-top: -6px;
 }
 
 .threshold-btn {
@@ -241,8 +242,8 @@ input[type=range]::-webkit-slider-thumb:active {
 }
 
 .toggle-switch {
-  width: 26px;
-  height: 14px;
+  width: 32px;
+  height: 18px;
   background: var(--tog-track);
   border-radius: var(--rad-t);
   border: var(--brd-w, 1px) solid var(--brd-i);
@@ -255,8 +256,8 @@ input[type=range]::-webkit-slider-thumb:active {
 }
 
 .toggle-handle {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   background: var(--n-0);
   border-radius: var(--rad-th);
   position: absolute;
@@ -271,7 +272,7 @@ input[type=range]::-webkit-slider-thumb:active {
 }
 
 .toggle-switch.active .toggle-handle {
-  left: 14px;
+  left: 16px;
 }
 
 .toggle-switch.active {
