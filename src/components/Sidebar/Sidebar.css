@@ -345,6 +345,31 @@
   opacity: 0.9;
 }
 
+.action-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.secondary-btn {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-i);
+  color: var(--txt-p);
+  border-radius: var(--rad-btn);
+  border: var(--brd-w, 1px) solid var(--brd-i);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondary-btn:hover {
+  background: var(--brd-p);
+  transform: translateY(-1px);
+}
+
 [data-theme='dark'] .primary-btn {
   background: var(--n-100);
   color: var(--n-1000);

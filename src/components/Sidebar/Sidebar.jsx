@@ -22,6 +22,7 @@ const Sidebar = ({
   uniqueMode, setUniqueMode,
   darknessFilter, setDarknessFilter,
   hideEmpty, setHideEmpty,
+  colorBlindness, setColorBlindness,
   showBorder, setShowBorder,
   fontTestMode, setFontTestMode,
   gridScale, setGridScale,
@@ -46,6 +47,7 @@ const Sidebar = ({
   testFontWeight, setTestFontWeight,
   resetAll,
   copySVG,
+  copyShareLink,
   panelPos, setPanelPos,
   theme, setTheme,
   visualStyle, setVisualStyle,
@@ -53,7 +55,11 @@ const Sidebar = ({
 }) => {
 
   const addColor = useCallback((hex) => {
-    const raw = input.match(/#[0-9A-Fa-f]{6}/g) || [];
+    const hexMatch = input.match(/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}/g) || [];
+    const rgbMatch = input.match(/rgba?\([^)]+\)/gi) || [];
+    const hslMatch = input.match(/hsla?\([^)]+\)/gi) || [];
+    const raw = [...hexMatch, ...rgbMatch, ...hslMatch];
+
     if (!raw.includes(hex)) {
       const t = input.trim();
       const newVal = !t ? hex : (t.endsWith(',') || t.endsWith(' ') ? input + hex : input + ", " + hex);
@@ -208,6 +214,17 @@ const Sidebar = ({
               <Toggle label="Hide Empty" active={hideEmpty} onChange={setHideEmpty} icon={isCute ? SparklesIcon : null} />
               <Toggle label="Borders" active={showBorder} onChange={setShowBorder} icon={isCute ? BriefcaseIcon : null} />
             </div>
+            <SegmentedControl
+              label="Color Blindness"
+              value={colorBlindness}
+              onChange={setColorBlindness}
+              options={[
+                { label: 'None', value: 'none' },
+                { label: 'Protan', value: 'protanopia' },
+                { label: 'Deutan', value: 'deuteranopia' },
+                { label: 'Tritan', value: 'tritanopia' }
+              ]}
+            />
             <SegmentedControl label="Uniqueness" value={uniqueMode} onChange={setUniqueMode} options={[{ label: 'All', value: 'all' }, { label: 'Half (BG)', value: 'bg' }, { label: 'Half (FG)', value: 'fg' }]} />
             <SegmentedControl label="Contrast Rel" value={darknessFilter} onChange={setDarknessFilter} options={[{ label: 'All', value: 'all' }, { label: 'Dark BG', value: 'bg-darker' }, { label: 'Dark FG', value: 'fg-darker' }]} />
           </div>
@@ -283,7 +300,10 @@ const Sidebar = ({
               </div>
             </div>
 
-            <button onClick={copySVG} className="primary-btn">Copy SVG (Figma)</button>
+            <div className="action-row">
+              <button onClick={copySVG} className="primary-btn">Copy SVG</button>
+              <button onClick={copyShareLink} className="secondary-btn">Share Link</button>
+            </div>
 
             <div className="filters-panel">
               <div className="filters-header">

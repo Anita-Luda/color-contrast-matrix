@@ -8,7 +8,9 @@ export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds
         {Icon && <span className="slider-icon"><Icon size={12} /></span>}
         <label className="slider-label">{label}</label>
       </div>
-      <span className="slider-value">{value === Infinity ? '∞' : value}{unit}</span>
+      <span className={`slider-value ${label === 'Vibration Limit' && value < 5 ? 'warning' : ''}`}>
+        {value === Infinity ? '∞' : value}{unit}
+      </span>
     </div>
     <div className="slider-track-container">
         <input

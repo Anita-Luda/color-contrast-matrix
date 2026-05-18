@@ -43,8 +43,14 @@
   border-radius: var(--rad-i);
   border: var(--brd-w, 1px) solid var(--brd-i);
   color: var(--txt-p);
-  min-width: 30px;
+  min-width: 40px;
   text-align: center;
+}
+
+.slider-value.warning {
+  background: var(--clr-err-bg, #fee2e2);
+  color: var(--clr-err, #dc2626);
+  border-color: var(--clr-err, #dc2626);
 }
 
 .slider-track-container {

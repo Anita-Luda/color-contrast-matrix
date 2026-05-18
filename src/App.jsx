@@ -26,6 +26,7 @@ function App() {
   const [uniqueMode, setUniqueMode] = useState('all');
   const [darknessFilter, setDarknessFilter] = useState('all');
   const [hideEmpty, setHideEmpty] = useState(false);
+  const [colorBlindness, setColorBlindness] = useState('none');
   const [showBorder, setShowBorder] = useState(() => visualStyle === 'professional');
 
   // When visualStyle changes, we update the border default
@@ -87,7 +88,12 @@ function App() {
   }, [input]);
 
   // --- Derived State ---
-  const rawColors = useMemo(() => Array.from(new Set(input.match(/#[0-9A-Fa-f]{6}/g) || [])), [input]);
+  const rawColors = useMemo(() => {
+    const hexMatch = input.match(/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}/g) || [];
+    const rgbMatch = input.match(/rgba?\([^)]+\)/gi) || [];
+    const hslMatch = input.match(/hsla?\([^)]+\)/gi) || [];
+    return Array.from(new Set([...hexMatch, ...rgbMatch, ...hslMatch]));
+  }, [input]);
   const filteredColors = useMemo(() => rawColors.filter(c => c.toLowerCase().includes(search.toLowerCase())), [rawColors, search]);
 
   const sortedRowColors = useMemo(() => sortColors(rawColors, rowSortBy, rowSortOrder), [rawColors, rowSortBy, rowSortOrder]);
@@ -144,6 +150,22 @@ function App() {
     panelPos,
     setFloatPos
   );
+
+  const copyShareLink = useCallback(() => {
+    const params = new URLSearchParams();
+    params.set('colors', input);
+    params.set('mode', calcMode);
+    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+    navigator.clipboard.writeText(url).then(() => alert('Share link copied to clipboard!'));
+  }, [input, calcMode]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const colors = params.get('colors');
+    const mode = params.get('mode');
+    if (colors) setInput(colors);
+    if (mode) setCalcMode(mode);
+  }, []);
 
   const copySVG = useCallback(() => {
     const scale = gridScale / 100;
@@ -257,7 +279,36 @@ function App() {
 
   return (
     <div className={`app-layout theme-${theme} theme-${panelPos}`}>
-      <main className="content-area">
+      <svg style={{ display: 'none' }}>
+        <filter id="protanopia">
+          <feColorMatrix
+            type="matrix"
+            values="0.567, 0.433, 0, 0, 0
+                    0.558, 0.442, 0, 0, 0
+                    0, 0.242, 0.758, 0, 0
+                    0, 0, 0, 1, 0"
+          />
+        </filter>
+        <filter id="deuteranopia">
+          <feColorMatrix
+            type="matrix"
+            values="0.625, 0.375, 0, 0, 0
+                    0.7, 0.3, 0, 0, 0
+                    0, 0.3, 0.7, 0, 0
+                    0, 0, 0, 1, 0"
+          />
+        </filter>
+        <filter id="tritanopia">
+          <feColorMatrix
+            type="matrix"
+            values="0.95, 0.05, 0, 0, 0
+                    0, 0.433, 0.567, 0, 0
+                    0, 0.475, 0.525, 0, 0
+                    0, 0, 0, 1, 0"
+          />
+        </filter>
+      </svg>
+      <main className="content-area" style={{ filter: colorBlindness !== 'none' ? `url(#${colorBlindness})` : 'none' }}>
         <MatrixGrid
           activeRows={activeRows}
           activeCols={activeCols}
@@ -284,6 +335,7 @@ function App() {
 
       <Sidebar
         input={input} setInput={setInput}
+        colorBlindness={colorBlindness} setColorBlindness={setColorBlindness}
         floatPos={floatPos} onDrag={onDrag}
         panelSize={panelSize} startResizing={startResizing}
         minContrast={minContrast} setMinContrast={setMinContrast}
@@ -317,6 +369,7 @@ function App() {
         testFontWeight={testFontWeight} setTestFontWeight={setTestFontWeight}
         resetAll={resetAll}
         copySVG={copySVG}
+        copyShareLink={copyShareLink}
         panelPos={panelPos} setPanelPos={setPanelPos}
         theme={theme} setTheme={setTheme}
         visualStyle={visualStyle} setVisualStyle={setVisualStyle}

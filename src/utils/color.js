@@ -3,13 +3,74 @@
  */
 
 export const hexToRgb = (hex) => {
-  const clean = hex.replace("#", "");
+  let clean = hex.replace("#", "");
+  if (clean.length === 3) {
+    clean = clean.split('').map(c => c + c).join('');
+  }
   const bigint = parseInt(clean, 16);
   return {
     r: (bigint >> 16) & 255,
     g: (bigint >> 8) & 255,
     b: bigint & 255
   };
+};
+
+export const parseToRgb = (color) => {
+  if (typeof color !== 'string') return { r: 0, g: 0, b: 0 };
+  const str = color.trim().toLowerCase();
+
+  // Hex
+  if (str.startsWith('#')) {
+    return hexToRgb(str);
+  }
+
+  // RGB / RGBA
+  const rgbMatch = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+  if (rgbMatch) {
+    return {
+      r: parseInt(rgbMatch[1], 10),
+      g: parseInt(rgbMatch[2], 10),
+      b: parseInt(rgbMatch[3], 10)
+    };
+  }
+
+  // HSL / HSLA
+  const hslMatch = str.match(/hsla?\((\d+),\s*([\d.]+)%,\s*([\d.]+)%(?:,\s*[\d.]+)?\)/);
+  if (hslMatch) {
+    const h = parseInt(hslMatch[1], 10) / 360;
+    const s = parseFloat(hslMatch[2]) / 100;
+    const l = parseFloat(hslMatch[3]) / 100;
+
+    let r, g, b;
+    if (s === 0) {
+      r = g = b = l;
+    } else {
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+      };
+      r = hue2rgb(p, q, h + 1/3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1/3);
+    }
+    return {
+      r: Math.round(r * 255),
+      g: Math.round(g * 255),
+      b: Math.round(b * 255)
+    };
+  }
+
+  return { r: 0, g: 0, b: 0 };
+};
+
+export const rgbToHex = ({ r, g, b }) => {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 };
 
 export const luminance = (rgb) => {
@@ -20,15 +81,15 @@ export const luminance = (rgb) => {
   return 0.2126 * t(rgb.r) + 0.7152 * t(rgb.g) + 0.0722 * t(rgb.b);
 };
 
-export const getContrastRatio = (hex1, hex2) => {
-  const L1 = luminance(hexToRgb(hex1));
-  const L2 = luminance(hexToRgb(hex2));
+export const getContrastRatio = (c1, c2) => {
+  const L1 = luminance(parseToRgb(c1));
+  const L2 = luminance(parseToRgb(c2));
   return +((Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05)).toFixed(2);
 };
 
-export const getApcaContrast = (txtHex, bgHex) => {
-  const txt = hexToRgb(txtHex);
-  const bg = hexToRgb(bgHex);
+export const getApcaContrast = (txtCol, bgCol) => {
+  const txt = parseToRgb(txtCol);
+  const bg = parseToRgb(bgCol);
 
   const sRGBtoLin = (c) => Math.pow(c / 255, 2.218);
 
@@ -46,8 +107,8 @@ export const getApcaContrast = (txtHex, bgHex) => {
   return Math.abs(res) < 8 ? 0 : res;
 };
 
-export const getHsl = (hex) => {
-  let { r, g, b } = hexToRgb(hex);
+export const getHsl = (color) => {
+  let { r, g, b } = parseToRgb(color);
   r /= 255; g /= 255; b /= 255;
 
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
