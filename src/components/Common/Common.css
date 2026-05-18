@@ -35,7 +35,7 @@
 }
 
 .slider-value {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
   font-family: var(--ff-mono);
   background: var(--bg-i);
@@ -130,7 +130,7 @@ input[type=range]::-webkit-slider-thumb:active {
   border: 1px solid var(--brd-i);
   border-radius: 2px;
   padding: 0 2px;
-  font-size: 7px;
+  font-size: 9px;
   color: var(--txt-m);
   font-weight: 800;
   font-family: var(--ff-mono);
@@ -180,7 +180,7 @@ input[type=range]::-webkit-slider-thumb:active {
   flex: 1;
   text-align: center;
   padding: 5px 4px;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   border-radius: calc(var(--rad-btn) - 2px);
   cursor: pointer;
@@ -216,7 +216,7 @@ input[type=range]::-webkit-slider-thumb:active {
   justify-content: space-between;
   padding: 8px 0;
   cursor: pointer;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -226,7 +226,7 @@ input[type=range]::-webkit-slider-thumb:active {
 
 .collapsible-trigger:hover { color: var(--txt-p); }
 .collapsible-content { padding-bottom: var(--space-4); }
-.chevron { font-size: 7px; transition: transform 0.2s; opacity: 0.5; }
+.chevron { font-size: 9px; transition: transform 0.2s; opacity: 0.5; }
 
 /* Toggle */
 .toggle-container {

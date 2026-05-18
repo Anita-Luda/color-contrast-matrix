@@ -31,7 +31,7 @@
 
 .header-title h2 {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -39,7 +39,7 @@
 }
 
 .version {
-  font-size: 8px;
+  font-size: 10px;
   color: var(--text-muted);
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -141,8 +141,8 @@
 }
 
 .input-header label {
-  font-size: 8px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: 800;
   color: var(--txt-m);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -154,7 +154,7 @@
 }
 
 .quick-adds button {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   padding: 2px 8px;
   background: var(--bg-p);
@@ -179,7 +179,7 @@
   border: var(--brd-w, 1px) solid var(--brd-i);
   border-radius: var(--rad-i);
   font-family: var(--ff-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   resize: vertical;
   min-height: 60px;
   max-height: 300px;
@@ -233,14 +233,14 @@
 }
 
 .sub-header label {
-  font-size: 8px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--txt-m);
 }
 
 .mini-toggle {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   padding: 2px 8px;
   border-radius: var(--rad-btn);
@@ -282,8 +282,8 @@
 }
 
 .sorting-panel label {
-  font-size: 8px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--txt-m);
 }
@@ -301,7 +301,7 @@
 }
 
 .sort-group span {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -310,7 +310,7 @@
 .btn-group { display: flex; gap: 2px; }
 .btn-group button {
   flex: 1;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   padding: 5px 0;
   border: var(--brd-w, 1px) solid var(--brd-i);
@@ -388,14 +388,14 @@
 }
 
 .filters-header label {
-  font-size: 8px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--txt-m);
 }
 
 .reset-btn {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
   padding: 2px 8px;
   background: transparent;
@@ -441,7 +441,7 @@
 }
 
 .mini-reset-btn {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
   color: var(--clr-err);
   background: none;
@@ -455,7 +455,7 @@
 .mini-reset-btn:hover { opacity: 1; }
 
 .col-label {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--text-muted);
