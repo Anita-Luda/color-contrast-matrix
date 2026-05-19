@@ -35,7 +35,6 @@ function App() {
   }, [visualStyle]);
   const [fontTestMode, setFontTestMode] = useState(false);
   const [gridScale, setGridScale] = useState(100);
-  const [stickToScreen, setStickToScreen] = useState(false);
   const [cardBaseWidth, setCardBaseWidth] = useState(220);
   const [panelPos, setPanelPos] = useState(() => localStorage.getItem('panelPos') || 'right');
 
@@ -92,7 +91,8 @@ function App() {
     const hexMatch = input.match(/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}/g) || [];
     const rgbMatch = input.match(/rgba?\([^)]+\)/gi) || [];
     const hslMatch = input.match(/hsla?\([^)]+\)/gi) || [];
-    return Array.from(new Set([...hexMatch, ...rgbMatch, ...hslMatch]));
+    const all = [...hexMatch, ...rgbMatch, ...hslMatch].map(c => c.toLowerCase());
+    return Array.from(new Set(all));
   }, [input]);
   const filteredColors = useMemo(() => rawColors.filter(c => c.toLowerCase().includes(search.toLowerCase())), [rawColors, search]);
 
@@ -141,7 +141,7 @@ function App() {
     setMinContrast(0); setMaxContrast(Infinity); setMaxTension(10);
     setCalcMode('wcag'); setUniqueMode('all'); setDarknessFilter('all');
     setHideEmpty(false); setShowBorder(false); setRowFilters({}); setColFilters({});
-    setSearch(''); setGridScale(100); setCardBaseWidth(220); setStickToScreen(false);
+    setSearch(''); setGridScale(100); setCardBaseWidth(220);
   }, []);
 
   const { pos: floatPos, onMouseDown: onDrag, setPos: setFloatPos } = useDraggable({ x: 100, y: 100 }, panelPos === 'floating');
@@ -328,7 +328,6 @@ function App() {
           headingWeight={headingWeight}
           gridScale={gridScale}
           cardBaseWidth={cardBaseWidth}
-          stickToScreen={stickToScreen}
           visualStyle={visualStyle}
         />
       </main>
@@ -348,7 +347,6 @@ function App() {
         showBorder={showBorder} setShowBorder={setShowBorder}
         fontTestMode={fontTestMode} setFontTestMode={setFontTestMode}
         gridScale={gridScale} setGridScale={setGridScale}
-        stickToScreen={stickToScreen} setStickToScreen={setStickToScreen}
         cardBaseWidth={cardBaseWidth} setCardBaseWidth={setCardBaseWidth}
         search={search} setSearch={setSearch}
         filteredColors={filteredColors}

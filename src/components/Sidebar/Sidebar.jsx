@@ -26,7 +26,6 @@ const Sidebar = ({
   showBorder, setShowBorder,
   fontTestMode, setFontTestMode,
   gridScale, setGridScale,
-  stickToScreen, setStickToScreen,
   cardBaseWidth, setCardBaseWidth,
   search, setSearch,
   filteredColors,
@@ -276,7 +275,6 @@ const Sidebar = ({
         <Collapsible title="Visual Matrix" defaultOpen={true}>
           <div className="section-stack">
             <RangeSlider label="Grid Scale (1:1)" value={gridScale} min={20} max={200} step={1} onChange={setGridScale} thresholds={[20, 50, 100, 150, 200]} unit="%" icon={isCute ? SparklesIcon : null} />
-            <Toggle label="Stick Row Labels to Screen" active={stickToScreen} onChange={setStickToScreen} icon={isCute ? LayoutIcon : null} />
 
             <div className="sorting-panel">
               <label>Sorting</label>

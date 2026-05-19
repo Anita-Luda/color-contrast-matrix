@@ -6,7 +6,7 @@ const MatrixGrid = ({
   activeRows, activeCols, isHidden, calcMode, font, headingFont, maxTension,
   showBorder, fontTestMode, testText, testFontSize, testFontWeight,
   headingEnabled, headingText, headingSize, headingWeight,
-  gridScale, cardBaseWidth, stickToScreen, visualStyle
+  gridScale, cardBaseWidth, visualStyle
 }) => {
 
   const checkHidden = useCallback((bg, fg) => isHidden(bg, fg), [isHidden]);
@@ -25,13 +25,19 @@ const MatrixGrid = ({
             gap: `${16 * cardScale}px`
           }}
         >
-          {/* BACKGROUND STRIPS - Layered below headers */}
-          <div className="col-header-strip" style={{ gridColumn: `2 / span ${activeCols.length}`, gridRow: '1' }}></div>
-          <div className={`row-header-strip ${stickToScreen ? 'sticky' : ''}`} style={{ gridColumn: '1', gridRow: `2 / span ${activeRows.length}` }}></div>
+          {/* Background Strips for uniform sticky headers */}
+          <div
+            className="header-strip-col"
+            style={{ gridRow: '1', gridColumn: `1 / span ${activeCols.length + 1}` }}
+          />
+          <div
+            className="header-strip-row"
+            style={{ gridColumn: '1', gridRow: `1 / span ${activeRows.length + 1}` }}
+          />
 
           {/* Corner Header */}
           <div
-            className={`sticky-header corner ${stickToScreen ? 'stick-screen' : ''}`}
+            className="sticky-header corner"
             style={{ gridColumn: '1', gridRow: '1' }}
           >
             <div className="header-label">BG / FG</div>
@@ -54,7 +60,7 @@ const MatrixGrid = ({
             <React.Fragment key={bg}>
               {/* Row Header */}
               <div
-                className={`sticky-header row ${stickToScreen ? 'stick-screen' : ''}`}
+                className="sticky-header row"
                 style={{ gridColumn: '1', gridRow: `${rowIdx + 2}` }}
               >
                 <div className="row-color-code">{bg}</div>

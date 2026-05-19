@@ -55,7 +55,7 @@
 
 .slider-track-container {
     position: relative;
-    padding: 10px 15px 28px;
+    padding: 10px 15px 40px; /* Increased bottom padding for buttons */
 }
 
 input[type=range] {
@@ -100,10 +100,10 @@ input[type=range]::-webkit-slider-thumb:active {
 
 .slider-thresholds {
   position: absolute;
-  top: 16px;
+  top: 24px; /* Move below the track */
   left: 15px;
   right: 15px;
-  height: 20px;
+  height: 30px;
   pointer-events: none;
 }
 
@@ -113,16 +113,16 @@ input[type=range]::-webkit-slider-thumb:active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
+  gap: 4px;
   z-index: 10;
 }
 
 .threshold-tick {
   width: 1px;
-  height: 6px;
+  height: 8px;
   background: var(--brd-i);
   transition: all 0.2s;
-  margin-top: -6px;
+  margin-top: -12px; /* Pull it up to touch the track */
 }
 
 .threshold-btn {
@@ -255,7 +255,7 @@ input[type=range]::-webkit-slider-thumb:active {
   border: var(--brd-w, 1px) solid var(--brd-i);
   position: relative;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
   flex-shrink: 0;
   overflow: hidden;
@@ -267,10 +267,9 @@ input[type=range]::-webkit-slider-thumb:active {
   background: var(--n-0);
   border-radius: var(--rad-th);
   position: absolute;
-  top: 50%;
+  top: 3px;
   left: 2px;
-  transform: translateY(-50%);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
