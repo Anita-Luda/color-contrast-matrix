@@ -221,7 +221,8 @@ const Sidebar = ({
                 { label: 'None', value: 'none' },
                 { label: 'Protan', value: 'protanopia' },
                 { label: 'Deutan', value: 'deuteranopia' },
-                { label: 'Tritan', value: 'tritanopia' }
+                { label: 'Tritan', value: 'tritanopia' },
+                { label: 'Gray', value: 'achromatopsia' }
               ]}
             />
             <SegmentedControl label="Uniqueness" value={uniqueMode} onChange={setUniqueMode} options={[{ label: 'All', value: 'all' }, { label: 'Half (BG)', value: 'bg' }, { label: 'Half (FG)', value: 'fg' }]} />

@@ -46,22 +46,31 @@ export const RangeSlider = ({ label, value, min, max, step, onChange, thresholds
   </div>
 );
 
-export const SegmentedControl = ({ options, value, onChange, label }) => (
-  <div className="segmented-group">
-    <label className="segmented-label">{label}</label>
-    <div className="segmented-control">
-      {options.map(opt => (
-        <div
-          key={opt.value}
-          className={`segmented-item ${value === opt.value ? 'active' : ''}`}
-          onClick={() => onChange(opt.value)}
-        >
-          {opt.label}
-        </div>
-      ))}
+export const SegmentedControl = ({ options, value, onChange, label }) => {
+  const activeIndex = options.findIndex(opt => opt.value === value);
+  const indicatorStyle = {
+    left: `calc(${(activeIndex / options.length) * 100}% + 2px)`,
+    width: `calc(${100 / options.length}% - 4px)`
+  };
+
+  return (
+    <div className="segmented-group">
+      <label className="segmented-label">{label}</label>
+      <div className="segmented-control">
+        <div className="segmented-indicator" style={indicatorStyle} />
+        {options.map(opt => (
+          <div
+            key={opt.value}
+            className={`segmented-item ${value === opt.value ? 'active' : ''}`}
+            onClick={() => onChange(opt.value)}
+          >
+            {opt.label}
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const Collapsible = ({ title, children, defaultOpen = true }) => {
   const [isOpen, setIsOpen] = React.useState(defaultOpen);

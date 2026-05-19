@@ -61,7 +61,7 @@
 }
 
 .header-label {
-  font-family: var(--ff-mono);
+  font-family: var(--ff-base);
   font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--txt-m);
@@ -87,7 +87,7 @@
 }
 
 .header-color-code {
-  font-family: var(--ff-mono);
+  font-family: var(--ff-base);
   font-size: 12px;
   color: var(--txt-s);
   font-weight: 800;
@@ -107,7 +107,7 @@
 }
 
 .row-color-code {
-  font-family: var(--ff-mono);
+  font-family: var(--ff-base);
   font-size: 12px;
   color: var(--txt-s);
   font-weight: 800;
@@ -122,12 +122,20 @@
 }
 
 .cell {
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.5s;
   transform: scale(1);
+  opacity: 1;
+  visibility: visible;
 }
 
 .cell.hidden {
   opacity: 0;
   transform: scale(0.95);
   pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.5s;
 }

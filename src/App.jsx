@@ -307,6 +307,15 @@ function App() {
                     0, 0, 0, 1, 0"
           />
         </filter>
+        <filter id="achromatopsia">
+          <feColorMatrix
+            type="matrix"
+            values="0.299, 0.587, 0.114, 0, 0
+                    0.299, 0.587, 0.114, 0, 0
+                    0.299, 0.587, 0.114, 0, 0
+                    0, 0, 0, 1, 0"
+          />
+        </filter>
       </svg>
       <main className="content-area" style={{ filter: colorBlindness !== 'none' ? `url(#${colorBlindness})` : 'none' }}>
         <MatrixGrid

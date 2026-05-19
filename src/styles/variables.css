@@ -93,14 +93,14 @@
 }
 
 [data-style='professional'][data-theme='dark'] {
-  --bg-app: #0a0a0a;
-  --bg-p: #0a0a0a;
-  --bg-i: #111111;
-  --bg-cb: #0a0a0a;
-  --bg-h: var(--n-1000);
-  --bg-card-bot: #111111;
+  --bg-app: #121212;
+  --bg-p: #121212;
+  --bg-i: #1e1e1e;
+  --bg-cb: #121212;
+  --bg-h: #1a1a1a;
+  --bg-card-bot: #1e1e1e;
 
-  --txt-p: var(--n-0);
+  --txt-p: #e0e0e0;
   --txt-s: var(--n-400); /* AA on Black */
   --txt-m: var(--n-600);
   --txt-muted: var(--n-700);
@@ -155,14 +155,14 @@
 }
 
 [data-style='cute'][data-theme='dark'] {
-  --bg-app: #0a0a0a;
-  --bg-p: #111111;
-  --bg-i: #1a1a1a;
-  --bg-cb: #111111;
-  --bg-h: #111111;
-  --bg-card-bot: #111111;
+  --bg-app: #1a1a1c;
+  --bg-p: #242426;
+  --bg-i: #2d2d30;
+  --bg-cb: #242426;
+  --bg-h: #242426;
+  --bg-card-bot: #2d2d30;
 
-  --txt-p: #ffffff;
+  --txt-p: #f0f0f5;
   --txt-s: #d4d4d4;
   --txt-m: #a3a3a3;
   --txt-muted: #525252;

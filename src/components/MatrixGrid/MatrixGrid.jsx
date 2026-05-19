@@ -88,7 +88,6 @@ const MatrixGrid = ({
                         width: `${cardBaseWidth}px`,
                         height: `${cardHeight}px`
                     }}>
-                        {!hidden && (
                         <Card
                             bg={bg} fg={fg} mode={calcMode} font={font} headingFont={headingFont}
                             tensionLimit={maxTension} showBorder={showBorder} fontTestMode={fontTestMode}
@@ -98,7 +97,6 @@ const MatrixGrid = ({
                             baseW={cardBaseWidth}
                             visualStyle={visualStyle}
                         />
-                        )}
                     </div>
                   </div>
                 );
