@@ -41,7 +41,7 @@
   background: var(--bg-i);
   padding: 1px 4px;
   border-radius: var(--rad-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   color: var(--txt-p);
   min-width: 40px;
   text-align: center;
@@ -87,8 +87,8 @@ input[type=range]::-webkit-slider-thumb {
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -5px;
-  box-shadow: 0 0 0 3px var(--bg-p), 0 0 0 4px var(--brd-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  box-shadow: 0 0 0 3px var(--bg-p), 0 0 0 4px var(--brd-s);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   transition: transform 0.1s;
   position: relative;
   z-index: 5;
@@ -121,14 +121,14 @@ input[type=range]::-webkit-slider-thumb:active {
 .threshold-tick {
   width: 1px;
   height: 8px;
-  background: var(--brd-i);
+  background: var(--brd-s);
   transition: all 0.2s;
   margin-top: -12px; /* Pull it up to touch the track */
 }
 
 .threshold-btn {
   background: var(--bg-p);
-  border: 1px solid var(--brd-i);
+  border: 1px solid var(--brd-s);
   border-radius: 2px;
   padding: 0 2px;
   font-size: 9px;
@@ -169,7 +169,7 @@ input[type=range]::-webkit-slider-thumb:active {
   background: var(--n-100);
   padding: 2px;
   border-radius: var(--rad-btn);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   position: relative;
   z-index: 1;
 }
@@ -181,7 +181,7 @@ input[type=range]::-webkit-slider-thumb:active {
   background: var(--bg-p);
   border-radius: calc(var(--rad-btn) - 2px);
   box-shadow: var(--shd-p);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: -1;
 }
@@ -248,7 +248,7 @@ input[type=range]::-webkit-slider-thumb:active {
   padding: 4px 8px;
   background: var(--bg-i);
   border-radius: var(--rad-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
 }
 
 .toggle-label {
@@ -264,7 +264,7 @@ input[type=range]::-webkit-slider-thumb:active {
   height: 18px;
   background: var(--tog-track);
   border-radius: var(--rad-t);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   position: relative;
   cursor: pointer;
   transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
