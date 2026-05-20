@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import './Sidebar.css';
 import {
   Collapsible,
@@ -7,8 +7,8 @@ import {
   Toggle
 } from '../Common';
 import {
-    SunIcon, MoonIcon, BriefcaseIcon, SparklesIcon, LayoutIcon,
-    CheckIcon, XIcon, WarningIcon
+  SunIcon, MoonIcon, BriefcaseIcon, SparklesIcon, LayoutIcon,
+  CheckIcon, XIcon, WarningIcon
 } from '../Common/Icons';
 import TriStateFilter from '../TriStateFilter/TriStateFilter';
 import { FontSelector } from '../TypographyTester/FontSelector';
@@ -53,6 +53,8 @@ const Sidebar = ({
   floatPos, onDrag, panelSize, startResizing
 }) => {
 
+  const [showCalcInfo, setShowCalcInfo] = useState(false);
+
   const addColor = useCallback((hex) => {
     const hexMatch = input.match(/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}/g) || [];
     const rgbMatch = input.match(/rgba?\([^)]+\)/gi) || [];
@@ -71,7 +73,7 @@ const Sidebar = ({
       key={c}
       color={c}
       state={rowFilters[c] || 0}
-      onChange={v => setRowFilters(prev => ({...prev, [c]: v}))}
+      onChange={v => setRowFilters(prev => ({ ...prev, [c]: v }))}
     />
   )), [filteredColors, rowFilters, setRowFilters]);
 
@@ -80,7 +82,7 @@ const Sidebar = ({
       key={c}
       color={c}
       state={colFilters[c] || 0}
-      onChange={v => setColFilters(prev => ({...prev, [c]: v}))}
+      onChange={v => setColFilters(prev => ({ ...prev, [c]: v }))}
     />
   )), [filteredColors, colFilters, setColFilters]);
 
@@ -94,29 +96,29 @@ const Sidebar = ({
         width: isHorizontal ? '100%' : `${panelSize.w}px`,
         height: isHorizontal ? `${panelSize.h}px` : (panelPos === 'floating' ? `${panelSize.h}px` : '100vh'),
         ...(panelPos === 'floating' ? {
-            position: 'absolute',
-            left: floatPos.x,
-            top: floatPos.y,
-            borderRadius: 'var(--radius-panel)'
+          position: 'absolute',
+          left: floatPos.x,
+          top: floatPos.y,
+          borderRadius: 'var(--radius-panel)'
         } : {})
       }}
     >
       {/* Resize Handles */}
       {!isHorizontal && panelPos !== 'floating' && (
-          <div className={`resize-handle ${panelPos === 'right' ? 'left' : 'right'}`} onMouseDown={(e) => startResizing(e, panelPos === 'right' ? 'w' : 'e')}></div>
+        <div className={`resize-handle ${panelPos === 'right' ? 'left' : 'right'}`} onMouseDown={(e) => startResizing(e, panelPos === 'right' ? 'w' : 'e')}></div>
       )}
       {isHorizontal && (
-          <div className={`resize-handle ${panelPos === 'top' ? 'bottom' : 'top'}`} onMouseDown={(e) => startResizing(e, panelPos === 'top' ? 's' : 'n')}></div>
+        <div className={`resize-handle ${panelPos === 'top' ? 'bottom' : 'top'}`} onMouseDown={(e) => startResizing(e, panelPos === 'top' ? 's' : 'n')}></div>
       )}
 
       {panelPos === 'floating' && (
-          <>
-              <div className="resize-handle top" onMouseDown={(e) => startResizing(e, 'n')}></div>
-              <div className="resize-handle bottom" onMouseDown={(e) => startResizing(e, 's')}></div>
-              <div className="resize-handle left" onMouseDown={(e) => startResizing(e, 'w')}></div>
-              <div className="resize-handle right" onMouseDown={(e) => startResizing(e, 'e')}></div>
-              <div className="resize-handle corner-se" onMouseDown={(e) => startResizing(e, 'se')}></div>
-          </>
+        <>
+          <div className="resize-handle top" onMouseDown={(e) => startResizing(e, 'n')}></div>
+          <div className="resize-handle bottom" onMouseDown={(e) => startResizing(e, 's')}></div>
+          <div className="resize-handle left" onMouseDown={(e) => startResizing(e, 'w')}></div>
+          <div className="resize-handle right" onMouseDown={(e) => startResizing(e, 'e')}></div>
+          <div className="resize-handle corner-se" onMouseDown={(e) => startResizing(e, 'se')}></div>
+        </>
       )}
 
       <header className="sidebar-header" onMouseDown={onDrag} style={{ cursor: panelPos === 'floating' ? 'grab' : 'default' }}>
@@ -141,16 +143,16 @@ const Sidebar = ({
           </button>
 
           <div className="layout-switcher">
-             {['left', 'right', 'top', 'bottom', 'floating'].map(pos => (
-               <button
+            {['left', 'right', 'top', 'bottom', 'floating'].map(pos => (
+              <button
                 key={pos}
                 onClick={() => setPanelPos(pos)}
                 className={`icon-btn sm ${panelPos === pos ? 'active' : ''}`}
                 title={`Dock ${pos}`}
-               >
-                 <LayoutIcon pos={pos} size={12} />
-               </button>
-             ))}
+              >
+                <LayoutIcon pos={pos} size={12} />
+              </button>
+            ))}
           </div>
         </div>
       </header>
@@ -177,38 +179,46 @@ const Sidebar = ({
         <Collapsible title="Thresholds" defaultOpen={true}>
           <div className="section-stack">
             <div className={isHorizontal ? 'horizontal-control-stack' : 'vertical-control-stack'}>
-               <RangeSlider
-                  label="Contrast Min"
-                  value={minContrast}
-                  min={calcMode === 'apca' ? 0 : 1}
-                  max={calcMode === 'apca' ? 106 : 21}
-                  step={calcMode === 'apca' ? 1 : 0.1}
-                  onChange={setMinContrast}
-                  thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 106] : [1, 3, 4.5, 7, 21]}
-                  icon={CheckIcon}
-               />
-               <RangeSlider
-                  label="Contrast Max"
-                  value={maxContrast === Infinity ? (calcMode === 'apca' ? 106 : 21) : maxContrast}
-                  min={calcMode === 'apca' ? 0 : 1}
-                  max={calcMode === 'apca' ? 106 : 21}
-                  step={calcMode === 'apca' ? 1 : 0.1}
-                  onChange={setMaxContrast}
-                  thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 106] : [1, 3, 4.5, 7, 21]}
-                  icon={XIcon}
-               />
+              <RangeSlider
+                label="Contrast Min"
+                value={minContrast}
+                min={calcMode === 'apca' ? 0 : 1}
+                max={calcMode === 'apca' ? 120 : 21}
+                step={calcMode === 'apca' ? 1 : 0.1}
+                onChange={setMinContrast}
+                thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 120] : [1, 3, 4.5, 7, 21]}
+                icon={CheckIcon}
+              />
+              <RangeSlider
+                label="Contrast Max"
+                value={maxContrast === Infinity ? (calcMode === 'apca' ? 120 : 21) : maxContrast}
+                min={calcMode === 'apca' ? 0 : 1}
+                max={calcMode === 'apca' ? 120 : 21}
+                step={calcMode === 'apca' ? 1 : 0.1}
+                onChange={setMaxContrast}
+                thresholds={calcMode === 'apca' ? [0, 15, 30, 45, 60, 75, 90, 120] : [1, 3, 4.5, 7, 21]}
+                icon={XIcon}
+              />
             </div>
             <RangeSlider
-                label="Vibration Limit" value={maxTension} min={0} max={10} step={0.5}
-                onChange={setMaxTension} thresholds={[2, 5, 8, 10]} unit="/10"
-                icon={WarningIcon}
+              label="Vibration Limit" value={maxTension} min={0} max={10} step={0.5}
+              onChange={setMaxTension} thresholds={[2, 5, 8, 10]} unit="/10"
+              icon={WarningIcon}
             />
           </div>
         </Collapsible>
 
         <Collapsible title="Global Modes" defaultOpen={!isHorizontal}>
           <div className="section-stack">
-            <SegmentedControl label="Calc Mode" value={calcMode} onChange={setCalcMode} options={[{ label: 'WCAG 2.1', value: 'wcag' }, { label: 'APCA', value: 'apca' }]} />
+            <SegmentedControl label={<span
+              className="label-inline-info"
+              onClick={() => setShowCalcInfo(true)}
+              title="About contrast calculation"
+            >
+              Calc Mode <span className="info-icon">(?)</span>
+            </span>
+            }
+              value={calcMode} onChange={setCalcMode} options={[{ label: 'WCAG 2.1', value: 'wcag' }, { label: 'APCA', value: 'apca' }]} />
             <div className="toggle-grid">
               <Toggle label="Hide Empty" active={hideEmpty} onChange={setHideEmpty} icon={isCute ? SparklesIcon : null} />
               <Toggle label="Borders" active={showBorder} onChange={setShowBorder} icon={isCute ? BriefcaseIcon : null} />
@@ -334,6 +344,100 @@ const Sidebar = ({
           </div>
         </Collapsible>
       </div>
+      {showCalcInfo && (
+        <div className="modal-overlay" onClick={() => setShowCalcInfo(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <h3>Contrast calculation modes</h3>
+
+            <p><strong>WCAG 2.1</strong></p>
+            <ul>
+              <li>Klasyczny model oparty o luminancję (1–21)</li>
+              <li>Oficjalne progi dostępności</li>
+              <li>Słabszy dla jasnych / dark UI</li>
+            </ul>
+
+            <p><strong>APCA</strong></p>
+            <ul>
+              <li>Model percepcyjny (0–120)</li>
+              <li>Lepiej oddaje czytelność tekstu</li>
+              <li>Rekomendowany do nowoczesnych interfejsów</li>
+            </ul>
+
+            <h3>APCA – Enhanced Contrast Requirements</h3>
+
+            <section>
+              <h4>AA, Enhanced</h4>
+
+              <p><strong>SHOULD</strong></p>
+              <ul>
+                <li>Lc 15 (≈ WCAG 1.3:1) – Disabled elements (not hidden)</li>
+                <li>Lc 30 (≈ WCAG 1.8:1) – Incidental text (placeholders, hints)</li>
+                <li>Lc 45 (≈ WCAG 2:1) – Logotypes</li>
+              </ul>
+
+              <p><strong>SHALL</strong></p>
+              <ul>
+                <li>Lc 60 (≈ WCAG 3:1) – Large text only, no body text (non‑text OK)</li>
+                <li>Lc 75 (≈ WCAG 4.5:1) – Body text ≥16px, otherwise ≥12px</li>
+                <li>Lc 90 (≈ WCAG 7:1) – Body text ≥14px, otherwise ≥10px</li>
+              </ul>
+
+              <p><strong>MAY</strong></p>
+              <p className="modal-note">
+                If the lightest color is darker than ~#d8d8d8, the minimum Lc value may be
+                reduced by 10 (but not below Lc 45). Does not apply to thin fonts.
+              </p>
+            </section>
+
+            <hr />
+
+            <section>
+              <h4>AAA, Enhanced</h4>
+
+              <p><strong>SHOULD</strong></p>
+              <ul>
+                <li>Lc 30 (≈ WCAG 1.8:1) – Disabled elements</li>
+                <li>Lc 45 (≈ WCAG 2:1) – Incidental text</li>
+              </ul>
+
+              <p><strong>SHALL</strong></p>
+              <ul>
+                <li>Lc 60 (≈ WCAG 3:1) – Logotypes & essential non‑text</li>
+                <li>Lc 75 (≈ WCAG 4.5:1) – Large text only</li>
+                <li>Lc 90 (≈ WCAG 7:1) – Body text ≥16px, otherwise ≥12px</li>
+              </ul>
+
+              <p><strong>MAY</strong></p>
+              <ul>
+                <li>Lc 90 (≈ WCAG 7:1) – Suggested maximum for very large / bold text</li>
+              </ul>
+            </section>
+
+            <hr />
+
+            <section>
+              <h4>Font Use (Enhanced)</h4>
+
+              <p><strong>SHOULD</strong></p>
+              <ul>
+                <li>Prefer x‑height ratio ≈ <strong>0.56</strong></li>
+                <li>Increase font size for fonts with smaller x‑height</li>
+                <li>Recommended x‑heights:
+                  <ul>
+                    <li>13.5px normal (≈24px body)</li>
+                    <li>10.5px bold (≈18.7px body)</li>
+                  </ul>
+                </li>
+                <li>Font weight between <strong>300–700</strong></li>
+              </ul>
+            </section>
+
+            <button className="primary-btn" onClick={() => setShowCalcInfo(false)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </aside>
   );
 };
