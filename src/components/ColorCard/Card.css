@@ -76,6 +76,19 @@
   margin-bottom: 1.5rem;
 }
 
+.pass-indicators-cols {
+  display: flex;
+  gap: 24px;
+}
+
+.pass-indicators:nth-child(2) {
+  opacity: 75%;
+}
+
+.pass-indicators:nth-child(2) > .indicator-row:nth-child(1) {
+  opacity: 75%;
+}
+
 .indicator-row {
   display: flex;
   align-items: center;
