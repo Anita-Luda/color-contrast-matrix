@@ -35,21 +35,27 @@
 }
 
 .slider-value {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
   font-family: var(--ff-mono);
   background: var(--bg-i);
   padding: 1px 4px;
   border-radius: var(--rad-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   color: var(--txt-p);
-  min-width: 30px;
+  min-width: 40px;
   text-align: center;
+}
+
+.slider-value.warning {
+  background: var(--clr-err-bg, #fee2e2);
+  color: var(--clr-err, #dc2626);
+  border-color: var(--clr-err, #dc2626);
 }
 
 .slider-track-container {
     position: relative;
-    padding: 10px 15px 28px;
+    padding: 10px 15px 40px; /* Increased bottom padding for buttons */
 }
 
 input[type=range] {
@@ -81,8 +87,8 @@ input[type=range]::-webkit-slider-thumb {
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -5px;
-  box-shadow: 0 0 0 3px var(--bg-p), 0 0 0 4px var(--brd-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  box-shadow: 0 0 0 3px var(--bg-p), 0 0 0 4px var(--brd-s);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   transition: transform 0.1s;
   position: relative;
   z-index: 5;
@@ -94,11 +100,12 @@ input[type=range]::-webkit-slider-thumb:active {
 
 .slider-thresholds {
   position: absolute;
-  top: 16px;
+  top: 24px; /* Move below the track */
   left: 15px;
   right: 15px;
-  height: 20px;
+  height: 30px;
   pointer-events: none;
+  padding-top: 15px;
 }
 
 .threshold-marker {
@@ -107,24 +114,24 @@ input[type=range]::-webkit-slider-thumb:active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
+  gap: 4px;
   z-index: 10;
 }
 
 .threshold-tick {
   width: 1px;
-  height: 6px;
-  background: var(--brd-i);
+  height: 8px;
+  background: var(--brd-s);
   transition: all 0.2s;
-  margin-top: -6px;
+  margin-top: -12px; /* Pull it up to touch the track */
 }
 
 .threshold-btn {
   background: var(--bg-p);
-  border: 1px solid var(--brd-i);
+  border: 1px solid var(--brd-s);
   border-radius: 2px;
   padding: 0 2px;
-  font-size: 7px;
+  font-size: 9px;
   color: var(--txt-m);
   font-weight: 800;
   font-family: var(--ff-mono);
@@ -146,7 +153,7 @@ input[type=range]::-webkit-slider-thumb:active {
 .segmented-group {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-xs);
+  gap: var(--space-2);
 }
 
 .segmented-label {
@@ -162,7 +169,21 @@ input[type=range]::-webkit-slider-thumb:active {
   background: var(--n-100);
   padding: 2px;
   border-radius: var(--rad-btn);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
+  position: relative;
+  z-index: 1;
+}
+
+.segmented-indicator {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  background: var(--bg-p);
+  border-radius: calc(var(--rad-btn) - 2px);
+  box-shadow: var(--shd-p);
+  border: var(--brd-w, 1px) solid var(--brd-s);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
 }
 
 [data-theme='dark'] .segmented-control {
@@ -174,7 +195,7 @@ input[type=range]::-webkit-slider-thumb:active {
   flex: 1;
   text-align: center;
   padding: 5px 4px;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   border-radius: calc(var(--rad-btn) - 2px);
   cursor: pointer;
@@ -187,13 +208,10 @@ input[type=range]::-webkit-slider-thumb:active {
 .segmented-item:hover { color: var(--txt-p); }
 
 .segmented-item.active {
-  background: var(--bg-p);
   color: var(--txt-p);
-  box-shadow: var(--shd-p);
-  border: var(--brd-w, 1px) solid var(--brd-i);
 }
 
-[data-theme='dark'] .segmented-item.active {
+[data-theme='dark'] .segmented-indicator {
   border-color: var(--n-600);
 }
 
@@ -210,7 +228,7 @@ input[type=range]::-webkit-slider-thumb:active {
   justify-content: space-between;
   padding: 8px 0;
   cursor: pointer;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -220,7 +238,7 @@ input[type=range]::-webkit-slider-thumb:active {
 
 .collapsible-trigger:hover { color: var(--txt-p); }
 .collapsible-content { padding-bottom: var(--space-4); }
-.chevron { font-size: 7px; transition: transform 0.2s; opacity: 0.5; }
+.chevron { font-size: 9px; transition: transform 0.2s; opacity: 0.5; }
 
 /* Toggle */
 .toggle-container {
@@ -230,7 +248,7 @@ input[type=range]::-webkit-slider-thumb:active {
   padding: 4px 8px;
   background: var(--bg-i);
   border-radius: var(--rad-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
 }
 
 .toggle-label {
@@ -246,10 +264,10 @@ input[type=range]::-webkit-slider-thumb:active {
   height: 18px;
   background: var(--tog-track);
   border-radius: var(--rad-t);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   position: relative;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
   flex-shrink: 0;
   overflow: hidden;
@@ -262,9 +280,9 @@ input[type=range]::-webkit-slider-thumb:active {
   border-radius: var(--rad-th);
   position: absolute;
   top: 50%;
-  left: 2px;
   transform: translateY(-50%);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  left: 2px;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;

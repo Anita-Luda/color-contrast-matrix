@@ -2,7 +2,7 @@
   background-color: var(--bg-p);
   display: flex;
   flex-direction: column;
-  padding: var(--space-4);
+  padding: var(--space-6); /* Increased padding for more light/breathing room */
   flex-shrink: 0;
   z-index: 1000;
   box-shadow: var(--shd-p);
@@ -24,14 +24,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-2);
-  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
   border-bottom: var(--brd-w, 1px) solid var(--brd-s);
 }
 
 .header-title h2 {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -39,7 +39,7 @@
 }
 
 .version {
-  font-size: 8px;
+  font-size: 10px;
   color: var(--text-muted);
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -53,7 +53,7 @@
 
 .icon-btn {
   background: var(--bg-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   border-radius: var(--rad-btn);
   padding: var(--space-1);
   cursor: pointer;
@@ -80,7 +80,7 @@
   background: var(--bg-i);
   padding: 2px;
   border-radius: var(--rad-btn);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
 }
 
 .sidebar-content {
@@ -130,7 +130,8 @@
 .section-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4); /* Fixed gap between sections */
+  gap: var(--space-5); /* Increased gap for more "light" */
+  padding: var(--space-2) 0;
 }
 
 .input-header {
@@ -141,8 +142,8 @@
 }
 
 .input-header label {
-  font-size: 8px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: 800;
   color: var(--txt-m);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -154,11 +155,11 @@
 }
 
 .quick-adds button {
-  font-size: 8px;
-  font-weight: 800;
+  font-size: 10px;
+  font-weight: 600;
   padding: 2px 8px;
   background: var(--bg-p);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   border-radius: var(--rad-btn);
   cursor: pointer;
   text-transform: uppercase;
@@ -176,10 +177,10 @@
   width: 100%;
   padding: var(--space-2);
   background: var(--bg-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   border-radius: var(--rad-i);
   font-family: var(--ff-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   resize: vertical;
   min-height: 60px;
   max-height: 300px;
@@ -218,7 +219,7 @@
   padding: var(--space-3);
   background: var(--bg-i);
   border-radius: var(--rad-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
 }
 
 [data-theme='dark'] .segmented-item.active {
@@ -233,18 +234,18 @@
 }
 
 .sub-header label {
-  font-size: 8px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--txt-m);
 }
 
 .mini-toggle {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   padding: 2px 8px;
   border-radius: var(--rad-btn);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   background: var(--bg-p);
   cursor: pointer;
   color: var(--txt-p);
@@ -262,7 +263,7 @@
   width: 100%;
   padding: var(--space-3);
   background: var(--bg-p);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   border-radius: var(--rad-i);
   font-size: 11px;
   color: var(--txt-p);
@@ -278,12 +279,12 @@
   padding: var(--space-3);
   background: var(--bg-i);
   border-radius: var(--rad-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
 }
 
 .sorting-panel label {
-  font-size: 8px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--txt-m);
 }
@@ -301,7 +302,7 @@
 }
 
 .sort-group span {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -310,10 +311,10 @@
 .btn-group { display: flex; gap: 2px; }
 .btn-group button {
   flex: 1;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   padding: 5px 0;
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   background: var(--bg-p);
   color: var(--txt-s);
   cursor: pointer;
@@ -345,6 +346,31 @@
   opacity: 0.9;
 }
 
+.action-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.secondary-btn {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-i);
+  color: var(--txt-p);
+  border-radius: var(--rad-btn);
+  border: var(--brd-w, 1px) solid var(--brd-s);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondary-btn:hover {
+  background: var(--brd-p);
+  transform: translateY(-1px);
+}
+
 [data-theme='dark'] .primary-btn {
   background: var(--n-100);
   color: var(--n-1000);
@@ -363,14 +389,14 @@
 }
 
 .filters-header label {
-  font-size: 8px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--txt-m);
 }
 
 .reset-btn {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
   padding: 2px 8px;
   background: transparent;
@@ -389,7 +415,7 @@
   width: 100%;
   padding: var(--space-2) var(--space-3);
   background: var(--bg-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
   border-radius: var(--rad-i);
   font-size: var(--fs-xs);
   color: var(--txt-p);
@@ -416,7 +442,7 @@
 }
 
 .mini-reset-btn {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
   color: var(--clr-err);
   background: none;
@@ -430,7 +456,7 @@
 .mini-reset-btn:hover { opacity: 1; }
 
 .col-label {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -445,7 +471,7 @@
   padding: 4px;
   background: var(--bg-i);
   border-radius: var(--rad-i);
-  border: var(--brd-w, 1px) solid var(--brd-i);
+  border: var(--brd-w, 1px) solid var(--brd-s);
 }
 
 .resize-handle {
@@ -462,4 +488,38 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.label-with-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: #ffffff45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background: var(--bg-p);
+  padding: 24px;
+  border-radius: 24px;
+  max-width: 620px;
+  font-size: small;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 3px solid var(--bg-i);
 }
