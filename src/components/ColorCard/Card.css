@@ -99,7 +99,7 @@
 }
 
 .hex-line .mono {
-    font-family: var(--ff-mono);
+    font-family: var(--ff-base);
     font-weight: 700;
 }
 
