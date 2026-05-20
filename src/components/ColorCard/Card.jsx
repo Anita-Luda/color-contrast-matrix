@@ -19,9 +19,12 @@ const Card = ({
   const apca = useMemo(() => getApcaContrast(fg, bg), [bg, fg]);
   const tension = useMemo(() => getVisualTensionScore(bg, fg), [bg, fg]);
 
-  const isPass3 = mode === 'apca' ? Math.abs(apca) >= 30 : ratio >= 3;
-  const isPass45 = mode === 'apca' ? Math.abs(apca) >= 45 : ratio >= 4.5;
-  const isPass7 = mode === 'apca' ? Math.abs(apca) >= 75 : ratio >= 7;
+  const isPass13 = mode === 'apca' ? Math.abs(apca) >= 15 : ratio >= 1.3;
+  const isPass18 = mode === 'apca' ? Math.abs(apca) >= 30 : ratio >= 1.8;
+  const isPass2 = mode === 'apca' ? Math.abs(apca) >= 45 : ratio >= 2;
+  const isPass3 = mode === 'apca' ? Math.abs(apca) >= 60 : ratio >= 3;
+  const isPass45 = mode === 'apca' ? Math.abs(apca) >= 75 : ratio >= 4.5;
+  const isPass7 = mode === 'apca' ? Math.abs(apca) >= 90 : ratio >= 7;
 
   const val = mode === 'apca' ? apca : ratio;
   const suffix = mode === 'apca' ? '' : ':1';
@@ -92,22 +95,38 @@ const Card = ({
             <div className="indicator-group">
                 <div className="contrast-value" style={{ fontSize: `32px`, fontWeight: 'var(--fw-contrast)' }}>
                   {val}{suffix}
-                </div>
+                </div>             
 
-                <div className="pass-indicators" style={{ fontSize: `14px` }}>
-                  <div className="indicator-row">
-                    {renderStatus(isPass3)}
-                    <span className="indicator-label">{mode === 'apca' ? 'Lc 30' : '3:1'}</span>
+                <div className="pass-indicators-cols">
+                  <div className="pass-indicators" style={{ fontSize: `14px` }}>
+                    <div className="indicator-row">
+                      {renderStatus(isPass3)}
+                      <span className="indicator-label">{mode === 'apca' ? 'Lc 60' : '3:1'}</span>
+                    </div>
+                    <div className="indicator-row">
+                      {renderStatus(isPass45)}
+                      <span className="indicator-label">{mode === 'apca' ? 'Lc 75' : '4.5:1'}</span>
+                    </div>
+                    <div className="indicator-row">
+                      {renderStatus(isPass7)}
+                      <span className="indicator-label">{mode === 'apca' ? 'Lc 90' : '7:1'}</span>
+                    </div>
                   </div>
-                  <div className="indicator-row">
-                    {renderStatus(isPass45)}
-                    <span className="indicator-label">{mode === 'apca' ? 'Lc 45' : '4.5:1'}</span>
+                                  <div className="pass-indicators" style={{ fontSize: `14px` }}>
+                    <div className="indicator-row">
+                      {renderStatus(isPass13)}
+                      <span className="indicator-label">{mode === 'apca' ? 'Lc 15' : '1.3:1'}</span>
+                    </div>
+                    <div className="indicator-row">
+                      {renderStatus(isPass18)}
+                      <span className="indicator-label">{mode === 'apca' ? 'Lc 30' : '1.8:1'}</span>
+                    </div>
+                    <div className="indicator-row">
+                      {renderStatus(isPass2)}
+                      <span className="indicator-label">{mode === 'apca' ? 'Lc 45' : '2:1'}</span>
+                    </div>
                   </div>
-                  <div className="indicator-row">
-                    {renderStatus(isPass7)}
-                    <span className="indicator-label">{mode === 'apca' ? 'Lc 75' : '7:1'}</span>
-                  </div>
-                </div>
+                </div>  
 
                 <div className="hex-labels" style={{ fontSize: `10px` }}>
                   <div className="hex-line"><span>BG</span> <span className="mono">{bg}</span></div>
