@@ -39,6 +39,7 @@
   background-color: var(--bg-h);
   width: var(--header-row-w);
   pointer-events: none;
+  height: 100%;
 }
 
 .sticky-header {
@@ -102,8 +103,6 @@
   justify-content: flex-end;
   gap: var(--s-4);
   background-color: transparent; /* Strip provides background */
-  border-right: 2px solid var(--txt-p);
-  box-shadow: 10px 0 30px rgba(0,0,0,0.08);
 }
 
 .row-color-code {
