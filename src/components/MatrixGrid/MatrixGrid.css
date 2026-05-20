@@ -27,7 +27,7 @@
   position: sticky;
   top: 0;
   z-index: 90;
-  background-color: var(--bg-h);
+  background-color: var(--bg-app);
   height: var(--header-col-h);
   pointer-events: none;
 }
@@ -36,7 +36,7 @@
   position: sticky;
   left: 0;
   z-index: 91;
-  background-color: var(--bg-h);
+  background-color: var(--bg-app);
   width: var(--header-row-w);
   pointer-events: none;
   height: 100%;
@@ -53,9 +53,7 @@
   top: 0;
   left: 0;
   z-index: 110;
-  background-color: var(--bg-h);
-  border-bottom: var(--brd-w, 1px) solid var(--brd-p);
-  border-right: var(--brd-w, 1px) solid var(--brd-p);
+  background-color: var(--bg-app);
   justify-content: center;
   align-items: center;
   font-size: 10px;
@@ -76,7 +74,6 @@
   padding: 0 var(--s-4);
   flex-direction: column;
   background-color: transparent; /* Strip provides background */
-  border-bottom: var(--brd-w, 1px) solid var(--brd-p);
   justify-content: center;
 }
 
