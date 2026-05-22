@@ -204,13 +204,15 @@ function App() {
       svg += `<text x="${HEADER_W - 20}" y="${y}" font-family="monospace" font-size="14" font-weight="700" text-anchor="end" fill="#737373">${r}</text>`;
     });
 
-    const checkPath = "M20 6 9 17 4 12";
-    const xPath = "M18 6 6 18 M6 6 18 18";
+    const checkPath = "M20 6 L9 17 L4 12";
+    const xPath = "M18 6 L6 18 M6 6 L18 18";
 
     const succCol = "#22c55e", errCol = "#ef4444";
     const drawIcon = (x, y, pass) => {
-      return `<g transform="translate(${x}, ${y})">
-        <path d="${pass ? checkPath : xPath}" fill="none" stroke="${pass ? succCol : errCol}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      // Scale down by 0.6 to match the UI visual size (around 12-14px)
+      // and adjust stroke-width to look consistent
+      return `<g transform="translate(${x}, ${y + 2}) scale(0.55)">
+        <path d="${pass ? checkPath : xPath}" fill="none" stroke="${pass ? succCol : errCol}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
       </g>`;
     };
 
