@@ -208,11 +208,11 @@ function App() {
     const xPath = "M18 6 L6 18 M6 6 L18 18";
 
     const succCol = "#22c55e", errCol = "#ef4444";
-    const drawIcon = (x, y, pass) => {
-      // Scale down by 0.6 to match the UI visual size (around 12-14px)
-      // and adjust stroke-width to look consistent
-      return `<g transform="translate(${x}, ${y + 2}) scale(0.55)">
-        <path d="${pass ? checkPath : xPath}" fill="none" stroke="${pass ? succCol : errCol}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    const drawIcon = (x, y, pass, iconSize = 12) => {
+      const scale = iconSize / 24;
+      // y+1 to better center vertically with text
+      return `<g transform="translate(${x}, ${y + 1}) scale(${scale})">
+        <path d="${pass ? checkPath : xPath}" fill="none" stroke="${pass ? succCol : errCol}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
       </g>`;
     };
 
@@ -267,26 +267,30 @@ function App() {
             const indicatorsY = y + padding + 32 + 24;
 
             // Col 1
-            svg += drawIcon(x + padding, indicatorsY, isPass3);
-            svg += `<text x="${x + padding + 22}" y="${indicatorsY + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 60' : '3:1'}</text>`;
+            const iconSize = 13;
+            const textOff = iconSize + 8;
+            const rowH = 22;
 
-            svg += drawIcon(x + padding, indicatorsY + 22, isPass45);
-            svg += `<text x="${x + padding + 22}" y="${indicatorsY + 22 + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 75' : '4.5:1'}</text>`;
+            svg += drawIcon(x + padding, indicatorsY, isPass3, iconSize);
+            svg += `<text x="${x + padding + textOff}" y="${indicatorsY + iconSize - 1.5}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 60' : '3:1'}</text>`;
 
-            svg += drawIcon(x + padding, indicatorsY + 44, isPass7);
-            svg += `<text x="${x + padding + 22}" y="${indicatorsY + 44 + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 90' : '7:1'}</text>`;
+            svg += drawIcon(x + padding, indicatorsY + rowH, isPass45, iconSize);
+            svg += `<text x="${x + padding + textOff}" y="${indicatorsY + rowH + iconSize - 1.5}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 75' : '4.5:1'}</text>`;
+
+            svg += drawIcon(x + padding, indicatorsY + rowH*2, isPass7, iconSize);
+            svg += `<text x="${x + padding + textOff}" y="${indicatorsY + rowH*2 + iconSize - 1.5}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 90' : '7:1'}</text>`;
 
             // Col 2
-            const col2X = x + padding + 100;
+            const col2X = x + padding + 105;
             svg += `<g opacity="0.75">`;
-            svg += drawIcon(col2X, indicatorsY, isPass13);
-            svg += `<text x="${col2X + 22}" y="${indicatorsY + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 15' : '1.3:1'}</text>`;
+            svg += drawIcon(col2X, indicatorsY, isPass13, iconSize);
+            svg += `<text x="${col2X + textOff}" y="${indicatorsY + iconSize - 1.5}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 15' : '1.3:1'}</text>`;
 
-            svg += drawIcon(col2X, indicatorsY + 22, isPass18);
-            svg += `<text x="${col2X + 22}" y="${indicatorsY + 22 + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 30' : '1.8:1'}</text>`;
+            svg += drawIcon(col2X, indicatorsY + rowH, isPass18, iconSize);
+            svg += `<text x="${col2X + textOff}" y="${indicatorsY + rowH + iconSize - 1.5}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 30' : '1.8:1'}</text>`;
 
-            svg += drawIcon(col2X, indicatorsY + 44, isPass2);
-            svg += `<text x="${col2X + 22}" y="${indicatorsY + 44 + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 45' : '2:1'}</text>`;
+            svg += drawIcon(col2X, indicatorsY + rowH*2, isPass2, iconSize);
+            svg += `<text x="${col2X + textOff}" y="${indicatorsY + rowH*2 + iconSize - 1.5}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 45' : '2:1'}</text>`;
             svg += `</g>`;
 
             // HEX labels
@@ -317,18 +321,21 @@ function App() {
         const statusY = sepY + 20;
 
         // Icons
-        svg += drawIcon(x + bPaddingX, statusY - 10, isPass3);
-        svg += `<text x="${x + bPaddingX + 18}" y="${statusY}" font-family="${fontName}, sans-serif" font-size="11" font-weight="${fwBold}" opacity="0.8" fill="${textCol}">ICONS</text>`;
+        const bIconSize = 11;
+        const bTextOff = bIconSize + 6;
+
+        svg += drawIcon(x + bPaddingX, statusY - bIconSize + 1, isPass3, bIconSize);
+        svg += `<text x="${x + bPaddingX + bTextOff}" y="${statusY}" font-family="${fontName}, sans-serif" font-size="11" font-weight="${fwBold}" opacity="0.8" fill="${textCol}">ICONS</text>`;
 
         // AA
-        const aaX = x + CARD_W / 2 - 10;
-        svg += drawIcon(aaX, statusY - 10, isPass45);
-        svg += `<text x="${aaX + 18}" y="${statusY}" font-family="${fontName}, sans-serif" font-size="11" font-weight="${fwBold}" opacity="0.8" fill="${textCol}">AA</text>`;
+        const aaX = x + CARD_W / 2 - 15;
+        svg += drawIcon(aaX, statusY - bIconSize + 1, isPass45, bIconSize);
+        svg += `<text x="${aaX + bTextOff}" y="${statusY}" font-family="${fontName}, sans-serif" font-size="11" font-weight="${fwBold}" opacity="0.8" fill="${textCol}">AA</text>`;
 
         // AAA
-        const aaaX = x + CARD_W - bPaddingX - 45;
-        svg += drawIcon(aaaX, statusY - 10, isPass7);
-        svg += `<text x="${aaaX + 18}" y="${statusY}" font-family="${fontName}, sans-serif" font-size="11" font-weight="${fwBold}" opacity="0.8" fill="${textCol}">AAA</text>`;
+        const aaaX = x + CARD_W - bPaddingX - 48;
+        svg += drawIcon(aaaX, statusY - bIconSize + 1, isPass7, bIconSize);
+        svg += `<text x="${aaaX + bTextOff}" y="${statusY}" font-family="${fontName}, sans-serif" font-size="11" font-weight="${fwBold}" opacity="0.8" fill="${textCol}">AAA</text>`;
 
         svg += `</g>`;
       });
