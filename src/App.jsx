@@ -170,40 +170,49 @@ function App() {
   const copySVG = useCallback(() => {
     const scale = gridScale / 100;
     const baseW = cardBaseWidth;
-    const CARD_W = baseW; // Using base size, scaling is handled by SVG transform/viewport
-    const CARD_H_BOT = 100;
-    const CARD_H_TOP = fontTestMode ? CARD_W : (baseW * 1.6 - CARD_H_BOT);
-    const totalCardH = CARD_H_TOP + CARD_H_BOT;
+    const CARD_W = baseW;
+    const CARD_H = 310;
+    const CARD_H_BOT = 90;
+    const CARD_H_TOP = CARD_H - CARD_H_BOT;
 
     const GAP = 16;
-    const HEADER_W = 120;
-    const HEADER_H = 60;
+    const HEADER_W = 150;
+    const HEADER_H = 80;
     const cols = activeCols, rows = activeRows;
-    const rowTotalH = totalCardH + GAP;
+    const rowTotalH = CARD_H + GAP;
 
     const actualW = (HEADER_W + cols.length * (CARD_W + GAP)) * scale;
     const actualH = (HEADER_H + rows.length * rowTotalH) * scale;
     const viewBoxW = HEADER_W + cols.length * (CARD_W + GAP);
     const viewBoxH = HEADER_H + rows.length * rowTotalH;
 
+    const isCute = visualStyle === 'cute';
+    const borderRadius = isCute ? 40 : 0;
+    const fontName = isCute ? 'Quicksand' : 'Inter';
+    const fwBold = isCute ? 700 : 500;
+
     let svg = `<svg width="${actualW}" height="${actualH}" viewBox="0 0 ${viewBoxW} ${viewBoxH}" xmlns="http://www.w3.org/2000/svg">`;
     svg += `<rect width="100%" height="100%" fill="${theme === 'dark' ? '#171717' : '#fafafa'}" />`;
 
-    // Corner & Headers
+    // Headers
     cols.forEach((c, i) => {
       const x = HEADER_W + i * (CARD_W + GAP) + CARD_W / 2;
-      svg += `<text x="${x}" y="40" font-family="monospace" font-size="14" font-weight="500" text-anchor="middle" fill="#737373">${c}</text>`;
+      svg += `<text x="${x}" y="50" font-family="monospace" font-size="14" font-weight="700" text-anchor="middle" fill="#737373">${c}</text>`;
     });
     rows.forEach((r, i) => {
       const y = HEADER_H + i * rowTotalH + rowTotalH / 2;
-      svg += `<text x="${HEADER_W - 20}" y="${y}" font-family="monospace" font-size="14" font-weight="500" text-anchor="end" fill="#737373">${r}</text>`;
+      svg += `<text x="${HEADER_W - 20}" y="${y}" font-family="monospace" font-size="14" font-weight="700" text-anchor="end" fill="#737373">${r}</text>`;
     });
 
-    // Style properties
-    const isCute = visualStyle === 'cute';
-    const borderRadius = isCute ? (3 * 16) : 0;
-    const borderWidth = isCute ? 0 : 1;
-    const fontName = isCute ? 'Quicksand' : 'Inter';
+    const checkPath = "M20 6 9 17 4 12";
+    const xPath = "M18 6 6 18 M6 6 18 18";
+
+    const succCol = "#22c55e", errCol = "#ef4444";
+    const drawIcon = (x, y, pass) => {
+      return `<g transform="translate(${x}, ${y})">
+        <path d="${pass ? checkPath : xPath}" fill="none" stroke="${pass ? succCol : errCol}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </g>`;
+    };
 
     // Matrix
     rows.forEach((bg, rowI) => {
@@ -216,23 +225,32 @@ function App() {
         const val = calcMode === 'apca' ? apca : ratio;
         const suffix = calcMode === 'apca' ? '' : ':1';
 
-        const pass3 = calcMode === 'apca' ? Math.abs(apca) >= 30 : ratio >= 3;
-        const pass45 = calcMode === 'apca' ? Math.abs(apca) >= 45 : ratio >= 4.5;
-        const pass7 = calcMode === 'apca' ? Math.abs(apca) >= 75 : ratio >= 7;
+        const isPass13 = calcMode === 'apca' ? Math.abs(apca) >= 15 : ratio >= 1.3;
+        const isPass18 = calcMode === 'apca' ? Math.abs(apca) >= 30 : ratio >= 1.8;
+        const isPass2 = calcMode === 'apca' ? Math.abs(apca) >= 45 : ratio >= 2;
+        const isPass3 = calcMode === 'apca' ? Math.abs(apca) >= 60 : ratio >= 3;
+        const isPass45 = calcMode === 'apca' ? Math.abs(apca) >= 75 : ratio >= 4.5;
+        const isPass7 = calcMode === 'apca' ? Math.abs(apca) >= 90 : ratio >= 7;
 
         // Card Body
         const cardBg = theme === 'dark' ? '#262626' : '#ffffff';
-        svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${totalCardH}" rx="${borderRadius}" fill="${cardBg}" ${borderWidth > 0 ? `stroke="${fg}" stroke-width="${borderWidth}"` : ''} />`;
+        const shadow = isCute ? "filter=\"drop-shadow(0 10px 20px rgba(0,0,0,0.05))\"" : "";
+        svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" rx="${borderRadius}" fill="${cardBg}" ${shadow} />`;
+
+        // Clip path for rounded corners
+        svg += `<clipPath id="clip-${rowI}-${colI}"><rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" rx="${borderRadius}"/></clipPath>`;
+        svg += `<g clip-path="url(#clip-${rowI}-${colI})">`;
 
         // Color Section (Top)
-        svg += `<clipPath id="clip-${rowI}-${colI}"><rect x="${x}" y="${y}" width="${CARD_W}" height="${totalCardH}" rx="${borderRadius}"/></clipPath>`;
-        svg += `<g clip-path="url(#clip-${rowI}-${colI})">`;
         svg += `<rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H_TOP}" fill="${bg}" />`;
 
+        if (showBorder) {
+            svg += `<rect x="${x+1.5}" y="${y+1.5}" width="${CARD_W-3}" height="${CARD_H-3}" rx="${borderRadius}" fill="none" stroke="${fg}" stroke-width="3" />`;
+        }
 
         if (fontTestMode) {
-            const padding = 20;
-            let currentY = y + (CARD_H_TOP / 2);
+            const padding = 24;
+            let currentY = y + (CARD_H_TOP / 2) - 10;
             if (headingEnabled) {
                 const hFont = headingFont.replace(/'/g, "").split(',')[0];
                 svg += `<text x="${x + padding}" y="${currentY}" font-family="${hFont}, ${fontName}, sans-serif" font-size="${headingSize}" font-weight="${headingWeight}" fill="${fg}">${headingText || "Heading"}</text>`;
@@ -241,33 +259,74 @@ function App() {
             const pFont = font.replace(/'/g, "").split(',')[0];
             svg += `<text x="${x + padding}" y="${currentY}" font-family="${pFont}, ${fontName}, sans-serif" font-size="${testFontSize}" font-weight="${testFontWeight}" fill="${fg}">${testText || "Sample"}</text>`;
         } else {
-            svg += `<text x="${x + 20}" y="${y + 22 + 32}" font-family="${fontName}, sans-serif" font-size="32" font-weight="${isCute ? 700 : 400}" fill="${fg}">${val}${suffix}</text>`;
+            const padding = 24;
+            svg += `<text x="${x + padding}" y="${y + padding + 32}" font-family="${fontName}, sans-serif" font-size="32" font-weight="${isCute ? 600 : 300}" fill="${fg}">${val}${suffix}</text>`;
 
-            const passLabelsY = y + 75;
-            svg += `<text x="${x + 20}" y="${passLabelsY + 14}" font-family="${fontName}, sans-serif" font-size="14" fill="${fg}">${pass3 ? (isCute ? '✨' : '✅') : '❌'} ${calcMode === 'apca' ? 'Lc 30' : '3:1'}</text>`;
-            svg += `<text x="${x + 20}" y="${passLabelsY + 32}" font-family="${fontName}, sans-serif" font-size="14" fill="${fg}">${pass45 ? (isCute ? '🌸' : '✅') : '❌'} ${calcMode === 'apca' ? 'Lc 45' : '4.5:1'}</text>`;
-            svg += `<text x="${x + 20}" y="${passLabelsY + 50}" font-family="${fontName}, sans-serif" font-size="14" fill="${fg}">${pass7 ? (isCute ? '👑' : '✅') : '❌'} ${calcMode === 'apca' ? 'Lc 75' : '7:1'}</text>`;
+            const indicatorsY = y + padding + 32 + 24;
+
+            // Col 1
+            svg += drawIcon(x + padding, indicatorsY, isPass3);
+            svg += `<text x="${x + padding + 22}" y="${indicatorsY + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 60' : '3:1'}</text>`;
+
+            svg += drawIcon(x + padding, indicatorsY + 22, isPass45);
+            svg += `<text x="${x + padding + 22}" y="${indicatorsY + 22 + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 75' : '4.5:1'}</text>`;
+
+            svg += drawIcon(x + padding, indicatorsY + 44, isPass7);
+            svg += `<text x="${x + padding + 22}" y="${indicatorsY + 44 + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 90' : '7:1'}</text>`;
+
+            // Col 2
+            const col2X = x + padding + 100;
+            svg += `<g opacity="0.75">`;
+            svg += drawIcon(col2X, indicatorsY, isPass13);
+            svg += `<text x="${col2X + 22}" y="${indicatorsY + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 15' : '1.3:1'}</text>`;
+
+            svg += drawIcon(col2X, indicatorsY + 22, isPass18);
+            svg += `<text x="${col2X + 22}" y="${indicatorsY + 22 + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 30' : '1.8:1'}</text>`;
+
+            svg += drawIcon(col2X, indicatorsY + 44, isPass2);
+            svg += `<text x="${col2X + 22}" y="${indicatorsY + 44 + 11}" font-family="${fontName}, sans-serif" font-size="14" font-weight="${fwBold}" fill="${fg}">${calcMode === 'apca' ? 'Lc 45' : '2:1'}</text>`;
+            svg += `</g>`;
+
+            // HEX labels
+            const hexY = y + CARD_H_TOP - 24;
+            svg += `<text x="${x + padding}" y="${hexY - 14}" font-family="${fontName}, sans-serif" font-size="10" opacity="0.8" fill="${fg}"><tspan font-weight="700">BG</tspan>  ${bg.toUpperCase()}</text>`;
+            svg += `<text x="${x + padding}" y="${hexY}" font-family="${fontName}, sans-serif" font-size="10" opacity="0.8" fill="${fg}"><tspan font-weight="700">FG</tspan>  ${fg.toUpperCase()}</text>`;
         }
 
         // Bottom Section
-        const botBg = theme === 'dark' ? '#111111' : '#f5f5f5';
-        const textCol = theme === 'dark' ? '#fafafa' : '#171717';
+        let botBg = theme === 'dark' ? (isCute ? '#2d2d30' : '#1e1e1e') : (isCute ? '#ffffff' : '#fafafa');
+        let textCol = theme === 'dark' ? '#f0f0f5' : '#171717';
         const bY = y + CARD_H_TOP;
 
-        // Bottom background
         svg += `<rect x="${x}" y="${bY}" width="${CARD_W}" height="${CARD_H_BOT}" fill="${botBg}" />`;
+        if (!isCute) {
+            svg += `<line x1="${x}" y1="${bY}" x2="${x + CARD_W}" y2="${bY}" stroke="${theme === 'dark' ? '#404040' : '#e5e5e5'}" stroke-width="1" />`;
+        }
 
-        const bTextY = bY + 25;
-        svg += `<text x="${x + 20}" y="${bTextY + 12}" font-family="monospace" font-size="12" fill="${textCol}">${bg} ⇆ ${fg}</text>`;
-        svg += `<text x="${x + CARD_W - 20}" y="${bTextY + 12}" font-family="${fontName}, sans-serif" font-size="12" font-weight="700" text-anchor="end" fill="${textCol}">${val}${suffix}</text>`;
+        const bPaddingX = 24;
+        const bPaddingY = 16;
 
-        const statusY = bTextY + 12 + 15;
-        svg += `<line x1="${x + 20}" y1="${statusY}" x2="${x + CARD_W - 20}" y2="${statusY}" stroke="${theme === 'dark' ? '#333' : '#ddd'}" stroke-width="1" />`;
+        svg += `<text x="${x + bPaddingX}" y="${bY + bPaddingY + 12}" font-family="${fontName}, sans-serif" font-size="11" font-weight="700" fill="${textCol}">${bg.toUpperCase()} ⇆ ${fg.toUpperCase()}</text>`;
+        svg += `<text x="${x + CARD_W - bPaddingX}" y="${bY + bPaddingY + 12}" font-family="${fontName}, sans-serif" font-size="11" font-weight="800" text-anchor="end" fill="${textCol}">${val}${suffix}</text>`;
 
-        const bStatusY = statusY + 10;
-        svg += `<text x="${x + 20}" y="${bStatusY + 12}" font-family="${fontName}, sans-serif" font-size="11" fill="${textCol}">${pass3 ? '✅' : '❌'} Icons</text>`;
-        svg += `<text x="${x + CARD_W/2}" y="${bStatusY + 12}" font-family="${fontName}, sans-serif" font-size="11" text-anchor="middle" fill="${textCol}">${pass45 ? '✅' : 'AA'}</text>`;
-        svg += `<text x="${x + CARD_W - 20}" y="${bStatusY + 12}" font-family="${fontName}, sans-serif" font-size="11" text-anchor="end" fill="${textCol}">${pass7 ? '✅' : 'AAA'}</text>`;
+        const sepY = bY + bPaddingY + 28;
+        svg += `<line x1="${x + bPaddingX}" y1="${sepY}" x2="${x + CARD_W - bPaddingX}" y2="${sepY}" stroke="${theme === 'dark' ? '#404040' : '#f5f5f5'}" stroke-width="1" />`;
+
+        const statusY = sepY + 20;
+
+        // Icons
+        svg += drawIcon(x + bPaddingX, statusY - 10, isPass3);
+        svg += `<text x="${x + bPaddingX + 18}" y="${statusY}" font-family="${fontName}, sans-serif" font-size="11" font-weight="${fwBold}" opacity="0.8" fill="${textCol}">ICONS</text>`;
+
+        // AA
+        const aaX = x + CARD_W / 2 - 10;
+        svg += drawIcon(aaX, statusY - 10, isPass45);
+        svg += `<text x="${aaX + 18}" y="${statusY}" font-family="${fontName}, sans-serif" font-size="11" font-weight="${fwBold}" opacity="0.8" fill="${textCol}">AA</text>`;
+
+        // AAA
+        const aaaX = x + CARD_W - bPaddingX - 45;
+        svg += drawIcon(aaaX, statusY - 10, isPass7);
+        svg += `<text x="${aaaX + 18}" y="${statusY}" font-family="${fontName}, sans-serif" font-size="11" font-weight="${fwBold}" opacity="0.8" fill="${textCol}">AAA</text>`;
 
         svg += `</g>`;
       });
@@ -275,7 +334,7 @@ function App() {
 
     svg += `</svg>`;
     navigator.clipboard.writeText(svg).then(() => alert('SVG Exported to clipboard!'));
-  }, [activeCols, activeRows, gridScale, cardBaseWidth, fontTestMode, theme, visualStyle, isHidden, calcMode, headingEnabled, headingFont, headingSize, headingWeight, font, testFontSize, testFontWeight, testText]);
+  }, [activeCols, activeRows, gridScale, cardBaseWidth, fontTestMode, theme, visualStyle, isHidden, calcMode, headingEnabled, headingFont, headingSize, headingWeight, font, testFontSize, testFontWeight, testText, showBorder]);
 
   return (
     <div className={`app-layout theme-${theme} theme-${panelPos}`}>
